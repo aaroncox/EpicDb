@@ -10,7 +10,6 @@
  **/
 class EpicDb_Mongo_Profile_User extends EpicDb_Mongo_Profile
 {
-	
 	public function __construct($data = array(), $config = array())
 	{
 	  // handled here in order to deal with subclassed resources...
@@ -50,5 +49,4 @@ class EpicDb_Mongo_Profile_User extends EpicDb_Mongo_Profile
     }
 		return $this;
   }
-
 } // END class EpicDb_Mongo_Profile_User

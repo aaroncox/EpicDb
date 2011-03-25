@@ -40,4 +40,15 @@ class EpicDb_Mongo_Profile extends MW_Auth_Mongo_Resource_Document
 	public function getSocialStats() {
 		return null;
 	}
+	
+	public function getIcon() {
+		if($this->icon) {
+			return $this->icon;
+		}
+		if($this->email) {
+			return $this->view->gravatarUrl($this->email);
+		}
+		return "/images/icons/unknown.jpg";
+	}
+	
 } // END class EpicDb_Mongo_Profile
