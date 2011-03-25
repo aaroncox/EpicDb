@@ -10,8 +10,4 @@
  **/
 class EpicDb_Mongo_Profile_Group extends EpicDb_Mongo_Profile
 {
-	// This code needs to be improved upon, it's just fixing a crash atm. Should groups have walls? Should all profiles get walls?
-	public function getWalls() {
-		return array();
-	}
 } // END class EpicDb_Mongo_Profile_Group
