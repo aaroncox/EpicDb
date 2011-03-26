@@ -20,7 +20,6 @@ class EpicDb_Mongo_Profile_Group extends EpicDb_Mongo_Profile
   // override requirements
   public function __construct($data = array(), $config = array()) {
     $this->addRequirements(array(
-
       '_owner' => array('Document:MW_Auth_Mongo_Role', 'AsReference', 'Required'),
       '_memberRole' => array('Document:MW_Auth_Mongo_Role', 'AsReference'),
       '_adminRole' => array('Document:MW_Auth_Mongo_Role', 'AsReference'),
@@ -30,6 +29,27 @@ class EpicDb_Mongo_Profile_Group extends EpicDb_Mongo_Profile
       'members.$' => array('Document:EpicDb_Mongo_Profile', 'AsReference'),
     ));
     return parent::__construct( $data, $config );
+  }
+
+  /**
+   * Helper functions - isAdmin() and isMember() check the currently logged in user
+   *
+   * @return boolean
+   * @author Corey Frang
+   **/
+  public function isAdmin() {
+    $user = MW_Auth::getInstance()->getUser();
+    if ( !$user ) {
+      return false;
+    }
+    return $user->isMember( $this->getAdminRole() );
+  }
+  public function isMember() {
+    $user = MW_Auth::getInstance()->getUser();
+    if( !$user ) {
+      return false;
+    }
+    return $user->isMember( $this->getMemberRole() );
   }
 
   /**
@@ -43,11 +63,13 @@ class EpicDb_Mongo_Profile_Group extends EpicDb_Mongo_Profile
     if ( isset( $this->_adminRole ) ) {
       return $this->_adminRole;
     }
-    $role = new MW_Auth_Mongo_Role( array(
+    $data = array(
       'type' => 'group',
       'groupName' => $this->name." admins",
       'groupDescription' => "Group administrators for group ".$this->id.": ".$this->name,
-    ));
+    );
+    $role = new MW_Auth_Mongo_Role();
+    foreach ($data as $k=>$v) $role->$k = $v;
 
     // The Admin role is a member of the Members Role
     $role->roles->addDocument( $this->getMemberRole() );
@@ -80,11 +102,14 @@ class EpicDb_Mongo_Profile_Group extends EpicDb_Mongo_Profile
     if ( isset( $this->_memberRole ) ) {
       return $this->_memberRole;
     }
-    $role = new MW_Auth_Mongo_Role( array(
+    $data = array(
       "type" => "group",
       "groupName" => $this->name." members",
       "groupDescription" => "Group Members for the group ".$this->name,
-    ));
+    );
+    $role = new MW_Auth_Mongo_Role();
+    foreach ($data as $k=>$v) $role->$k = $v;
+    
     $role->save();
     // Grant the member role privileges on this object
     $this->grant($role, $this->_memberPrivileges);
@@ -102,6 +127,49 @@ class EpicDb_Mongo_Profile_Group extends EpicDb_Mongo_Profile
     $this->_memberRole = $role;
     $this->save();
     return $role;
-	}
-	
+  }
+
+  
+  public function setMembership(EpicDb_Mongo_Profile $profile, $type)
+  {
+    $validTypes = array('member', 'admin', '');
+    if (!in_array($type, $validTypes)) {
+      throw new Exception('Unknown User Type, must be "member", "admin", or "" to remove');
+    }
+
+    $user = $profile->user;
+
+    $updateQuery = array();
+
+    foreach ($validTypes as $checkType) {
+      if (!$checkType) continue;
+      $typeSetKey = $checkType.'s';
+      $set = $this->$typeSetKey;
+
+      if ($checkType == $type) {
+        $updateQuery['$addToSet'][$typeSetKey] = $profile->createReference();
+        $user->addGroup($this->getRole($checkType));
+      } else {
+        $updateQuery['$pull'][$typeSetKey] = $profile->createReference();
+        $user->removeGroup($this->getRole($checkType));
+      }
+    }
+    $user->save();
+    self::update(array('_id' => $this->_id), $updateQuery);
+    return true;
+  }
+
+  /**
+   * shortcut function to get admin/member role
+   *
+   * @return MW_Auth_Mongo_Role
+   * @author Corey Frang
+   **/
+  public function getRole($type)
+  {
+    if ($type == 'admin') return $this->getAdminRole();
+    if ($type == 'member') return $this->getMemberRole();
+    throw new Exception('Unknown Role Type');
+  }
+
 } // END class EpicDb_Mongo_Profile_Group
