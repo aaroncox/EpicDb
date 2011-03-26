@@ -25,9 +25,9 @@ class EpicDb_Mongo_Profile_Group extends EpicDb_Mongo_Profile
       '_memberRole' => array('Document:MW_Auth_Mongo_Role', 'AsReference'),
       '_adminRole' => array('Document:MW_Auth_Mongo_Role', 'AsReference'),
       'admins' => array('DocumentSet'),
-      'admins.$.profile' => array('Document:EpicDb_Mongo_Profile', 'AsReference'),		
+      'admins.$' => array('Document:EpicDb_Mongo_Profile', 'AsReference'),		
       'members' => array('DocumentSet'),
-      'members.$.profile' => array('Document:EpicDb_Mongo_Profile', 'AsReference'),
+      'members.$' => array('Document:EpicDb_Mongo_Profile', 'AsReference'),
     ));
     return parent::__construct( $data, $config );
   }
@@ -57,7 +57,7 @@ class EpicDb_Mongo_Profile_Group extends EpicDb_Mongo_Profile
     $this->grant( $role );
 
     foreach( $this->admins as $admin ) {
-      $user = $admin->profile->user;
+      $user = $admin->user;
       if ( $user ) {
         $user->addGroup( $role );
         $user->save();
@@ -91,7 +91,7 @@ class EpicDb_Mongo_Profile_Group extends EpicDb_Mongo_Profile
 
     // Retroactively grant membership to the members in the members documentset
     foreach( $this->members as $member ) {
-      $user = $member->profile->user;
+      $user = $member->user;
       if( $user ) {
         $user->addGroup($role); 
         $user->save();
