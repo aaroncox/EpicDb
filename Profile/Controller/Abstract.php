@@ -63,7 +63,7 @@ abstract class EpicDb_Profile_Controller_Abstract extends MW_Controller_Action
 			if($post->title) {
 				$title = strip_tags($post->title);
 			} else {
-				$title = $post->tldr ?: ucfirst($post->_type).' by '.$post->_profile->name.' on '.$post->_record->name;
+				$title = $post->tldr ?: ucfirst($post->_type).' by '.$post->_profile->name.' on '.$post->tags->getTag('subject')->name;
 			}
 	    $generator->addEntry(array(
           'title' => $title,
