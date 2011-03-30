@@ -11,6 +11,9 @@
 class EpicDb_Mongo
 {
 	public static function db($type) {
-		return R2Db_Mongo_Schema::getInstance()->getCollectionForType($type);
+		return EpicDb_Mongo_Schema::getInstance()->getCollectionForType($type);
+	}
+	public static function dbClass($type) {
+		return EpicDb_Mongo_Schema::getInstance()->getClassForType($type);
 	}
 } // END class R2Db_Mongo
