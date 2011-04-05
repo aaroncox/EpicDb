@@ -110,8 +110,9 @@ class EpicDb_Mongo_Post extends MW_Auth_Mongo_Resource_Document
 		// var_dump($query); exit;
 		// Grab the results and return them to the controller
 		// unset($query['_typ'])
-		$results = EpicDb_Mongo_Post::fetchAll($query, $sort, $limit, $skip);
-		var_dump($results->export(), $query, $sort, $limit); exit;
+		$results = EpicDb_Mongo::db('posts')->fetchAll($query, $sort, $limit, $skip);
+		// var_dump($results); exit;
+		// var_dump($results->export(), $query, $sort, $limit); exit;
 		// foreach($results as $idx => $result) {
 		// 	if($result->id == "200") {				
 		// 		foreach($result->_viewers as $viewer) {
