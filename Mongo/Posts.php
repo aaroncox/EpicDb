@@ -13,6 +13,7 @@ class EpicDb_Mongo_Posts extends Shanty_Mongo_DocumentSet
 	public function getPropertyClass($property, $data)
 	{
 	  if (isset($data['_type'])) {
+			var_dump("whoa", $data['_type']); exit;
 	    return EpicDb_Mongo::dbClass($data['_type']);
 	  }
 	}
