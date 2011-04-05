@@ -21,7 +21,12 @@ class EpicDb_Mongo_Reference extends MW_Mongo_Document
 	public function getPropertyClass($property, $data)
 	{
 	  if ($property == 'ref') {
-	    return R2Db_Mongo::getClassNameForType($data['_type']);
+			if(!isset($data['_type'])) {
+				return null;
+				var_dump("Bad Record for tagging... dumping data...", $property, $data);
+				exit;
+			}
+	    return EpicDb_Mongo::dbClass($data['_type']);
 	  }
 	}
 	
