@@ -18,6 +18,8 @@ class EpicDb_Mongo_Schema extends MW_Mongo_Schema {
 		'group' => 'EpicDb_Mongo_Profile_Group',
 		// Record Types
 		// Post Types
+		'post' => 'EpicDb_Mongo_Post',
+		'question' => 'EpicDb_Mongo_Post_Question',
 	);
 	
 	/**
