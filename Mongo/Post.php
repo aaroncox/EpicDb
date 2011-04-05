@@ -124,4 +124,15 @@ class EpicDb_Mongo_Post extends MW_Auth_Mongo_Resource_Document
 		// var_dump($query, $results->export()); exit;
 		return $results;
 	}
+	
+	public function findResponses($limit = 10, $query = array(), $sort = array()) {
+		$query = array(
+			"_parent" => $this->createReference(),
+			'_deleted' => array(
+					'$exists' => false
+				)
+		);
+		$sort = array("_created" => 1);
+		return $results = EpicDb_Mongo::db('comment')->fetchAll($query, $sort, $limit);
+	}
 } // END class EpicDb_Mongo_Post
