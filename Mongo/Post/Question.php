@@ -33,7 +33,12 @@ class EpicDb_Mongo_Post_Question extends EpicDb_Mongo_Post
 				)
 		);
 		$sort = array("_created" => 1);
-		return $results = EpicDb_Mongo_Post_Question_Answer::fetchAll($query, $sort, $limit);
+		return $results = EpicDb_Mongo::db('answer')->fetchAll($query, $sort, $limit);
+	}
+	
+	public function countAnswers() {
+		// Return a max of 9999
+		return $this->findAnswers(9999)->count(); 
 	}
 	
 } // END class EpicDb_Mongo_Post
