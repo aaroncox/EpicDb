@@ -11,7 +11,7 @@
 class EpicDb_Mongo_Tags extends Shanty_Mongo_DocumentSet
 {
 	protected $_requirements = array(
-			'$' => array('Document:R2Db_Mongo_Reference'),
+			'$' => array('Document:EpicDb_Mongo_Reference'),
 			'$.reason' => array('Required'),
 		);
 		
