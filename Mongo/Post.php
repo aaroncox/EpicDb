@@ -25,7 +25,7 @@ class EpicDb_Mongo_Post extends MW_Auth_Mongo_Resource_Document
 			// '_record' => array('Document:R2Db_Mongo', 'AsReference'),
 			'_parent' => array('Document:EpicDb_Mongo_Post', 'AsReference'),
 			'_lastEditedBy' => array('Document:EpicDb_Mongo_Profile', 'AsReference'),
-			'_profile' => array('Document:EpicDb_Mongo_Profile', 'AsReference', 'Required'),
+			// '_profile' => array('Document:EpicDb_Mongo_Profile', 'AsReference', 'Required'),
 			'tags' => array('DocumentSet:EpicDb_Mongo_Tags', 'Required'),
 			'revisions' => array('DocumentSet'),
 			'revisions.$' => array('Document:EpicDb_Mongo_Revision'),
@@ -133,6 +133,6 @@ class EpicDb_Mongo_Post extends MW_Auth_Mongo_Resource_Document
 				)
 		);
 		$sort = array("_created" => 1);
-		return $results = EpicDb_Mongo::db('comment')->fetchAll($query, $sort, $limit);
+		return $results = EpicDb_Mongo::db('post')->fetchAll($query, $sort, $limit);
 	}
 } // END class EpicDb_Mongo_Post

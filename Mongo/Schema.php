@@ -17,9 +17,12 @@ class EpicDb_Mongo_Schema extends MW_Mongo_Schema {
 		'user' => 'EpicDb_Mongo_Profile_User',
 		'group' => 'EpicDb_Mongo_Profile_Group',
 		// Record Types
+		'tag' => 'EpicDb_Mongo_Record_Tag',
 		// Post Types
-		'posts' => 'EpicDb_Mongo_Post',
+		'post' => 'EpicDb_Mongo_Post',
 		'question' => 'EpicDb_Mongo_Post_Question',
+		'answer' => 'EpicDb_Mongo_Post_Question_Answer',
+		'comment' => 'EpicDb_Mongo_Post_Comment',
 	);
 	
 	/**
