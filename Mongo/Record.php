@@ -37,4 +37,10 @@ class EpicDb_Mongo_Record extends MW_Mongo_Document
 	  }
 	}
 
+	public function getIcon() {
+		if($this->icon) {
+			return $this->icon;
+		}
+		return "/images/icons/unknown.jpg";
+	}
 } // END class EpicDb_Mongo_Record

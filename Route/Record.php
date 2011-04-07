@@ -48,7 +48,7 @@ class EpicDb_Route_Record extends Zend_Controller_Router_Route {
 		if(empty($params['id'])) {
 			$query['slug'] = $params['slug'];
 		} else {
-			$query['id'] = $params['id'];
+			$query['id'] = (int) $params['id'];
 		}
 		return EpicDb_Mongo::db($params['type'])->fetchOne($query);
 	}

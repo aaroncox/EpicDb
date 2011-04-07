@@ -11,6 +11,7 @@ class EpicDb_Mongo_Post extends MW_Auth_Mongo_Resource_Document
 	protected static $_collectionName = 'posts';
   protected static $_documentType = null;
   protected static $_documentSetClass = 'EpicDb_Mongo_Posts';
+	protected static $_editForm = 'EpicDb_Form_Post';
 	/**
 	 * __construct - undocumented function
 	 *
@@ -134,5 +135,43 @@ class EpicDb_Mongo_Post extends MW_Auth_Mongo_Resource_Document
 		);
 		$sort = array("_created" => 1);
 		return $results = EpicDb_Mongo::db('post')->fetchAll($query, $sort, $limit);
+	}
+	
+	public static function getTagsByUsage() {
+		$query = array();
+	  $map = new MongoCode("function() {
+			this.tags.forEach(function(ref) {
+				if(ref.reason == 'tag') {
+					emit(ref, 1);					
+				}
+			})
+	  }");
+	  $reduce = new MongoCode("function(key, values) {
+	    var sum = 0; 
+	    for (var i in values) { sum += values[i]; }
+	    return sum;
+	  }");
+	 
+		$db = self::getMongoDb(); 
+	  $result = $db->command(array(
+	      "mapreduce" => static::$_collectionName,
+	      "map" => $map,
+	      "reduce" => $reduce,
+	      "query" => $query,
+	  ));
+		$data = $db->selectCollection($result['result']);
+		foreach($data->find()->sort(array('value' => -1, 'name' => 1)) as $d) {
+			$record = EpicDb_Mongo::db($d['_id']['ref']['$ref'])->find($d['_id']['ref']['$id']);
+			$tags[$record->slug] = array(
+				'record' => $record,
+				'count' => $d['value'],
+			);
+		}
+		return $tags; 
+	}
+	
+	public function getEditForm() {
+		$className = static::$_editForm;
+		return new $className(array('post' => $this));
 	}
 } // END class EpicDb_Mongo_Post

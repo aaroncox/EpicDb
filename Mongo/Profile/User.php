@@ -50,4 +50,31 @@ class EpicDb_Mongo_Profile_User extends EpicDb_Mongo_Profile
     }
 		return $this;
   }
+
+	public static function getProfile($user) {
+		if(!$user) return null;
+		if($user instanceOf EpicDb_Mongo_Profile_User) {
+			return $user;
+		}
+		$query = array();
+		if($user instanceOf MW_Auth_Mongo_Role) {	
+			$query['user'] = $user->createReference();
+    } elseif(is_string($user)) {
+			$query = array("name" => new MongoRegex('/'.$user.'/i'));
+			$user = false;
+		}
+		$profile = self::fetchOne($query);
+		// var_dump($query, $profile, $user); exit;
+		if(!$profile && $user) {
+			$slug = new MW_Filter_Slug();
+			$profile = new self();
+			$profile->user = $user;
+      $profile->slug = $slug->filter($user->name);
+			$profile->username = strtolower($slug->filter($user->name));
+			$profile->name = $slug->filter($user->name);
+			$profile->display_email = strtolower($slug->filter($user->email));
+			$profile->save();
+		}
+		return $profile;
+	}
 } // END class EpicDb_Mongo_Profile_User

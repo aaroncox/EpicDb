@@ -56,7 +56,7 @@ class EpicDb_Auth extends MW_Auth {
 
     $user = $this->getUser();
 		
-    $this->_profile = EpicDb_Mongo_Profile_User::getProfile($this->getUser());
+    $this->_profile = EpicDb_Mongo::db('user')->getProfile($this->getUser());
     
     return $this->_profile;
   }

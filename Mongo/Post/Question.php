@@ -10,6 +10,8 @@ class EpicDb_Mongo_Post_Question extends EpicDb_Mongo_Post
 {
 	protected static $_collectionName = 'posts';
   protected static $_documentType = 'question';
+	protected static $_editForm = 'EpicDb_Form_Post_Question';
+
 	/**
 	 * __construct - undocumented function
 	 *
@@ -34,6 +36,18 @@ class EpicDb_Mongo_Post_Question extends EpicDb_Mongo_Post
 		);
 		$sort = array("_created" => 1);
 		return $results = EpicDb_Mongo::db('answer')->fetchAll($query, $sort, $limit);
+	}
+	
+	public function findComments($limit = 10, $query = array(), $sort = array()) {
+		// var_dump($this->createReference()); 
+		$query = array(
+			"_parent" => $this->createReference(),
+			'_deleted' => array(
+					'$exists' => false
+				)
+		);
+		$sort = array("_created" => 1);
+		return $results = EpicDb_Mongo::db('comment')->fetchAll($query, $sort, $limit);		
 	}
 	
 	public function countAnswers() {
