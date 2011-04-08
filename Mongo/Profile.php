@@ -3,7 +3,7 @@
  * EpicDb_Mongo_Profile
  *
  * undocumented class
- * 
+ *
  * @author Aaron Cox <aaronc@fmanet.org>
  * @param undocumented class
  * @package undocumented class
@@ -11,8 +11,8 @@
 class EpicDb_Mongo_Profile extends MW_Auth_Mongo_Resource_Document implements EpicDb_Interface_Cardable
 {
 	protected static $_collectionName = 'profiles';
-  protected static $_documentType = null;
-	
+	protected static $_documentType = null;
+
 	/**
 	 * The form the record uses
 	 *
@@ -38,23 +38,23 @@ class EpicDb_Mongo_Profile extends MW_Auth_Mongo_Resource_Document implements Ep
 		Zend_Loader::loadClass($class);
 		return new $class(array("profile" => $this)+$options);
 	}
-	
-	// Get rid of me! I suck.	
+
+	// Get rid of me! I suck.
 	public function getSocialStats() {
 		return null;
 	}
-	
+
 	public function getIcon() {
 		if($this->icon) {
 			return $this->icon;
 		}
 		return "/images/icons/unknown.jpg";
 	}
-	
+
 	public function cardProperties($view) {
 		return array(
 			'is a' => $view->recordTypeLink($this)
 		);
 	}
-	
+
 } // END class EpicDb_Mongo_Profile
