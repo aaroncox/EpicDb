@@ -21,7 +21,7 @@ class EpicDb_Route_Profile extends Zend_Controller_Router_Route
       'slug' => '-',
     );
     $reqs = array(
-      'type' => implode('|',static::$types),
+      'type' => "(".implode('|',static::$types).")",
     );
 
 		$route = $config->route;
