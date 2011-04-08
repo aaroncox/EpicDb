@@ -6,7 +6,7 @@
  * 
  * @author Aaron Cox <aaronc@fmanet.org>
  **/
-class EpicDb_Mongo_Post extends MW_Auth_Mongo_Resource_Document
+class EpicDb_Mongo_Post extends MW_Auth_Mongo_Resource_Document implements EpicDb_Interface_Revisionable
 {
 	protected static $_collectionName = 'posts';
   protected static $_documentType = null;
@@ -173,5 +173,15 @@ class EpicDb_Mongo_Post extends MW_Auth_Mongo_Resource_Document
 	public function getEditForm() {
 		$className = static::$_editForm;
 		return new $className(array('post' => $this));
+	}
+	
+	public function newRevision()
+	{
+	  $revision = $this->revisions->new();
+	  $this->revisions->addDocument($revision);
+	  $copy = array('source', 'body', '_lastEditedBy', '_lastEditedReason', '_lastEdited', 'title', 'tldr','tags');
+	  foreach ($copy as $key) {
+	    $revision->$key = $this->$key;
+	  }
 	}
 } // END class EpicDb_Mongo_Post
