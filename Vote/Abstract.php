@@ -69,7 +69,7 @@ abstract class EpicDb_Vote_Abstract {
 	 **/
 	public function __construct(EpicDb_Mongo_Profile_User $user, EpicDb_Mongo_Post $post, EpicDb_Mongo_Vote $data = null)
 	{
-		if (!$this->_type) throw new Exeception("Undefined Vote Type");
+		if (!$this->_type) throw new Exception("Undefined Vote Type");
 		$this->_userProfile = $user;
 		$this->_post = $post;
 		if ($data) {

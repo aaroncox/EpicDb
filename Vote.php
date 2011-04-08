@@ -38,15 +38,15 @@ class EpicDb_Vote {
 	 * @var string
 	 **/
 	static protected $_types = array(
-		self::UP => 'EpicDb_Vote_Up',
-		self::DOWN => 'EpicDb_Vote_Down',
-		self::SPAM => 'EpicDb_Vote_Spam',
-		self::CLOSE => 'EpicDb_Vote_Close',
-		self::REOPEN => 'EpicDb_Vote_Open',
 		self::ACCEPT => 'EpicDb_Vote_Accept',
-		self::OFFENSIVE => 'EpicDb_Vote_Offensive',
+		self::CLOSE => 'EpicDb_Vote_Close',
+		self::DOWN => 'EpicDb_Vote_Down',
 		self::FAVORITE => 'EpicDb_Vote_Favorite',
 		self::MODERATOR => 'EpicDb_Vote_Moderator',
+		self::OFFENSIVE => 'EpicDb_Vote_Offensive',
+		self::REOPEN => 'EpicDb_Vote_Open',
+		self::SPAM => 'EpicDb_Vote_Spam',
+		self::UP => 'EpicDb_Vote_Up',
 	);
 
 	/**
