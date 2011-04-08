@@ -30,19 +30,22 @@ class EpicDb_Form_Post_Question extends EpicDb_Form_Post
 				'validators' => array(
 					array('StringLength',120,10),
 				),
-				'label' => 'Title',
+				'label' => 'Title of Question',
+				'size' => 80,
 				'description' => '120 character description of your question.'
 			));
 		$this->setButtons(array("save" => "Post"));
-		$this->source->setLabel("The Long Version")->setDescription("Asking a question on R2-Db is as simple as providing a short version of the question and then your full blown question in the 'Long Version'. Both fields are required, and both fields may be edited by the community to make the question more clear. For more information, please visit our FAQ page on Questions.");
 		if(!$this->_isNew) {
-			$this->setDefaults(array("tldr" => $question->tldr, "body" => $question->body, "parent" => $question->_parent->_id));
+			$this->source->setLabel("Edit Post");
+			$this->setDefaults(array("title" => $question->title, "body" => $question->body, "parent" => $question->_parent->_id));
+		} else {
+			$this->source->setLabel("Your Answer")->setDescription("Do you have the answer to this question? Post your answer to earn achievements and reputation on EpicAdvice.com!");
 		}
 		// var_dump($this->_elements); exit;
 	}
 	public function save() {
 		$question = $this->getPost();
-		$question->title = $this->tldr->getValue();
+		$question->title = $this->title->getValue();
 		return parent::save();
 	}
 } // END class R2Db_Form_Post_Comment

@@ -12,7 +12,6 @@ class EpicDb_Form_Post extends EpicDb_Form
 {
 	protected $_isNew = false;
 	protected $_post = null;
-	protected $_parent = null;
 
 	/**
 	 * getPost - undocumented function
@@ -52,27 +51,25 @@ class EpicDb_Form_Post extends EpicDb_Form
 	{
 		parent::init();
 		$post = $this->getPost();
-		// var_dump($post); exit;
-		if($this->_isNew) {			
-			$user = MW_Auth::getInstance()->getUser();
-			$post->_profile = $profile = EpicDb_Auth::getInstance()->getUserProfile();
-			$post->tags->tag($profile, 'author');
-			if($user) {
-				$post->grant($user, "edit");
-				$post->grant($user, "delete");				
-			}
-		}
 		$this->addElement("markdown", "source", array(
 				'order' => 100,
 				'required' => true,
-				'validators' => array(
-					array('StringLength',400,10),
-				),
 				'class' => 'markDownEditor',
-				'label' => 'Post a message',
-				'description' => 'When you post on someone else\'s profile, it is considered a \'Message\'. The message will appear publicly on your profile and the recipients profile, but will not be visible on either of your followers profiles.'
+				'label' => 'Post Message',
+				'description' => '',
+				'cols' => 70,
+				'rows' => 15,
 			));
-		if(!$this->_isNew) {
+		if($this->_isNew) {
+			// If we have a new post, lets establish a few things
+			$profile = MW_Auth::getInstance()->getUserProfile();
+			// grant the default permissions to this post.
+			$post->grant($profile->user, "edit");
+			$post->grant($profile->user, "delete");				
+			// Tag the author as the author
+			$post->tags->tag($profile, 'author');
+		} else {
+			// Add a reason for your edit
 		  $this->addElement("text", "reason", array(
 		    'order' => 1000,
 		    'required' => false,
@@ -80,6 +77,7 @@ class EpicDb_Form_Post extends EpicDb_Form
 		    'label' => 'Reason for Edit',
 		    
 		  ));
+			// Change the label to edit post
 			$this->source->setLabel("Edit Post");
 			$source = $post->source;
 			if($this->_rev !== false) {
@@ -92,18 +90,15 @@ class EpicDb_Form_Post extends EpicDb_Form
 			if (!$source) {
 			  $source = $post->body;
 			}
-			$this->setDefaults(array("source" => $source, "parent" => $post->_parent->_id));
+			$this->setDefaults(array("source" => $source, "parent" => $post->_parent->_id));			
 		}
+		$this->setButtons(array("save" => "Post"));
 		
 	}
 	public function save() {
     $me = MW_Auth::getInstance()->getUserProfile();
 		$post = $this->getPost();
-		
-		if($this->_isNew) {
-			$post->grant(MW_Auth::getInstance()->getUser());			
-			// If we don't have viewers for some reason, lets make em
-		} else {
+		if(!$this->_isNew) {
 			EpicDb_Mongo_Revision::makeEditFor($post, $this->reason->getValue());			
 		}
 		if($this->source) {
@@ -113,13 +108,10 @@ class EpicDb_Form_Post extends EpicDb_Form
 		if($this->requestType) {
 			$post->_requestType = $this->requestType->getValue();
 		}
-		if($parentId = $this->parent->getValue()) {
-			$parent = EpicDb_Mongo::db('posts')->find($parentId)->touch();
-			$post->_parent = $parent;
-			$parent->bump();
+		if($post->_parent) {
+			// needs to be reimplemented
+			// $post->_parent->bump();			
 		}
-
-		// var_dump($post); exit;
 		return $post->save();
 	}
 	public function process($data) {
