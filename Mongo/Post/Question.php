@@ -3,13 +3,13 @@
  * EpicDb_Mongo_Post_Question
  *
  * Question (Post) Mongo Object
- * 
+ *
  * @author Aaron Cox <aaronc@fmanet.org>
  **/
-class EpicDb_Mongo_Post_Question extends EpicDb_Mongo_Post
+class EpicDb_Mongo_Post_Question extends EpicDb_Mongo_Post implements EpicDb_Vote_Interface_Votable
 {
 	protected static $_collectionName = 'posts';
-  protected static $_documentType = 'question';
+	protected static $_documentType = 'question';
 	protected static $_editForm = 'EpicDb_Form_Post_Question';
 
 	/**
@@ -26,7 +26,7 @@ class EpicDb_Mongo_Post_Question extends EpicDb_Mongo_Post
 		// ));
 		return parent::__construct($data, $config);
 	}
-	
+
 	public function findAnswers($limit = 10, $query = array(), $sort = array()) {
 		$query = array(
 			"_parent" => $this->createReference(),
@@ -37,9 +37,9 @@ class EpicDb_Mongo_Post_Question extends EpicDb_Mongo_Post
 		$sort = array("_created" => 1);
 		return $results = EpicDb_Mongo::db('answer')->fetchAll($query, $sort, $limit);
 	}
-	
+
 	public function findComments($limit = 10, $query = array(), $sort = array()) {
-		// var_dump($this->createReference()); 
+		// var_dump($this->createReference());
 		$query = array(
 			"_parent" => $this->createReference(),
 			'_deleted' => array(
@@ -47,12 +47,12 @@ class EpicDb_Mongo_Post_Question extends EpicDb_Mongo_Post
 				)
 		);
 		$sort = array("_created" => 1);
-		return $results = EpicDb_Mongo::db('comment')->fetchAll($query, $sort, $limit);		
+		return $results = EpicDb_Mongo::db('comment')->fetchAll($query, $sort, $limit);
 	}
-	
+
 	public function countAnswers() {
 		// Return a max of 9999
-		return $this->findAnswers(9999)->count(); 
+		return $this->findAnswers(9999)->count();
 	}
-	
+
 } // END class EpicDb_Mongo_Post

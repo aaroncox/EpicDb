@@ -18,7 +18,7 @@ class EpicDb_Mongo_Vote extends MW_Mongo_Document
 
 	public function getPropertyClass($property, $data)
 	{
-		if ($property == 'target' || $property=='post') {
+		if ($property == 'target' || $property=='post' || $property =="voter") {
 			return EpicDb_Mongo::getClassNameForType($data['_type']);
 		}
 	}
@@ -33,13 +33,15 @@ class EpicDb_Mongo_Vote extends MW_Mongo_Document
 	{
 		$query = array(
 				"post" => $post->createReference(),
-				"voter" => $voter->createReference(),
 				"vote" => $voteType,
 		);
-		$vote = self::fetchOne($query);
+		if ($voter) {
+			$query['voter'] = $voter->createReference();
+		}
+		$vote = static::fetchOne($query);
 		if ($vote) return $vote;
 		if ($createFlag) {
-			$vote = new self();
+			$vote = new static();
 			$vote->post = $post;
 			$vote->voter = $voter;
 			$vote->target = $post->_profile;
@@ -49,17 +51,13 @@ class EpicDb_Mongo_Vote extends MW_Mongo_Document
 		return false;
 	}
 
-	public static function vote($post, $profile, $value) {
-		throw new Exception("Deprecated -- Use EpicDb_Vote::factory(\$post, \$type, \$profile)->cast()");
-	}
-
 	public static function getVoteByProfile($post, $profile) {
 		$query = array(
 				"post" => $post->createReference(),
 				"voter" => $profile->createReference(),
 				"vote" => array('$in' => array('up', 'down')),
 			);
-		return $current = self::fetchOne($query);
+		return $current = static::fetchOne($query);
 	}
 
 	public static function getVoteSummary($post, $type = null) {
@@ -81,9 +79,9 @@ class EpicDb_Mongo_Vote extends MW_Mongo_Document
 			return sum;
 		}");
 
-					$db = self::getMongoDb();
+		$db = static::getMongoDb();
 		$result = $db->command(array(
-				"mapreduce" => self::$_collectionName,
+				"mapreduce" => static::$_collectionName,
 				"map" => $map,
 				"reduce" => $reduce,
 				"query" => $query,

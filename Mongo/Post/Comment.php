@@ -3,13 +3,13 @@
  * EpicDb_Mongo_Post_Comment
  *
  * Comment (Post) Mongo Object
- * 
+ *
  * @author Aaron Cox <aaronc@fmanet.org>
  **/
-class EpicDb_Mongo_Post_Comment extends EpicDb_Mongo_Post
+class EpicDb_Mongo_Post_Comment extends EpicDb_Mongo_Post implements EpicDb_Vote_Interface_UpOnly
 {
 	protected static $_collectionName = 'posts';
-  protected static $_documentType = 'comment';
+	protected static $_documentType = 'comment';
 	/**
 	 * __construct - undocumented function
 	 *
@@ -24,5 +24,5 @@ class EpicDb_Mongo_Post_Comment extends EpicDb_Mongo_Post
 		// ));
 		return parent::__construct($data, $config);
 	}
-	
+
 } // END class EpicDb_Mongo_Post
