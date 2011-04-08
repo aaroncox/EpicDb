@@ -14,19 +14,32 @@ class EpicDb_View_Helper_VoteWidget extends MW_View_Helper_HtmlTag
 		// Some default settings
 		$score = 0;
 		if(isset($post->votes['score'])) $score = $post->votes['score'];
+		$vote = EpicDb_Mongo::db('vote')->getVoteByProfile($post, EpicDb_Auth::getInstance()->getUserProfile());
 		// Return the widget
 		return $this->htmlTag("div", array("class" => "vote"), 
 			$this->htmlTag("p", array("class" => "text-small", "style" => "margin: 5px 0; font-weight: bold;"), "VOTE")."".
-			$this->htmlTag("div", array(
+			$this->htmlTag("a", array(
+				"style" => "display: block;",
 				"title" => "This question is a good question and is helpful",
 				"alt" => "Vote Up",
-				"class" => "vote-up sprite sprite-vote-arrow-up",
+				"class" => "vote-up sprite sprite-vote-arrow-up".(($vote && $vote->vote == "up")?"-on":""),
+				"href" => $this->view->url(array(
+					'type' => $post->_type,
+					'id' => $post->id,
+					'vote' => 'up',
+				), 'vote-cast', true),
 			), " ")."".
 			$this->htmlTag("span", array("class" => "vote-count-post"), $score)."".
-			$this->htmlTag("div", array(
+			$this->htmlTag("a", array(
+				"style" => "display: block;",
 				"title" => "This question is a good question and is helpful",
 				"alt" => "Vote Down",
-				"class" => "vote-down sprite sprite-vote-arrow-down",
+				"class" => "vote-down sprite sprite-vote-arrow-down".(($vote && $vote->vote == "down")?"-on":""),
+				"href" => $this->view->url(array(
+					'type' => $post->_type,
+					'id' => $post->id,
+					'vote' => 'down',
+				), 'vote-cast', true),
 			), " ")
 		);
 	}
