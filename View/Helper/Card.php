@@ -10,6 +10,9 @@
  **/
 class EpicDb_View_Helper_Card extends MW_View_Helper_HtmlTag
 {
+	// public function profileCard(EpicDb_Mongo_Profile $profile) {
+	// 	return 
+	// }
 	public function link($record, $params = array()) {
 		if($record instanceOf EpicDb_Mongo_Profile) {
 			return $this->view->profileLink($record, $params);
@@ -19,29 +22,51 @@ class EpicDb_View_Helper_Card extends MW_View_Helper_HtmlTag
 	public function addExtra($extra) {
 		return $this->htmlTag("p", array("class" => 'text-small'), $extra);
 	}
+	protected function _detail($qualifier, $content) {
+		if(!$qualifier || !$content) return '';
+		return $this->htmlTag("p", array('class' => 'text-verysmall'), $qualifier)."".
+			$this->htmlTag("p", array('class' => 'text-small'), $content);		
+	}
+	public function getIcon($record) {
+		if($record->email) {
+			return $this->view->gravatar($record->email)->url();
+		}
+		return $record->getIcon();
+	}
+	public function cardDetails($record, $extra = null) {
+		$details = '';
+		$details .= $this->htmlTag("h2", array('class' => 'text-large'), $this->link($record));
+		foreach($record->cardProperties($this->view) as $qualifier => $content) {
+			$details .= $this->_detail($qualifier, $content);
+		}
+		if($extra) $details .= $this->addExtra($extra);
+		return $details;
+	}
+	public function cardScore($record) {
+		if(!$record->reputation) return '';
+		$user = $record->user; 
+		$admin = $moderator = null;
+		if($user instanceOf MW_Auth_Mongo_Role) {
+			$admin = $user->isMember(MW_Auth_Group_Super::getInstance());									
+			// if (!$admin) {
+			// 	$moderator = $user->isMember(R2Db_Auth_Group_Moderators::getInstance());	
+			// }
+		}	
+		$title = '';
+		if($admin || $moderator) {
+			$title .= $this->htmlTag("span", array("title" => $admin?"Site Administrator":"Librarian"), $admin ? "&diams;&diams;" : "&diams;");
+		}	
+		return $this->htmlTag("div", array("class" => "record-score"), 
+			$title."".$record->reputation
+		);
+	}
 	public function card($record, $params = array('extra' => null)) {
+		if(!$record instanceOf EpicDb_Interface_Cardable) return '';
 		return 
 			$this->htmlTag("div", array('class' => 'record-icon inline-flow rounded'), 
-				$this->link($record, array("text" => $this->htmlTag("img", array('src' => $record->getIcon()))))				
+				$this->cardScore($record)."".
+				$this->link($record, array("text" => $this->htmlTag("img", array('src' => $this->getIcon($record)))))				
 			)."".
-			$this->htmlTag("div", array('class' => 'record-info inline-flow'), 
-				$this->htmlTag("h2", array('class' => 'text-large'), $this->link($record))."".
-				$this->htmlTag("p", array('class' => 'text-verysmall'), "is a")."".
-				$this->htmlTag("p", array('class' => 'text-small'), $this->view->recordTypeLink($record))."".
-				$this->addExtra($params['extra'])
-			);
+			$this->htmlTag("div", array('class' => 'record-info inline-flow'), $this->cardDetails($record, $params['extra']));
 	}
 }
-
-/* 
-<div class="item-icon inline-flow rounded" style="background-image: url('<?= $this->record->getIcon() ?>')">
-	&nbsp;
-</div>
-<div class="item-info inline-flow">
-	<h2 class="text-large"><?= $this->recordLink($this->record, array("noTooltip" => true))?></h2>
-	<p class="text-verysmall">is a</p>
-	<p class="text-small"><a href="/class" rel="no-tooltip"><?= $this->record->_type ?></a></p>
-	<p class="text-verysmall">available to the</p>
-	<p class="text-small"><a href="#" rel="no-tooltip"><?= $this->record->faction ?></a></p>
-</div>
-*/
