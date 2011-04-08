@@ -15,6 +15,9 @@ class EpicDb_View_Helper_ProfileLink extends MW_View_Helper_HtmlTag
 		if(isset($params['tooltip']) && $params['tooltip'] == false) {
 			$tooltip = false;
 		}
+		if (!is_object($profile)) {
+			return '';
+		}
 		$text = $profile->name;
 		if(isset($params['text'])) {
 			$text = $params['text'];

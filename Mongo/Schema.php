@@ -23,6 +23,9 @@ class EpicDb_Mongo_Schema extends MW_Mongo_Schema {
 		'question' => 'EpicDb_Mongo_Post_Question',
 		'answer' => 'EpicDb_Mongo_Post_Question_Answer',
 		'comment' => 'EpicDb_Mongo_Post_Comment',
+		// votes
+		'vote' => 'EpicDb_Mongo_Vote',
+
 	);
 	
 	/**
