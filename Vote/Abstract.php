@@ -48,6 +48,13 @@ abstract class EpicDb_Vote_Abstract {
 	protected $_post;
 
 	/**
+	 * when set to true - all normal calculations are done, but user reputation is NOT updated
+	 *
+	 * @var boolean
+	 **/
+	protected $_importMode = false;
+
+	/**
 	 * The type of Vote - Override in the class.
 	 *
 	 * @var string
@@ -85,6 +92,17 @@ abstract class EpicDb_Vote_Abstract {
 	}
 
 	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 * @author Corey Frang
+	 **/
+	public function setImportMode($bool)
+	{
+		$this->_importMode = $bool;
+	}
+
+	/**
 	 * Causes the user to cast this vote.  Returns true if succesful, false if otherwise
 	 *
 	 * @return boolean
@@ -98,7 +116,7 @@ abstract class EpicDb_Vote_Abstract {
 			return false;
 		}
 
-		$this->_data->date = mktime();
+		$this->_data->date = $this->_importMode ?: mktime();
 		$result = $this->_data->save();
 		if (!$result) {
 			$this->_error = "Couldn't Save Vote";
@@ -124,7 +142,7 @@ abstract class EpicDb_Vote_Abstract {
 		}
 		$this->_data->delete();
 
-		$this->_post->votes = EpicDb_Vote::countVotes($this->_post);
+		if (!$this->_importMode) $this->_post->votes = EpicDb_Vote::countVotes($this->_post);
 		$this->_post->save();
 
 	}
@@ -137,10 +155,12 @@ abstract class EpicDb_Vote_Abstract {
 	 **/
 	protected function _postCast()
 	{
-		$this->_post->votes = EpicDb_Vote::countVotes($this->_post);
-		$this->_post->save();
-		
-		EpicDb_Vote::publish('vote', array('target' => $this->_post, 'voter' => $this->_userProfile, 'value' => $this->_type, 'vote' => $this->_data));
+		if (!$this->_importMode) {
+			$this->_post->votes = EpicDb_Vote::countVotes($this->_post);
+			$this->_post->save();
+			EpicDb_Vote::publish('vote', array('target' => $this->_post, 'voter' => $this->_userProfile, 'value' => $this->_type, 'vote' => $this->_data));
+		}
+
 	}
 
 	/**
@@ -236,16 +256,18 @@ abstract class EpicDb_Vote_Abstract {
 	 **/
 	protected function _giveReputation(EpicDb_Mongo_Profile_User $profile, $amount)
 	{
-		$profiles = EpicDb_Mongo_Profile_User::getMongoCollection();
-		$query = array(
-			'_id' => $profile->_id
-		);
-		$update = array(
-			'$inc' => array(
-				'reputation' => $amount
-			)
-		);
-		$profiles->update($query, $update);
+		if ( !$this->_importMode ) {
+			$profiles = EpicDb_Mongo_Profile_User::getMongoCollection();
+			$query = array(
+				'_id' => $profile->_id
+			);
+			$update = array(
+				'$inc' => array(
+					'reputation' => $amount
+				)
+			);
+			$profiles->update($query, $update);
+		}
 
 	}
 

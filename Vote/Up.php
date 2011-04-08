@@ -34,7 +34,7 @@ class EpicDb_Vote_Up extends EpicDb_Vote_Abstract {
 	public function isDisabled()
 	{
 		if (!$this->_post instanceOf EpicDb_Vote_Interface_Votable) return "This object can't be upvoted";
-		if ($this->_post->_profile->createReference() == $this->_userProfile->createReference()) {
+		if ($this->_post->tags->getTag('author')->createReference() == $this->_userProfile->createReference()) {
 			return "You can not vote on your own post";
 		}
 	}

@@ -45,7 +45,7 @@ class EpicDb_Vote_Accept extends EpicDb_Vote_Abstract {
 	protected function _postCast()
 	{
 
-		if ($this->_post->_profile->createReference() != $this->_userProfile->createReference()) {
+		if ($this->_post->tags->getTag('author')->createReference() != $this->_userProfile->createReference()) {
 			$this->giveReputationToTarget(15);
 		}
 		$this->giveReputationToVoter(2);

@@ -3,14 +3,14 @@
  * EpicDb_Mongo_Post
  *
  * Post Mongo Object
- * 
+ *
  * @author Aaron Cox <aaronc@fmanet.org>
  **/
 class EpicDb_Mongo_Post extends MW_Auth_Mongo_Resource_Document implements EpicDb_Interface_Revisionable
 {
 	protected static $_collectionName = 'posts';
-  protected static $_documentType = null;
-  protected static $_documentSetClass = 'EpicDb_Mongo_Posts';
+	protected static $_documentType = null;
+	protected static $_documentSetClass = 'EpicDb_Mongo_Posts';
 	protected static $_editForm = 'EpicDb_Form_Post';
 	/**
 	 * __construct - undocumented function
@@ -33,13 +33,21 @@ class EpicDb_Mongo_Post extends MW_Auth_Mongo_Resource_Document implements EpicD
 		));
 		return parent::__construct($data, $config);
 	}
-	
+
+	public static function getDocumentClass($data = array()) {
+		if (isset($data['_type'])) {
+			return EpicDb_Mongo::db($data['_type']);
+		} else { 
+			return EpicDb_Mongo::dbClass('post');
+		}
+	}
+
 	public function getPropertyClass() {
 		if (isset($data['_type'])) {
-	    return EpicDb_Mongo::db($data['_type']);
-	  }
+			return EpicDb_Mongo::db($data['_type']);
+		}
 	}
-	
+
 	public function getProfileFeed($profile, $query = array(), $sort = array("_created" => -1), $limit = 20, $skip = false) {
 		// First off, lets get the user so we can do some logic based on whether its you or not.
 		$user = MW_Auth::getInstance()->getUser();
@@ -79,13 +87,13 @@ class EpicDb_Mongo_Post extends MW_Auth_Mongo_Resource_Document implements EpicD
 				}
 				// If the type isn't set, lets default to news/articles, or 'article' type
 				if(!isset($query['_type'])) {
-					$query['_type'] = 'article';					
+					$query['_type'] = 'article';
 				}
 				break;
 			case "group":
 			case "profile":
 				// If it's my feed, and if I am following people, then $following is an export of who I'm following
-				if($myFeed && $profile->following && $following = $profile->following->export()) {			
+				if($myFeed && $profile->following && $following = $profile->following->export()) {
 					foreach($following as $idx => $follow) {
 						if(!$follow) unset($following[$idx]);
 					}
@@ -115,7 +123,7 @@ class EpicDb_Mongo_Post extends MW_Auth_Mongo_Resource_Document implements EpicD
 		// var_dump($results); exit;
 		// var_dump($results->export(), $query, $sort, $limit); exit;
 		// foreach($results as $idx => $result) {
-		// 	if($result->id == "200") {				
+		// 	if($result->id == "200") {
 		// 		foreach($result->_viewers as $viewer) {
 		// 			// var_dump($viewer->export());
 		// 		}
@@ -125,7 +133,7 @@ class EpicDb_Mongo_Post extends MW_Auth_Mongo_Resource_Document implements EpicD
 		// var_dump($query, $results->export()); exit;
 		return $results;
 	}
-	
+
 	public function findResponses($limit = 10, $query = array(), $sort = array()) {
 		$query = array(
 			"_parent" => $this->createReference(),
@@ -136,29 +144,29 @@ class EpicDb_Mongo_Post extends MW_Auth_Mongo_Resource_Document implements EpicD
 		$sort = array("_created" => 1);
 		return $results = EpicDb_Mongo::db('post')->fetchAll($query, $sort, $limit);
 	}
-	
+
 	public static function getTagsByUsage() {
 		$query = array();
-	  $map = new MongoCode("function() {
+		$map = new MongoCode("function() {
 			this.tags.forEach(function(ref) {
 				if(ref.reason == 'tag') {
-					emit(ref, 1);					
+					emit(ref, 1);
 				}
 			})
-	  }");
-	  $reduce = new MongoCode("function(key, values) {
-	    var sum = 0; 
-	    for (var i in values) { sum += values[i]; }
-	    return sum;
-	  }");
-	 
-		$db = self::getMongoDb(); 
-	  $result = $db->command(array(
-	      "mapreduce" => static::$_collectionName,
-	      "map" => $map,
-	      "reduce" => $reduce,
-	      "query" => $query,
-	  ));
+		}");
+		$reduce = new MongoCode("function(key, values) {
+			var sum = 0;
+			for (var i in values) { sum += values[i]; }
+			return sum;
+		}");
+
+		$db = self::getMongoDb();
+		$result = $db->command(array(
+				"mapreduce" => static::$_collectionName,
+				"map" => $map,
+				"reduce" => $reduce,
+				"query" => $query,
+		));
 		$data = $db->selectCollection($result['result']);
 		foreach($data->find()->sort(array('value' => -1, 'name' => 1)) as $d) {
 			$record = EpicDb_Mongo::db($d['_id']['ref']['$ref'])->find($d['_id']['ref']['$id']);
@@ -167,21 +175,21 @@ class EpicDb_Mongo_Post extends MW_Auth_Mongo_Resource_Document implements EpicD
 				'count' => $d['value'],
 			);
 		}
-		return $tags; 
+		return $tags;
 	}
-	
+
 	public function getEditForm() {
 		$className = static::$_editForm;
 		return new $className(array('post' => $this));
 	}
-	
+
 	public function newRevision()
 	{
-	  $revision = $this->revisions->new();
-	  $this->revisions->addDocument($revision);
-	  $copy = array('source', 'body', '_lastEditedBy', '_lastEditedReason', '_lastEdited', 'title', 'tldr','tags');
-	  foreach ($copy as $key) {
-	    $revision->$key = $this->$key;
-	  }
+		$revision = $this->revisions->new();
+		$this->revisions->addDocument($revision);
+		$copy = array('source', 'body', '_lastEditedBy', '_lastEditedReason', '_lastEdited', 'title', 'tldr','tags');
+		foreach ($copy as $key) {
+			$revision->$key = $this->$key;
+		}
 	}
 } // END class EpicDb_Mongo_Post

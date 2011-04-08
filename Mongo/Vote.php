@@ -19,7 +19,7 @@ class EpicDb_Mongo_Vote extends MW_Mongo_Document
 	public function getPropertyClass($property, $data)
 	{
 		if ($property == 'target' || $property=='post' || $property =="voter") {
-			return EpicDb_Mongo::getClassNameForType($data['_type']);
+			return EpicDb_Mongo::dbClass($data['_type']);
 		}
 	}
 
@@ -44,7 +44,7 @@ class EpicDb_Mongo_Vote extends MW_Mongo_Document
 			$vote = new static();
 			$vote->post = $post;
 			$vote->voter = $voter;
-			$vote->target = $post->_profile;
+			$vote->target = $post->tags->getTag('author');
 			$vote->vote = $voteType;
 			return $vote;
 		}
