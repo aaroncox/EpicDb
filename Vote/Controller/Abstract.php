@@ -37,7 +37,7 @@ abstract class EpicDb_Vote_Controller_Abstract extends MW_Controller_Action
 			$this->_helper->layout->disableLayout();
 			$this->_helper->viewRenderer->setNoRender(true);
 			if($result) {
-				echo Zend_Json::encode($result);
+				echo Zend_Json::encode($result); exit;
 			}
 		}
 		$this->_redirect($_SERVER['HTTP_REFERER']);

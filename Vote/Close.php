@@ -22,7 +22,7 @@ class EpicDb_Vote_Close extends EpicDb_Vote_Abstract {
   // closable votes
 	public function isDisabled()
 	{
-		if (!$this->_post instanceOf EpicDb_Interface_Votable) return "This object can't be voted on";
+		if (!$this->_post instanceOf EpicDb_Vote_Interface_Votable) return "This object can't be voted on";
 	}
 
 }
