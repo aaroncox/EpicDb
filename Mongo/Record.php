@@ -8,7 +8,7 @@
  * @param undocumented class
  * @package undocumented class
  **/
-class EpicDb_Mongo_Record extends MW_Mongo_Document
+class EpicDb_Mongo_Record extends MW_Mongo_Document implements EpicDb_Interface_Cardable
 {
 	protected static $_collectionName = 'records';
   protected static $_documentType = null;
@@ -42,5 +42,11 @@ class EpicDb_Mongo_Record extends MW_Mongo_Document
 			return $this->icon;
 		}
 		return "/images/icons/unknown.jpg";
+	}
+	
+	public function cardProperties($view) {
+		return array(
+			'is a' => $view->recordTypeLink($this)
+		);
 	}
 } // END class EpicDb_Mongo_Record

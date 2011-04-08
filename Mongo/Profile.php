@@ -8,7 +8,7 @@
  * @param undocumented class
  * @package undocumented class
  **/
-class EpicDb_Mongo_Profile extends MW_Auth_Mongo_Resource_Document
+class EpicDb_Mongo_Profile extends MW_Auth_Mongo_Resource_Document implements EpicDb_Interface_Cardable
 {
 	protected static $_collectionName = 'profiles';
   protected static $_documentType = null;
@@ -48,10 +48,13 @@ class EpicDb_Mongo_Profile extends MW_Auth_Mongo_Resource_Document
 		if($this->icon) {
 			return $this->icon;
 		}
-		if($this->email) {
-			return $this->view->gravatarUrl($this->email);
-		}
 		return "/images/icons/unknown.jpg";
+	}
+	
+	public function cardProperties($view) {
+		return array(
+			'is a' => $view->recordTypeLink($this)
+		);
 	}
 	
 } // END class EpicDb_Mongo_Profile
