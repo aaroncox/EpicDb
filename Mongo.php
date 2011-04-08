@@ -16,4 +16,8 @@ class EpicDb_Mongo
 	public static function dbClass($type) {
 		return EpicDb_Mongo_Schema::getInstance()->getClassForType($type);
 	}
+	public static function newDoc($type) {
+		$class = EpicDb_Mongo_Schema::getInstance()->getClassForType($type);
+		return new $class;
+	}
 } // END class R2Db_Mongo
