@@ -91,6 +91,8 @@ class EpicDb_Mongo_Vote extends MW_Mongo_Document
 
 		if ($type) {
 			$data = $voteData->findOne(array('type'=>$type));
+			
+			$db->dropCollection($result['result']);
 			if (!$data) return 0;
 			return $data['value'];
 		}
@@ -103,6 +105,7 @@ class EpicDb_Mongo_Vote extends MW_Mongo_Document
 			$count = $voteData['value'];
 			$votes[$type] = $count;
 		}
+		$db->dropCollection($result['result']);
 
 		return $votes;
 	}
