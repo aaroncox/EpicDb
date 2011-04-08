@@ -11,6 +11,7 @@
 class EpicDb_Mongo_Profile extends MW_Auth_Mongo_Resource_Document
 {
 	protected static $_collectionName = 'profiles';
+  protected static $_documentType = null;
 	
 	/**
 	 * The form the record uses

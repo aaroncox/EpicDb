@@ -10,7 +10,8 @@
  **/
 class EpicDb_Mongo_Profile_Group extends EpicDb_Mongo_Profile
 {
-  /**
+	protected static $_documentType = 'group';
+	 /**
    * The Privileges granted to group members
    *
    * @var array

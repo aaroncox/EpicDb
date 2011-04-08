@@ -10,6 +10,8 @@
  **/
 class EpicDb_Mongo_Profile_User extends EpicDb_Mongo_Profile
 {
+  protected static $_documentType = 'user';
+	
 	public function __construct($data = array(), $config = array())
 	{
 	  // handled here in order to deal with subclassed resources...
