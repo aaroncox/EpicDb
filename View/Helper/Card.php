@@ -60,13 +60,19 @@ class EpicDb_View_Helper_Card extends MW_View_Helper_HtmlTag
 			$title."".$record->reputation
 		);
 	}
-	public function card($record, $params = array('extra' => null)) {
+	public function card($record, $params = array()) {
+		if(!isset($params['extra'])) $params['extra'] = null;
+		if(!isset($params['class'])) $params['class'] = null;		
+		if($record->characters && $character = $record->characters->getPrimary()) {
+			$params['class'] .= " faction-".$character->faction;
+		}
 		if(!$record instanceOf EpicDb_Interface_Cardable) return '';
-		return 
+		return $this->htmlTag("div", array('class' => 'inline-flow db-card transparent-bg rounded '.$params['class']), 
 			$this->htmlTag("div", array('class' => 'record-icon inline-flow rounded'), 
 				$this->cardScore($record)."".
 				$this->link($record, array("text" => $this->htmlTag("img", array('src' => $this->getIcon($record)))))				
 			)."".
-			$this->htmlTag("div", array('class' => 'record-info inline-flow'), $this->cardDetails($record, $params['extra']));
+			$this->htmlTag("div", array('class' => 'record-info inline-flow'), $this->cardDetails($record, $params['extra']))
+		);
 	}
 }
