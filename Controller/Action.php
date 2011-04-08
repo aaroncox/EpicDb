@@ -13,9 +13,6 @@ class EpicDb_Controller_Action extends MW_Controller_Action
   }
 	public function init() {
 		$profile = $this->getUserProfile();
-		if($profile) {
-			$profile->updateCards($this->getRequest()->getParams());
-		}
 		return parent::init();
 	}
 	
