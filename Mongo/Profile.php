@@ -12,6 +12,7 @@ class EpicDb_Mongo_Profile extends MW_Auth_Mongo_Resource_Document implements Ep
 {
 	protected static $_collectionName = 'profiles';
 	protected static $_documentType = null;
+	protected static $_editForm = 'EpicDb_Form_Profile';
 
 	/**
 	 * The form the record uses
@@ -30,13 +31,9 @@ class EpicDb_Mongo_Profile extends MW_Auth_Mongo_Resource_Document implements Ep
 		return $return = EpicDb_Mongo::db('profile')->fetchAll(array("following" => $record->createReference()), array(), $limit);
 	}
 
-	public function getForm($options = array()) {
-		$class = $this->_formClass;
-		if(!$class) {
-			throw new Exception("No form defined for this profile type [".get_class($this)."].");
-		}
-		Zend_Loader::loadClass($class);
-		return new $class(array("profile" => $this)+$options);
+	public function getEditForm() {
+		$className = static::$_editForm;
+		return new $className(array('profile' => $this));
 	}
 
 	// Get rid of me! I suck.
