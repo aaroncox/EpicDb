@@ -104,4 +104,11 @@ abstract class EpicDb_Profile_Controller_Abstract extends MW_Controller_Action
 		$this->_helper->auth->follow($this->getProfile());
 		$this->_redirect($this->getRequest()->getServer('HTTP_REFERER'));
 	}
+	
+	public function editAction() {
+		$profile = $this->getProfile();
+		MW_Auth::getInstance()->requirePrivilege($profile, 'edit');
+		$form = $this->view->form = $profile->getEditForm();
+		$this->_handleMWForm($form, 'profile');
+	}
 } // END class EpicDb_Profile_Controller_Abstract
