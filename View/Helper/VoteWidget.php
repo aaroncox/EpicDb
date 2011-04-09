@@ -25,7 +25,7 @@ class EpicDb_View_Helper_VoteWidget extends MW_View_Helper_HtmlTag
 				"style" => "display: block;",
 				"title" => "This question is a good question and is helpful",
 				"alt" => "Vote Up",
-				"class" => "vote-up sprite sprite-vote-arrow-up".(($vote && $vote->vote == "up")?"-on":""),
+				"class" => "vote-link vote-up sprite sprite-vote-arrow-up".(($vote && $vote->vote == "up")?"-on":""),
 				"href" => $this->view->url(array(
 					'type' => $post->_type,
 					'id' => $post->id,
@@ -37,7 +37,7 @@ class EpicDb_View_Helper_VoteWidget extends MW_View_Helper_HtmlTag
 				"style" => "display: block;",
 				"title" => "This question is a good question and is helpful",
 				"alt" => "Vote Down",
-				"class" => "vote-down sprite sprite-vote-arrow-down".(($vote && $vote->vote == "down")?"-on":""),
+				"class" => "vote-link vote-down sprite sprite-vote-arrow-down".(($vote && $vote->vote == "down")?"-on":""),
 				"href" => $this->view->url(array(
 					'type' => $post->_type,
 					'id' => $post->id,
