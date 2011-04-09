@@ -14,5 +14,9 @@ class EpicDb_Mongo_Post_Question_Answer extends EpicDb_Mongo_Post implements Epi
 	protected static $_documentType = 'answer';
 	protected static $_editForm = 'EpicDb_Form_Post_Question_Answer';
 
+	protected $_requirements = array(
+	    '_parent' => array('Document:EpicDb_Mongo_Post_Question', 'AsReference', 'Required'), 
+	  );
+
 
 } // END class EpicDb_Mongo_Post_Question_Answer
