@@ -28,6 +28,6 @@ class EpicDb_View_Helper_ProfileLink extends MW_View_Helper_HtmlTag
 				'action'=> 'view',
 				'profile' => $profile,
 			), 'profile', true),
-		), $text);
+		), (string) $text);
 	}
 }

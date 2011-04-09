@@ -10,6 +10,13 @@
  **/
 class EpicDb_View_Helper_VoteWidget extends MW_View_Helper_HtmlTag
 {
+	public function voteUrl($post, $vote) {
+		return $this->view->url(array(
+			'type' => $post->_type,
+			'id' => $post->id,
+			'vote' => $vote,
+		), 'vote-cast', true);
+	}
 	public function voteWidget($post) {
 		// Some default settings
 		$score = 0;
@@ -26,11 +33,7 @@ class EpicDb_View_Helper_VoteWidget extends MW_View_Helper_HtmlTag
 				"title" => "This question is a good question and is helpful",
 				"alt" => "Vote Up",
 				"class" => "vote-link vote-up sprite sprite-vote-arrow-up".(($vote && $vote->vote == "up")?"-on":""),
-				"href" => $this->view->url(array(
-					'type' => $post->_type,
-					'id' => $post->id,
-					'vote' => 'up',
-				), 'vote-cast', true),
+				"href" => ($profile)? $this->voteUrl($post, "up"): '#',
 			), " ")."".
 			$this->htmlTag("span", array("class" => "vote-count-post"), $score)."".
 			$this->htmlTag("a", array(
@@ -38,11 +41,7 @@ class EpicDb_View_Helper_VoteWidget extends MW_View_Helper_HtmlTag
 				"title" => "This question is a good question and is helpful",
 				"alt" => "Vote Down",
 				"class" => "vote-link vote-down sprite sprite-vote-arrow-down".(($vote && $vote->vote == "down")?"-on":""),
-				"href" => $this->view->url(array(
-					'type' => $post->_type,
-					'id' => $post->id,
-					'vote' => 'down',
-				), 'vote-cast', true),
+				"href" => ($profile)? $this->voteUrl($post, "down"): '#',
 			), " ")
 		);
 	}
