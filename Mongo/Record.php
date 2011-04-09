@@ -3,7 +3,7 @@
  * EpicDb_Mongo_Record
  *
  * undocumented class
- * 
+ *
  * @author Aaron Cox <aaronc@fmanet.org>
  * @param undocumented class
  * @package undocumented class
@@ -11,9 +11,9 @@
 class EpicDb_Mongo_Record extends MW_Mongo_Document implements EpicDb_Interface_Cardable
 {
 	protected static $_collectionName = 'records';
-  protected static $_documentType = null;
-  protected static $_documentSetClass = 'EpicDb_Mongo_Records';
-	
+	protected static $_documentType = null;
+	protected static $_documentSetClass = 'EpicDb_Mongo_Records';
+
 	/**
 	 * __construct - undocumented function
 	 *
@@ -30,11 +30,11 @@ class EpicDb_Mongo_Record extends MW_Mongo_Document implements EpicDb_Interface_
 		));
 		return parent::__construct($data, $config);
 	}
-	
+
 	public function getPropertyClass() {
 		if (isset($data['_type'])) {
-	    return EpicDb_Mongo::db($data['_type']);
-	  }
+			return EpicDb_Mongo::db($data['_type']);
+		}
 	}
 
 	public function getIcon() {
@@ -43,7 +43,7 @@ class EpicDb_Mongo_Record extends MW_Mongo_Document implements EpicDb_Interface_
 		}
 		return "/images/icons/unknown.jpg";
 	}
-	
+
 	public function cardProperties($view) {
 		return array(
 			'is a' => $view->recordTypeLink($this)

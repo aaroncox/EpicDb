@@ -13,6 +13,7 @@ class EpicDb_Mongo_Profile extends MW_Auth_Mongo_Resource_Document implements Ep
 	protected static $_collectionName = 'profiles';
 	protected static $_documentType = null;
 	protected static $_editForm = 'EpicDb_Form_Profile';
+	protected static $_documentSetClass = 'EpicDb_Mongo_Profiles';
 
 	/**
 	 * The form the record uses
@@ -36,6 +37,11 @@ class EpicDb_Mongo_Profile extends MW_Auth_Mongo_Resource_Document implements Ep
 		return new $className(array('profile' => $this));
 	}
 
+	public function getPropertyClass() {
+		if (isset($data['_type'])) {
+			return EpicDb_Mongo::db($data['_type']);
+		}
+	}
 	// Get rid of me! I suck.
 	public function getSocialStats() {
 		return null;

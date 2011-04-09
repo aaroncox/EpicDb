@@ -77,7 +77,7 @@ class EpicDb_View_Helper_Card extends MW_View_Helper_HtmlTag
 	public function card($record, $params = array()) {
 		if(!$record) return $this->unknownCard($params);
 		if(!isset($params['extra'])) $params['extra'] = null;
-		if(!isset($params['class'])) $params['class'] = null;		
+		if(!isset($params['class'])) $params['class'] = null;
 		if($record->characters && $character = $record->characters->getPrimary()) {
 			$params['class'] .= " faction-".$character->faction;
 		}

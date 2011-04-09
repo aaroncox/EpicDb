@@ -21,6 +21,7 @@ class EpicDb_Form_Post_Question_Answer extends EpicDb_Form_Post
 	public function init()
 	{
 		parent::init();
+		$this->removeElement('tags');
 		$this->source->setLabel("Your Answer")->setDescription("Do you have the answer to this question? Post your answer to earn achievements and reputation on EpicAdvice.com!");
 	}
 } // END class EpicDb_Form_Post_Question_Answer

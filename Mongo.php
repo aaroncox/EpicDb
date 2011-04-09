@@ -20,4 +20,8 @@ class EpicDb_Mongo
 		$class = EpicDb_Mongo_Schema::getInstance()->getClassForType($type);
 		return new $class;
 	}
+	
+	public static function resolveReference($data) {
+		return EpicDb_Mongo_Schema::getInstance()->resolveReference($data);
+	}
 } // END class R2Db_Mongo

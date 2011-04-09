@@ -67,4 +67,38 @@ class EpicDb_Mongo_Tags extends Shanty_Mongo_DocumentSet
 		return null;
 	}
 	
+	public function getTags($reason)
+	{
+		$return = array();
+		foreach($this as $tag) {
+			if ($tag->reason == $reason) $return[] = $tag->ref;
+		}
+		return $return;
+	}
+
+	public function setTags($tags, $reason)
+	{
+		$refs = array();
+		foreach ($tags as $idx => $tag) { 
+			$refs[$idx] = $tag->createReference();
+		}
+		$now = array();
+		foreach($this as $idx => $tag) {
+			if ($tag->reason == $reason) {
+				$now[$idx] = $tag->ref->createReference();
+				$test = in_array($now[$idx], $refs);
+				if (!$test) $this->setProperty($idx, null);
+			}
+		}
+		foreach ($refs as $idx => $ref) {
+			if (!in_array($ref, $now)) {
+				$tag = $this->new();
+				$tag->ref = $tags[$idx];
+				$tag->reason = $reason;
+				$this->addDocument($tag);
+			}
+		}
+		return $return;
+	}
+
 } // END class EpicDb_Mongo_Tags
