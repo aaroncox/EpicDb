@@ -145,7 +145,7 @@ class EpicDb_Mongo_Post extends MW_Auth_Mongo_Resource_Document implements EpicD
 		return $results = EpicDb_Mongo::db('post')->fetchAll($query, $sort, $limit);
 	}
 
-	public static function getTagsByUsage() {
+	public static function getTagsByUsage($limit = 40) {
 		$query = array();
 		$map = new MongoCode("function() {
 			this.tags.forEach(function(ref) {
@@ -168,7 +168,7 @@ class EpicDb_Mongo_Post extends MW_Auth_Mongo_Resource_Document implements EpicD
 				"query" => $query,
 		));
 		$data = $db->selectCollection($result['result']);
-		foreach($data->find()->sort(array('value' => -1, 'name' => 1)) as $d) {
+		foreach($data->find()->sort(array('value' => -1, 'name' => 1))->limit($limit) as $d) {
 			$record = EpicDb_Mongo::db($d['_id']['ref']['$ref'])->find($d['_id']['ref']['$id']);
 			$tags[$record->slug] = array(
 				'record' => $record,
