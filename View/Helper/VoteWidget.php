@@ -14,7 +14,10 @@ class EpicDb_View_Helper_VoteWidget extends MW_View_Helper_HtmlTag
 		// Some default settings
 		$score = 0;
 		if(isset($post->votes['score'])) $score = $post->votes['score'];
-		$vote = EpicDb_Mongo::db('vote')->getVoteByProfile($post, EpicDb_Auth::getInstance()->getUserProfile());
+		$vote = null;
+		if($profile = EpicDb_Auth::getInstance()->getUserProfile()) {
+			$vote = EpicDb_Mongo::db('vote')->getVoteByProfile($post, $profile);			
+		}
 		// Return the widget
 		return $this->htmlTag("div", array("class" => "vote"), 
 			$this->htmlTag("p", array("class" => "text-small", "style" => "margin: 5px 0; font-weight: bold;"), "VOTE")."".
