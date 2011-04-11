@@ -47,7 +47,7 @@ class EpicDb_Mongo_Post_Question extends EpicDb_Mongo_Post implements EpicDb_Vot
 				)
 		);
 		$sort = array("_created" => 1);
-		return $results = EpicDb_Mongo::db('comment')->fetchAll($query, $sort, $limit);
+		return $results = EpicDb_Mongo::db('question-comment')->fetchAll($query, $sort, $limit);
 	}
 
 	public function countAnswers() {

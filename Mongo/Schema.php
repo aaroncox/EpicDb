@@ -21,6 +21,7 @@ class EpicDb_Mongo_Schema extends MW_Mongo_Schema {
 		// Post Types
 		'post' => 'EpicDb_Mongo_Post',
 		'question' => 'EpicDb_Mongo_Post_Question',
+		'question-comment' => 'EpicDb_Mongo_Post_Question_Comment',
 		'answer' => 'EpicDb_Mongo_Post_Question_Answer',
 		'comment' => 'EpicDb_Mongo_Post_Comment',
 		// votes
