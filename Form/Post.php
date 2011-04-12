@@ -124,8 +124,7 @@ class EpicDb_Form_Post extends EpicDb_Form
 			$post->_requestType = $this->requestType->getValue();
 		}
 		if($post->_parent) {
-			// needs to be reimplemented
-			// $post->_parent->bump();
+			$post->_parent->bump($me);
 		}
 		return $post->save();
 	}

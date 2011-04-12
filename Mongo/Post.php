@@ -28,6 +28,7 @@ class EpicDb_Mongo_Post extends MW_Auth_Mongo_Resource_Document implements EpicD
 			'_lastEditedBy' => array('Document:EpicDb_Mongo_Profile', 'AsReference'),
 			// '_profile' => array('Document:EpicDb_Mongo_Profile', 'AsReference', 'Required'),
 			'tags' => array('DocumentSet:EpicDb_Mongo_Tags', 'Required'),
+			'touchedBy' => array('Document:EpicDb_Mongo_Profile', 'AsReference'),
 			'revisions' => array('DocumentSet'),
 			'revisions.$' => array('Document:EpicDb_Mongo_Revision'),
 		));
@@ -192,4 +193,13 @@ class EpicDb_Mongo_Post extends MW_Auth_Mongo_Resource_Document implements EpicD
 			$revision->$key = $this->$key;
 		}
 	}
+	
+	public function bump($by = null) {
+		$this->touched = time();
+		if($by) {
+			$this->touchedBy = $by;
+		}
+		$this->save();
+	}
+	
 } // END class EpicDb_Mongo_Post
