@@ -108,6 +108,7 @@ class EpicDb_Form_Post extends EpicDb_Form
 		$me = EpicDb_Auth::getInstance()->getUserProfile();
 		$post = $this->getPost();
 		if(!$this->_isNew) {
+			$post->bump($me);
 			EpicDb_Mongo_Revision::makeEditFor($post, $this->reason->getValue());
 		} else {
 			$post->_created = time();
@@ -123,7 +124,7 @@ class EpicDb_Form_Post extends EpicDb_Form
 		if($this->requestType) {
 			$post->_requestType = $this->requestType->getValue();
 		}
-		if($post->_parent) {
+		if($post->_parent && $post->_parent->export() != array()) {
 			$post->_parent->bump($me);
 		}
 		return $post->save();
