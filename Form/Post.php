@@ -105,7 +105,7 @@ class EpicDb_Form_Post extends EpicDb_Form
 
 	}
 	public function save() {
-		$me = MW_Auth::getInstance()->getUserProfile();
+		$me = EpicDb_Auth::getInstance()->getUserProfile();
 		$post = $this->getPost();
 		if(!$this->_isNew) {
 			EpicDb_Mongo_Revision::makeEditFor($post, $this->reason->getValue());
