@@ -18,8 +18,9 @@ class EpicDb_Mongo_Post_Question extends EpicDb_Mongo_Post implements EpicDb_Vot
 					'$exists' => false
 				)
 		)+$query;
-		$sort = array("_created" => 1);
+		$sort = array("votes.score" => -1, "_created" => -1);
 		return $results = EpicDb_Mongo::db('answer')->fetchAll($query, $sort, $limit);
+		// var_dump($results->export()); exit;
 	}
 
 	public function findComments($limit = 10, $query = array(), $sort = array()) {
