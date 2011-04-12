@@ -34,7 +34,11 @@ class EpicDb_Mongo_Post extends MW_Auth_Mongo_Resource_Document implements EpicD
 		));
 		return parent::__construct($data, $config);
 	}
-
+	
+	public function getParentResource() {
+		return new EpicDb_Auth_Resource_Post();
+	}
+	
 	public static function getDocumentClass($data = array()) {
 		if (isset($data['_type'])) {
 			return EpicDb_Mongo::db($data['_type']);
