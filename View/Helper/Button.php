@@ -11,6 +11,7 @@
 class EpicDb_View_Helper_Button extends MW_View_Helper_HtmlTag
 {
 	public function button($url, $route = null, $reset = true, $params = array()) {
+		if(!EpicDb_Auth::getInstance()->getUser()) return '';
 		$icon = 'gear';
 		$text = $url['action'];
 		if(isset($params['icon'])) $icon = $params['icon'];
