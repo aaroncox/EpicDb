@@ -8,24 +8,8 @@
  **/
 class EpicDb_Mongo_Post_Question extends EpicDb_Mongo_Post implements EpicDb_Vote_Interface_Votable
 {
-	protected static $_collectionName = 'posts';
 	protected static $_documentType = 'question';
 	protected static $_editForm = 'EpicDb_Form_Post_Question';
-
-	/**
-	 * __construct - undocumented function
-	 *
-	 * @return void
-	 * @author Aaron Cox <aaronc@fmanet.org>
-	 **/
-	public function __construct($data = array(), $config = array())
-	{
-		// $this->addRequirements(array(
-		// 	'revisions' => array('DocumentSet'),
-		// 	'revisions.$' => array('Document:EpicDb_Mongo_Revision'),
-		// ));
-		return parent::__construct($data, $config);
-	}
 
 	public function findAnswers($limit = 10, $query = array(), $sort = array()) {
 		$query = array(
@@ -33,7 +17,7 @@ class EpicDb_Mongo_Post_Question extends EpicDb_Mongo_Post implements EpicDb_Vot
 			'_deleted' => array(
 					'$exists' => false
 				)
-		);
+		)+$query;
 		$sort = array("_created" => 1);
 		return $results = EpicDb_Mongo::db('answer')->fetchAll($query, $sort, $limit);
 	}
@@ -45,7 +29,7 @@ class EpicDb_Mongo_Post_Question extends EpicDb_Mongo_Post implements EpicDb_Vot
 			'_deleted' => array(
 					'$exists' => false
 				)
-		);
+		)+$query;
 		$sort = array("_created" => 1);
 		return $results = EpicDb_Mongo::db('question-comment')->fetchAll($query, $sort, $limit);
 	}

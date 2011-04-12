@@ -109,6 +109,8 @@ class EpicDb_Form_Post extends EpicDb_Form
 		$post = $this->getPost();
 		if(!$this->_isNew) {
 			EpicDb_Mongo_Revision::makeEditFor($post, $this->reason->getValue());
+		} else {
+			$post->_created = time();
 		}
 		if($this->source) {
 			$post->source = $this->source->getValue();

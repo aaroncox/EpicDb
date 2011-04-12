@@ -85,7 +85,7 @@ class EpicDb_View_Helper_Card extends MW_View_Helper_HtmlTag
 		return $this->htmlTag("div", array('class' => 'inline-flow db-card transparent-bg rounded '.$params['class']), 
 			$this->htmlTag("div", array('class' => 'record-icon inline-flow rounded'), 
 				$this->cardScore($record)."".
-				$this->link($record, array("text" => $this->htmlTag("img", array('src' => $this->getIcon($record)))))				
+				$this->link($record, array("text" => $this->htmlTag("img", array('src' => $this->getIcon($record), 'alt' => $record->name))))				
 			)."".
 			$this->htmlTag("div", array('class' => 'record-info inline-flow'), $this->cardDetails($record, $params))
 		);

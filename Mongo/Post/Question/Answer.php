@@ -8,9 +8,8 @@
  * @param undocumented class
  * @package undocumented class
  **/
-class EpicDb_Mongo_Post_Question_Answer extends EpicDb_Mongo_Post implements EpicDb_Vote_Interface_Acceptable, EpicDb_Vote_Interface_Votable
+class EpicDb_Mongo_Post_Question_Answer extends EpicDb_Mongo_Post_Question implements EpicDb_Vote_Interface_Acceptable, EpicDb_Vote_Interface_Votable
 {
-	protected static $_collectionName = 'posts';
 	protected static $_documentType = 'answer';
 	protected static $_editForm = 'EpicDb_Form_Post_Question_Answer';
 

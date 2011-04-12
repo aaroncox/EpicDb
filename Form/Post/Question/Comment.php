@@ -23,12 +23,21 @@ class EpicDb_Form_Post_Question_Comment extends EpicDb_Form_Post
 	{
 		$question = $this->getPost();
 		parent::init();
+		$this->removeElement('source');
 		$this->removeElement('tags');
-		$this->source->setLabel("Your comment");
+		$this->addElement("textarea", "body", array(
+				'order' => 100,
+				'required' => true,
+				'label' => 'Your comment...',
+				'description' => '',
+				'cols' => 92,
+				'rows' => 15,
+			));
 		$this->setButtons(array("save" => "Post Comment"));
 	}
 	public function save() {
 		$question = $this->getPost();
+		$question->body = $this->body->getValue();
 		return parent::save();
 	}
 } // END class EpicDb_Form_Post_Comment

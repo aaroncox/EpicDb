@@ -23,7 +23,7 @@ class EpicDb_View_Helper_ProfileLink extends MW_View_Helper_HtmlTag
 			$text = $params['text'];
 		}
 		return $this->htmlTag("a", array(
-			"rel" => 'no-tooltip',
+			"rel" => 'no-tooltip nofollow',
 			"href" => $this->view->url(array(
 				'action'=> 'view',
 				'profile' => $profile,
