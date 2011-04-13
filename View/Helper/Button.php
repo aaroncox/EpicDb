@@ -13,10 +13,18 @@ class EpicDb_View_Helper_Button extends MW_View_Helper_HtmlTag
 	public function button($url, $route = null, $reset = true, $params = array()) {
 		if(!$user = EpicDb_Auth::getInstance()->getUserProfile()) return '';
 		// $url[$route]->grant($user->user, 'edit');
-		// var_dump($url[$route], $params['requirePriv'], !empty($params['requirePriv']), in_array($route, array('post', 'record', 'profile')), !EpicDb_Auth::getInstance()->hasPrivilege($url[$route], $params['requirePriv'])); exit;
-		if(!empty($params['requirePriv']) && in_array($route, array('post', 'record', 'profile')) && !EpicDb_Auth::getInstance()->hasPrivilege($url[$route], $params['requirePriv'])) {
-			return '';
-		}
+		// exit;
+		// Commented out until we can fix.
+		// if($params['requirePriv'] != "edit") {
+		// 	foreach($url[$route]->_resource->privileges as $priv) {
+		// 		var_dump("mode:".$priv->mode);
+		// 		var_dump($priv->role->export()); 
+		// 	}
+		// 	var_dump($url[$route], $params['requirePriv'], !empty($params['requirePriv']), in_array($route, array('post', 'record', 'profile')), !EpicDb_Auth::getInstance()->hasPrivilege($url[$route], $params['requirePriv'])); exit;			
+		// }
+		// if(!empty($params['requirePriv']) && in_array($route, array('post', 'record', 'profile')) && !EpicDb_Auth::getInstance()->hasPrivilege($url[$route], $params['requirePriv'])) {
+		// 	return '';
+		// }
 		$icon = 'gear';
 		$text = $url['action'];
 		$style = '';
