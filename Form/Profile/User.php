@@ -23,7 +23,6 @@ class EpicDb_Form_Profile_User extends EpicDb_Form_Profile
 		$this->addElement("text", "display_email", array(
 				'filters' => array('StripTags'),
 				'validators' => array(new Zend_Validate_EmailAddress()),
-				'required' => true,
 				'label' => 'Email Address',
 				'description' => 'Used to generate your Gravatar image',
 			));
@@ -34,18 +33,11 @@ class EpicDb_Form_Profile_User extends EpicDb_Form_Profile
 		$this->setDefaults($profile->export());
 		$this->setButtons(array("save" => "Save Profile"));
 	}
-	public function process($data) {
+	
+	public function save($data) {
 		$profile = $this->getProfile();
-		if($this->isValid($data)) {
-			$profile->display_email = $this->display_email->getValue();
-			$profile->bio = $this->bio->getValue();		
-			$profile->save();
-			$eventData = array();
-			$eventData['target'] = $this->getProfile();
-			$eventData['form'] = $this;
-			$eventData['complete'] = strlen($profile->bio);
-			EpicDb_Achievement::trigger('edit', $eventData);
-			return true;
-		}
+		$profile->display_email = $this->display_email->getValue();
+		$profile->bio = $this->bio->getValue();		
+		return parent::save($data);
 	}
 } // END class EpicDb_Form_Profile

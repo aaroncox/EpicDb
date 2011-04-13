@@ -57,11 +57,17 @@ class EpicDb_Form_Profile extends MW_Form
 		$this->setDefaults($profile->export());
 		$this->setButtons(array("save" => "Save Profile"));
 	}
-	public function process($data) {
+	
+	public function save($data) {
 		$profile = $this->getProfile();
+		$profile->name = $this->name->getValue();
+		$profile->save();
+		return $profile;
+	}
+	
+	public function process($data) {
 		if($this->isValid($data)) {
-			$profile->name = $this->name->getValue();
-			$profile->save();
+			$this->save($data);
 			return true;
 		}
 	}
