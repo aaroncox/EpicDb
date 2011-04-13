@@ -31,6 +31,10 @@ class EpicDb_Mongo_Profile extends MW_Auth_Mongo_Resource_Document implements Ep
 	public static function getFollowers($record, $limit = 9999) {
 		return $return = EpicDb_Mongo::db('profile')->fetchAll(array("following" => $record->createReference()), array(), $limit);
 	}
+	
+	public function getParentResource() {
+		return new EpicDb_Auth_Resource_Post();
+	}
 
 	public function getEditForm() {
 		$className = static::$_editForm;

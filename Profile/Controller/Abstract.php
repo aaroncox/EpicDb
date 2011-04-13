@@ -105,10 +105,16 @@ abstract class EpicDb_Profile_Controller_Abstract extends MW_Controller_Action
 		$this->_redirect($this->getRequest()->getServer('HTTP_REFERER'));
 	}
 	
-	public function editAction() {
+	protected function _getProfileForm($profile) {
+		EpicDb_Auth::getInstance()->requirePrivilege($profile, "edit");
+		return $profileForm = $this->view->profileForm = $profile->getEditForm();
+	}
+
+
+	public function editAction()
+	{
 		$profile = $this->getProfile();
-		MW_Auth::getInstance()->requirePrivilege($profile, 'edit');
-		$form = $this->view->form = $profile->getEditForm();
-		$this->_handleMWForm($form, 'profile');
+		$this->_getProfileForm($profile);
+		$this->_handleMWForm($this->view->profileForm);
 	}
 } // END class EpicDb_Profile_Controller_Abstract
