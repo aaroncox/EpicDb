@@ -52,6 +52,8 @@ class EpicDb_Mongo_Vote extends MW_Mongo_Document
 	}
 
 	public static function getVoteByProfile($post, $profile) {
+		if(!$profile instanceOf EpicDb_Mongo_Profile) return null;
+		if(!$post instanceOf EpicDb_Mongo_Post) return null;
 		if(!$post || !$profile) return null;
 		$query = array(
 				"post" => $post->createReference(),
