@@ -172,6 +172,7 @@ class EpicDb_Mongo_Post extends MW_Auth_Mongo_Resource_Document implements EpicD
 				"reduce" => $reduce,
 				"query" => $query,
 		));
+		$tags = array();
 		$data = $db->selectCollection($result['result']);
 		foreach($data->find()->sort(array('value' => -1, 'name' => 1))->limit($limit) as $d) {
 			$record = EpicDb_Mongo::db($d['_id']['ref']['$ref'])->find($d['_id']['ref']['$id']);
