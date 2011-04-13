@@ -41,11 +41,12 @@ class EpicDb_Mongo_Profile extends MW_Auth_Mongo_Resource_Document implements Ep
 		return new $className(array('profile' => $this));
 	}
 
-	public function getPropertyClass() {
+	public function getPropertyClass($property, $data) {
 		if (isset($data['_type'])) {
-			return EpicDb_Mongo::db($data['_type']);
+			return EpicDb_Mongo::dbClass($data['_type']);
 		}
 	}
+	
 	// Get rid of me! I suck.
 	public function getSocialStats() {
 		return null;

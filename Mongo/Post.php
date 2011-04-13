@@ -47,9 +47,9 @@ class EpicDb_Mongo_Post extends MW_Auth_Mongo_Resource_Document implements EpicD
 		}
 	}
 
-	public function getPropertyClass() {
+	public function getPropertyClass($property, $data) {
 		if (isset($data['_type'])) {
-			return EpicDb_Mongo::db($data['_type']);
+			return EpicDb_Mongo::dbClass($data['_type']);
 		}
 	}
 
