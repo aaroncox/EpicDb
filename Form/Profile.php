@@ -71,7 +71,7 @@ class EpicDb_Form_Profile extends MW_Form
 			$element->setAttrib('class', 'ui-state-default');
 		}
 		$this->save->setAttrib('class','login r2-button ui-state-default ui-corner-all');
-		$this->getDecorator('HtmlTag')->setOption('class','r2-form transparent-bg rounded')->setOption('id', 'ad-edit');
+		$this->getDecorator('HtmlTag')->setOption('class','r2-form transparent-bg rounded padded-10')->setOption('id', 'ad-edit');
 		return parent::render();
 	}	
 	
