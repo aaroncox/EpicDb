@@ -11,6 +11,7 @@
 class EpicDb_Mongo_Profile_User extends EpicDb_Mongo_Profile
 {
   protected static $_documentType = 'user';
+	protected static $_editForm = 'EpicDb_Form_Profile_User';
 	
 	public function __construct($data = array(), $config = array())
 	{
