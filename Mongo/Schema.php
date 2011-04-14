@@ -9,7 +9,7 @@
  * @package undocumented class
  **/
 class EpicDb_Mongo_Schema extends MW_Mongo_Schema {
-	protected $_version = 2;
+	protected $_version = 3;
   protected $_tag = 'epicdb';
 	protected $_classMap = array(
 		// Profile Types
@@ -58,6 +58,11 @@ class EpicDb_Mongo_Schema extends MW_Mongo_Schema {
 				$this->getCollectionForType('profile')->remove(array('_type' => array('$exists' => false)));
 			case 1:
         $db->execute('db.posts.ensureIndex({id:1, _type:1}, {unique: true})');
+			case 2:
+				$db->execute("db.posts.ensureIndex({'tags.ref':1, 'tags.reason': 1})");
+				$db->execute("db.posts.ensureIndex({'votes.score':1})");
+				$db->execute("db.posts.ensureIndex({_created:1, touched:1})");
+				$db->execute("db.posts.ensureIndex({_parent:1, _deleted:1, 'score.accepted':1})");
     }
 	}
 }
