@@ -101,6 +101,7 @@ class EpicDb_Mongo_Post extends MW_Auth_Mongo_Resource_Document implements EpicD
 	}
 
 	public static function getTagsByUsage($limit = 40) {
+		// TODO - XHProf Improvement: This function eats up about 1 second of processing time, needs caching or something.
 		$query = array();
 		$map = new MongoCode("function() {
 			this.tags.forEach(function(ref) {
@@ -166,5 +167,16 @@ class EpicDb_Mongo_Post extends MW_Auth_Mongo_Resource_Document implements EpicD
 		}
 		return parent::save();
 	}
-	
+
+	// This is for watching queries as they execute on posts, perhaps we could enable it by a flag? or mode? I just used it for debugging queries.
+	// public static function fetchAll($query = array(), $sort = array(), $limit = false, $skip = false) {
+	// 	$writer = new Zend_Log_Writer_Firebug();
+	// 	$logger = new Zend_Log($writer);
+	// 	$output = array(
+	// 		Zend_Json::encode($query),
+	// 		Zend_Json::encode($sort),
+	// 	);
+	// 	$logger->log($output, Zend_Log::INFO);
+	// 	return parent::fetchAll($query, $sort, $limit, $skip);
+	// }
 } // END class EpicDb_Mongo_Post
