@@ -54,78 +54,28 @@ class EpicDb_Mongo_Post extends MW_Auth_Mongo_Resource_Document implements EpicD
 	}
 
 	public function getProfileFeed($profile, $query = array(), $sort = array("_created" => -1), $limit = 20, $skip = false) {
-		// First off, lets get the user so we can do some logic based on whether its you or not.
-		$user = MW_Auth::getInstance()->getUser();
-		// $myFeed = true/false whether its my feed or not
-		$myFeed = ($user && $profile->user) ? ($user->createReference() == $profile->user->createReference()):false;
 		// Flag to hide any "deleted" messages
+		// var_dump($profile	->export());
+		// exit;/
 		$query['_deleted'] = array('$exists' => false);
-		// Flag to hide any "responses", since they will load on the parent
-		$query["_parent"] = array('$exists' => false);
 		// Show any messages that I have posted
 		$query['$or'][] = array('_profile' => $profile->createReference());
-		// Show any messages that are directed at me
+		// Show any messages that are directed at me or I'm tagged in
 		$query['$or'][] = array(
 			'tags' => array(
 				'$elemMatch' => array(
 					'ref' => $profile->createReference(),
-					'reason' => 'subject',
 				)
 			)
 		);
-		// Show any messages that are directed at me
+		// Make sure I have the permissions to view this post
 		foreach(EpicDb_Auth::getInstance()->getUserRoles() as $role) {
 			$roles[] = $role->createReference();
 		}
-		$query['_viewers'] = array('$in' => $roles);
+		// $query['_viewers'] = array('$in' => $roles);
 
-		// Switch by Type for the proper feed configuration
-		switch($profile->_type) {
-			case "wall":
-			case "website":
-			case "guild":
-				// Check the profile's RSS feed cache
-				// var_dump($profile->feed, $profile->crawledFeed); exit;
-				if($profile->feed && (!$profile->crawledFeed OR $profile->crawledFeed+86400 <= time())) {
-					// echo "NEED TO CRAWL [".$profile->feed."]"; exit;
-					$profile->crawlFeed();
-				}
-				// If the type isn't set, lets default to news/articles, or 'article' type
-				if(!isset($query['_type'])) {
-					$query['_type'] = 'article';
-				}
-				break;
-			case "group":
-			case "profile":
-				// If it's my feed, and if I am following people, then $following is an export of who I'm following
-				if($myFeed && $profile->following && $following = $profile->following->export()) {
-					foreach($following as $idx => $follow) {
-						if(!$follow) unset($following[$idx]);
-					}
-					// Show messages directed at people I'm following, disabled, not sure we need that.
-					// $query['$or'][] = array('_record' => array('$in' => $following)); // Dont think this is needed?
-					// Show messages originating from people I'm following, this ones good.
-					$query['$or'][] = array(
-						'_profile' => array('$in' => $following),
-						// '_type' => array('$ne' => 'system')
-					);
-				}	else {
-					// If it's not your feed, this is where we can hide a few things
-					// $query['_type'] = array('$ne' => 'system'); // This line breaks the filters :(
-				}
-				if(!$myFeed && !isset($query['_type'])) {
-					$query['_type'] = array('$ne' => 'wall');
-				}
-				break;
-			default:
-				// Let me know!
-				throw new Exception("No feed generator for this type: [".$profile->_type."]");
-		}
-		// var_dump($query); exit;
-		// Grab the results and return them to the controller
-		// unset($query['_typ'])
-		$results = EpicDb_Mongo::db('posts')->fetchAll($query, $sort, $limit, $skip);
-		// var_dump($results); exit;
+		$results = EpicDb_Mongo::db('post')->fetchAll($query, $sort, $limit, $skip);
+		// var_dump($query, $results->export()); exit;
 		// var_dump($results->export(), $query, $sort, $limit); exit;
 		// foreach($results as $idx => $result) {
 		// 	if($result->id == "200") {
@@ -205,6 +155,16 @@ class EpicDb_Mongo_Post extends MW_Auth_Mongo_Resource_Document implements EpicD
 			$this->touchedBy = $by;
 		}
 		$this->save();
+	}
+	
+	public function save() {
+		// This could probably be handled elsewhere better? Just pushing things forward
+		if($this->_viewers->export() == array()) {
+			// Else lets give everyone access.
+			$this->_viewers->addDocument(MW_Auth_Mongo_Role::getGroup(MW_Auth_Group_Guest::getInstance()));
+			$this->_viewers->addDocument(MW_Auth_Mongo_Role::getGroup(MW_Auth_Group_User::getInstance()));
+		}
+		return parent::save();
 	}
 	
 } // END class EpicDb_Mongo_Post
