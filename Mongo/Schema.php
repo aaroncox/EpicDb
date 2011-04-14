@@ -62,7 +62,8 @@ class EpicDb_Mongo_Schema extends MW_Mongo_Schema {
 				$db->execute("db.posts.ensureIndex({'tags.ref':1, 'tags.reason': 1})");
 				$db->execute("db.posts.ensureIndex({'votes.score':1})");
 				$db->execute("db.posts.ensureIndex({_created:1, touched:1})");
-				$db->execute("db.posts.ensureIndex({_parent:1, _deleted:1, 'score.accepted':1})");
+				$db->execute("db.posts.ensureIndex({_parent:1})");
+				$db->execute("db.posts.ensureIndex({_parent:1, 'score.accepted':1})");
     }
 	}
 }
