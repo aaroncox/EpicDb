@@ -18,7 +18,7 @@ class EpicDb_Mongo_Profile_User extends EpicDb_Mongo_Profile
 	  // handled here in order to deal with subclassed resources...
 	  if (!is_array($this->_requirements)) $this->_requirements = array();
 	  $this->_requirements += array(
-			'user' => array('Document:MW_Auth_Mongo_Role', 'AsReference', 'Required'),
+			'user' => array('Document:MW_Auth_Mongo_User', 'AsReference', 'Required'),
 			'following' => array('DocumentSet'),
 			'following.$' => array('Document:MW_Mongo_Document', 'AsReference', 'Required'),
 	    );
