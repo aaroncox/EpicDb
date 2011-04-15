@@ -26,24 +26,43 @@ class EpicDb_View_Helper_VoteWidget extends MW_View_Helper_HtmlTag
 			$vote = EpicDb_Mongo::db('vote')->getVoteByProfile($post, $profile);			
 		}
 		// Return the widget
-		return $this->htmlTag("div", array("class" => "vote"), 
-			$this->htmlTag("p", array("class" => "text-small", "style" => "margin: 5px 0; font-weight: bold;"), "VOTE")."".
+		return $this->htmlTag("div", array("class" => "post-vote dark-bg rounded shadowy"), 
+			$this->htmlTag("p", array("class" => "text-small", "style" => "margin: 5px 0; font-weight: bold;"), "VOTES")."".
 			$this->htmlTag("a", array(
-				"style" => "display: block;",
+				"style" => "display: inline-block;",
 				"title" => "This question is a good question and is helpful",
 				"alt" => "Vote Up",
-				"class" => "vote-link vote-up sprite sprite-vote-arrow-up".(($vote && $vote->vote == "up")?"-on":""),
+				"class" => "vote-link vote-up ui-icon ui-icon-plus rounded ".(($vote && $vote->vote == "up")?" ui-state-active":" ui-state-default"),
 				"href" => ($profile)? $this->voteUrl($post, "up"): '#',
 			), " ")."".
-			$this->htmlTag("span", array("class" => "vote-count-post"), $score)."".
+			$this->htmlTag("p", array("class" => "vote-count".$this->color($score)), $score)."".
 			$this->htmlTag("a", array(
-				"style" => "display: block;",
+				"style" => "display: inline-block;",
 				"title" => "This question is a good question and is helpful",
 				"alt" => "Vote Down",
-				"class" => "vote-link vote-down sprite sprite-vote-arrow-down".(($vote && $vote->vote == "down")?"-on":""),
+				"class" => "vote-link vote-down ui-icon ui-icon-minus rounded".(($vote && $vote->vote == "down")?" ui-state-active":" ui-state-default"),
 				"href" => ($profile)? $this->voteUrl($post, "down"): '#',
 			), " ")
 		);
+	}
+	
+	public function color($value) {
+		if((int)$value >= 50) {
+			return " tc-legendary tc-shadow";
+		}
+		if((int)$value >= 25) {
+			return " tc-epic tc-shadow";
+		}
+		if((int)$value >= 10) {
+			return " tc-rare tc-shadow";
+		}
+		if((int)$value >= 5) {
+			return " tc-uncommon tc-shadow";
+		}
+		if((int)$value < 0) {
+			return " tc-poor";
+		}
+		return " tc-common";
 	}
 } // END class EpicDb_View_Helper_VoteWidget
 
