@@ -57,7 +57,7 @@ class EpicDb_Form_Post extends EpicDb_Form
 				'class' => 'markDownEditor',
 				'label' => 'Post Message',
 				'description' => '',
-				'cols' => 92,
+				'cols' => 90,
 				'rows' => 15,
 			));
 		$this->addElement("tags", "tags", array(
