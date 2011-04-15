@@ -8,7 +8,7 @@
  * @param undocumented class
  * @package undocumented class
  **/
-class EpicDb_Mongo_Post_Question_Comment extends EpicDb_Mongo_Post implements EpicDb_Vote_Interface_Votable
+class EpicDb_Mongo_Post_Question_Comment extends EpicDb_Mongo_Post implements EpicDb_Vote_Interface_UpOnly
 {
 	protected static $_collectionName = 'posts';
 	protected static $_documentType = 'question-comment';
