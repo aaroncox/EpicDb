@@ -12,6 +12,7 @@ class EpicDb_Mongo_Post extends MW_Auth_Mongo_Resource_Document implements EpicD
 	protected static $_documentType = null;
 	protected static $_documentSetClass = 'EpicDb_Mongo_Posts';
 	protected static $_editForm = 'EpicDb_Form_Post';
+	protected $_routeName = 'post';
 	/**
 	 * __construct - undocumented function
 	 *
@@ -33,6 +34,13 @@ class EpicDb_Mongo_Post extends MW_Auth_Mongo_Resource_Document implements EpicD
 			'revisions.$' => array('Document:EpicDb_Mongo_Revision'),
 		));
 		return parent::__construct($data, $config);
+	}
+
+	public function getPermaLink( $view )
+	{
+		return $view->url(array(
+			'post' => $this
+		), $this->_routeName, true);
 	}
 	
 	public function getParentResource() {
