@@ -167,6 +167,10 @@ class EpicDb_Mongo_Post extends MW_Auth_Mongo_Resource_Document implements EpicD
 	}
 	
 	public function save() {
+		if (!$this->touched) {
+			$this->touched = $this->_created;
+			$this->touchedBy = $this->tags->getTag('author');
+		}
 		// This could probably be handled elsewhere better? Just pushing things forward
 		if($this->_viewers->export() == array()) {
 			// Else lets give everyone access.
