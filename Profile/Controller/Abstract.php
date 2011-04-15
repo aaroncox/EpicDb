@@ -54,26 +54,12 @@ abstract class EpicDb_Profile_Controller_Abstract extends MW_Controller_Action
 
 	public function postRssContext()
 	{
-		$generator = new MW_Feed_Generator();
+		$generator = new EpicDb_Feed_Generator(array('view'=>$this->view));
 		$generator->setLink($this->view->url());
-		$generator->setTitle($this->getProfile()->name.' '.ucwords($this->view->filter).' RSS :: R2-DB.com :: Star Wars: The Old Republic (SWTOR) Database');
+		$generator->setTitle($this->getProfile()->name."'s public feed");
 		foreach ($this->view->posts as $post)
 		{
-			$link = $generator->makeUri($this->view->url(array('post'=>$post), 'post', true));
-			if($post->title) {
-				$title = strip_tags($post->title);
-			} else {
-				$title = $post->tldr ?: ucfirst($post->_type).' by '.$post->_profile->name.' on '.$post->tags->getTag('subject')->name;
-			}
-			$generator->addEntry(array(
-					'title' => $title,
-					'link' => $link,
-					'guid' => $link,
-					'author' => $post->feedAuthor,
-					'description' => $this->view->htmlFragment($post->body, 350),
-					'content' => $this->view->htmlFragment($post->body, 350),
-					'lastUpdate' => $post->_created ?: $post->_updated,
-				));
+			$generator->addPost($post);
 		}
 		$generator->toRss()->send();
 	}
