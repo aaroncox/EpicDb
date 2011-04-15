@@ -22,6 +22,7 @@ class EpicDb_View_Helper_ProfileLink extends MW_View_Helper_HtmlTag
 		if(isset($params['text'])) {
 			$text = $params['text'];
 		}
+		if(trim($text) == "") $text = "Unknown";
 		return $this->htmlTag("a", array(
 			"rel" => 'no-tooltip nofollow',
 			"href" => $this->view->url(array(
