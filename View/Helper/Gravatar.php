@@ -9,7 +9,8 @@
 class EpicDb_View_Helper_Gravatar extends Zend_View_Helper_Gravatar
 {
 	protected $_defaultOptions = array(
-		'defaultImg' => 'retro',
+		// 'defaultImg' => 'http://epicadvice.com/images/icons/unknown.jpg',
+		'defaultImg' => 'identicon',
 		'rating' => 'pg',
 	);
 	public function gravatar($email = "", $options = array(), $attribs = array()) {
