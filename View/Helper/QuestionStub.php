@@ -49,28 +49,26 @@ class EpicDb_View_Helper_QuestionStub extends MW_View_Helper_HtmlTag
 		// Loop through and generate tag block
 		foreach($question->tags as $tag) {
 			if($tag->reason == 'tag') {
-				$tags .= $this->view->recordLink($tag->ref, array("class" => "post-tag"));
+				$tags .= $this->view->recordLink($tag->ref, array("class" => "post-tag rounded"));
 			}
 		}
 		
-		return $this->htmlTag('div', array('class' => 'question-summary'), 
-			$this->htmlTag('div', array('style' => 'cursor:pointer'), 
-				$this->htmlTag('div', array('style' => 'float: right'), 
-					$this->view->card($author, array(
-						"class" => "medium-icon", 
-						"content" => $cardDetails,
-					)
-				))."".
-				$this->htmlTag('div', array('class' => 'votes'), 
-					$this->htmlTag('div', array('class' => 'mini-counts'), isset($question->votes['score'])? $question->votes['score'] : 0)."".
-					$this->htmlTag('div', array(), 'votes')
-				)."".
-				$this->htmlTag('div', array('class' => 'status'.$answerStatus), 
-					$this->htmlTag('div', array('class' => 'mini-counts'), $answerCount)."".
-					$this->htmlTag('div', array(), 'answers')
+		return $this->htmlTag('div', array('class' => 'question-summary ui-helper-clearfix rounded shadowy'), 
+			$this->htmlTag('div', array('style' => 'float: right'), 
+				$this->view->card($author, array(
+					"class" => "medium-icon hide-info", 
+					"content" => $cardDetails,
 				)
+			))."".
+			$this->htmlTag('div', array('class' => 'votes inline-flow'), 
+				$this->htmlTag('div', array('class' => 'mini-counts'), isset($question->votes['score'])? $question->votes['score'] : 0)."".
+				$this->htmlTag('div', array(), 'votes')
 			)."".
-			$this->htmlTag('div', array('class' => 'summary'),
+			$this->htmlTag('div', array('class' => 'status inline-flow'.$answerStatus), 
+				$this->htmlTag('div', array('class' => 'mini-counts'), $answerCount)."".
+				$this->htmlTag('div', array(), 'answers')
+			)."".
+			$this->htmlTag('div', array('class' => 'summary inline-flow'),
 				$this->htmlTag("h3", array(), 
 					$this->view->seQuestionLink($question)
 				)."".
