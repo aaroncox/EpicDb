@@ -11,7 +11,7 @@ class EpicDb_Controller_Action extends MW_Controller_Action
 	public function preDispatch() {
 
 	}
-	public function init() {
+	public function init() {		
 		$profile = $this->getUserProfile();
 		return parent::init();
 	}

@@ -10,6 +10,8 @@
  **/
 class EpicDb_Mongo_Record extends MW_Mongo_Document implements EpicDb_Interface_Cardable
 {
+	public $summaryHelper = 'recordSummary';
+	
 	protected static $_collectionName = 'records';
 	protected static $_documentType = null;
 	protected static $_documentSetClass = 'EpicDb_Mongo_Records';
@@ -48,5 +50,12 @@ class EpicDb_Mongo_Record extends MW_Mongo_Document implements EpicDb_Interface_
 		return array(
 			'is a' => $view->recordTypeLink($this)
 		);
+	}
+	
+	public function getMyFollowers() {
+		return $this->getFollowers($this);
+	}
+	public static function getFollowers($record, $limit = 9999) {
+		return $return = EpicDb_Mongo::db('profile')->fetchAll(array("following" => $record->createReference()), array(), $limit);
 	}
 } // END class EpicDb_Mongo_Record

@@ -10,7 +10,7 @@
  **/
 class EpicDb_Route_Profile extends Zend_Controller_Router_Route
 {
-	static public $types = array('user','group');
+	static public $types = array('user','group','website');
 
   public static function getInstance(Zend_Config $config)
   {

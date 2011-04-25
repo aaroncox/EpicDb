@@ -10,6 +10,8 @@
  **/
 class EpicDb_Mongo_Profile extends MW_Auth_Mongo_Resource_Document implements EpicDb_Interface_Cardable
 {
+	public $summaryHelper = 'profileSummary';
+	
 	protected static $_collectionName = 'profiles';
 	protected static $_documentType = null;
 	protected static $_editForm = 'EpicDb_Form_Profile';
@@ -28,6 +30,9 @@ class EpicDb_Mongo_Profile extends MW_Auth_Mongo_Resource_Document implements Ep
 	 * @return cursor of users
 	 * @author Aaron Cox <aaronc@fmanet.org>
 	 **/
+	public function getMyFollowers() {
+		return $this->getFollowers($this);
+	}
 	public static function getFollowers($record, $limit = 9999) {
 		return $return = EpicDb_Mongo::db('profile')->fetchAll(array("following" => $record->createReference()), array(), $limit);
 	}

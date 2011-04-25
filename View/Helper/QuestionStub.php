@@ -49,7 +49,7 @@ class EpicDb_View_Helper_QuestionStub extends MW_View_Helper_HtmlTag
 		// Loop through and generate tag block
 		foreach($question->tags as $tag) {
 			if($tag->reason == 'tag') {
-				$tags .= $this->view->recordLink($tag->ref, array("class" => "post-tag rounded"));
+				$tags .= $this->view->recordLink($tag->ref, array("class" => "post-tag rounded", "icon" => "tag-icon"));
 			}
 		}
 		
@@ -60,15 +60,15 @@ class EpicDb_View_Helper_QuestionStub extends MW_View_Helper_HtmlTag
 					"content" => $cardDetails,
 				)
 			))."".
-			$this->htmlTag('div', array('class' => 'votes inline-flow'), 
+			$this->htmlTag('div', array('class' => 'votes font-special inline-flow'), 
 				$this->htmlTag('div', array('class' => 'mini-counts'), isset($question->votes['score'])? $question->votes['score'] : 0)."".
 				$this->htmlTag('div', array(), 'votes')
 			)."".
-			$this->htmlTag('div', array('class' => 'status inline-flow'.$answerStatus), 
+			$this->htmlTag('div', array('class' => 'status font-special inline-flow'.$answerStatus), 
 				$this->htmlTag('div', array('class' => 'mini-counts'), $answerCount)."".
 				$this->htmlTag('div', array(), 'answers')
 			)."".
-			$this->htmlTag('div', array('class' => 'summary inline-flow'),
+			$this->htmlTag('div', array('class' => 'summary font-header inline-flow'),
 				$this->htmlTag("h3", array(), 
 					$this->view->seQuestionLink($question)
 				)."".

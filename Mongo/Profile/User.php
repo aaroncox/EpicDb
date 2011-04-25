@@ -36,10 +36,6 @@ class EpicDb_Mongo_Profile_User extends EpicDb_Mongo_Profile
     return false;
   }
 
-	public function getMyFollowers() {
-		return $this->getFollowers($this);
-	}
-
 	public function follow($record)
   {
     if (!$this->isFollowing($record))

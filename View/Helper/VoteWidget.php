@@ -30,7 +30,7 @@ class EpicDb_View_Helper_VoteWidget extends MW_View_Helper_HtmlTag
 			$this->htmlTag("p", array("class" => "text-small", "style" => "margin: 5px 0; font-weight: bold;"), "VOTES")."".
 			$this->htmlTag("a", array(
 				"style" => "display: inline-block;",
-				"title" => "This question is a good question and is helpful",
+				"title" => "This question/answer is a good question and is helpful",
 				"alt" => "Vote Up",
 				"class" => "vote-link vote-up ui-icon ui-icon-plus rounded ".(($vote && $vote->vote == "up")?" ui-state-active":" ui-state-default"),
 				"href" => ($profile)? $this->voteUrl($post, "up"): '#',
@@ -38,7 +38,7 @@ class EpicDb_View_Helper_VoteWidget extends MW_View_Helper_HtmlTag
 			$this->htmlTag("p", array("class" => "vote-count".$this->color($score)), $score)."".
 			$this->htmlTag("a", array(
 				"style" => "display: inline-block;",
-				"title" => "This question is a good question and is helpful",
+				"title" => "This question/answer is a unclear, not helpful or not answerable",
 				"alt" => "Vote Down",
 				"class" => "vote-link vote-down ui-icon ui-icon-minus rounded".(($vote && $vote->vote == "down")?" ui-state-active":" ui-state-default"),
 				"href" => ($profile)? $this->voteUrl($post, "down"): '#',

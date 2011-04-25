@@ -96,8 +96,7 @@ abstract class EpicDb_Profile_Controller_Abstract extends MW_Controller_Action
 		EpicDb_Auth::getInstance()->requirePrivilege($profile, "edit");
 		return $profileForm = $this->view->profileForm = $profile->getEditForm();
 	}
-
-
+	
 	public function editAction()
 	{
 		$profile = $this->getProfile();
