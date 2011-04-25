@@ -54,13 +54,11 @@ class EpicDb_View_Helper_QuestionStub extends MW_View_Helper_HtmlTag
 		}
 		
 		return $this->htmlTag('div', array('class' => 'question-summary ui-helper-clearfix rounded shadowy'), 
-			$this->htmlTag('div', array('class' => 'card-area'), 
-				$this->htmlTag('div', array('class' => 'inner-card-area'),
-					$this->view->card($author, array(
-						"class" => "medium-icon hide-info", 
-						"content" => $cardDetails,
-					)
-				).""
+			$this->htmlTag('div', array('style' => 'float: right'), 
+				$this->view->card($author, array(
+					"class" => "medium-icon hide-info", 
+					"content" => $cardDetails,
+				)
 			))."".
 			$this->htmlTag('div', array('class' => 'votes font-special inline-flow'), 
 				$this->htmlTag('div', array('class' => 'mini-counts'), isset($question->votes['score'])? $question->votes['score'] : 0)."".
