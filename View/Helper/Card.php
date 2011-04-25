@@ -3,7 +3,7 @@
  * EpicDb_View_Helper_Card
  *
  * Builds the "card" version of a record
- * 
+ *
  * @author Aaron Cox <aaronc@fmanet.org>
  * @param undocumented class
  * @package undocumented class
@@ -11,7 +11,7 @@
 class EpicDb_View_Helper_Card extends MW_View_Helper_HtmlTag
 {
 	// public function profileCard(EpicDb_Mongo_Profile $profile) {
-	// 	return 
+	// 	return
 	// }
 	public function link($record, $params = array()) {
 		if($record instanceOf EpicDb_Mongo_Profile) {
@@ -25,7 +25,7 @@ class EpicDb_View_Helper_Card extends MW_View_Helper_HtmlTag
 	protected function _detail($qualifier, $content) {
 		if(!$qualifier || !$content) return '';
 		return $this->htmlTag("p", array('class' => 'text-verysmall'), $qualifier)."".
-			$this->htmlTag("p", array('class' => 'text-small'), $content);		
+			$this->htmlTag("p", array('class' => 'text-small'), $content);
 	}
 	public function getIcon($record) {
 		if($record->email) {
@@ -39,46 +39,35 @@ class EpicDb_View_Helper_Card extends MW_View_Helper_HtmlTag
 		if(isset($params['content'])) {
 			foreach($params['content'] as $qualifier => $content) {
 				$details .= $this->_detail($qualifier, $content);
-			}						
+			}
 		} else {
 			foreach($record->cardProperties($this->view) as $qualifier => $content) {
 				$details .= $this->_detail($qualifier, $content);
-			}			
+			}
 		}
 		if(isset($params['extra'])) $details .= $this->addExtra($params['extra']);
 		return $details;
 	}
 	public function cardScore($record) {
 		if(!$record->reputation) return '';
-		$user = $record->user; 
-		$admin = $moderator = null;
-		if($user instanceOf MW_Auth_Mongo_Role) {
-			$admin = $user->isMember(MW_Auth_Group_Super::getInstance());									
-			// if (!$admin) {
-			// 	$moderator = $user->isMember(R2Db_Auth_Group_Moderators::getInstance());	
-			// }
-		}	
-		$title = '';
-		if($admin || $moderator) {
-			$title .= $this->htmlTag("span", array("title" => $admin?"Site Administrator":"Librarian"), $admin ? "&diams;&diams;" : "&diams;");
-		}	
-		return $this->htmlTag("div", array("class" => "record-score"), 
-			$title."".$record->reputation
+		return $this->htmlTag("div", array("class" => "record-score"),
+			$record->reputation
 		);
 	}
 	public function unknownCard($params) {
-		return $this->htmlTag("div", array('class' => 'inline-flow db-card rounded '.$params['class']), 
-			$this->htmlTag("div", array('class' => 'record-icon inline-flow rounded'), 
+		return $this->htmlTag("div", array('class' => 'inline-flow db-card rounded '.$params['class']),
+			$this->htmlTag("div", array('class' => 'record-icon inline-flow rounded'),
 				$this->htmlTag("img", array('src' => '/images/icons/unknown.jpg'))
 			)."".
 			$this->htmlTag("div", array('class' => 'record-info inline-flow'), $this->htmlTag("h2", array('class' => 'text-large'), 'Missing Account'))
-		);		
+		);
 	}
+
 	public function card($record, $params = array()) {
 		if(!$record) return $this->unknownCard($params);
-		if(!isset($params['extra'])) $params['extra'] = null;
-		if(!isset($params['class'])) $params['class'] = null;
-		if(!isset($params['iconClass'])) $params['iconClass'] = null;
+		if(!isset($params['extra'])) $params['extra'] = '';
+		if(!isset($params['class'])) $params['class'] = '';
+		if(!isset($params['iconClass'])) $params['iconClass'] = '';
 		if($record instanceOf EpicAdvice_Mongo_Profile_User && $record->characters && $character = $record->characters->getPrimary()) {
 			$params['class'] .= " faction-".$character->faction;
 		}
@@ -86,7 +75,7 @@ class EpicDb_View_Helper_Card extends MW_View_Helper_HtmlTag
 		return $this->htmlTag("div", array('class' => 'inline-flow db-card rounded font-header '.$params['class']), 
 			$this->htmlTag("div", array('class' => 'record-icon inline-flow rounded '.$params['iconClass']), 
 				$this->cardScore($record)."".
-				$this->link($record, array("text" => $this->htmlTag("img", array('src' => $this->getIcon($record), 'alt' => $record->name))))				
+				$this->link($record, array("text" => $this->htmlTag("img", array('src' => $this->getIcon($record), 'alt' => $record->name))))
 			)."".
 			$this->htmlTag("div", array('class' => 'record-info inline-flow'), $this->cardDetails($record, $params))
 		);
