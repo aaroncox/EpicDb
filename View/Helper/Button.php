@@ -11,8 +11,6 @@
 class EpicDb_View_Helper_Button extends MW_View_Helper_HtmlTag
 {
 	public function button($url, $route = null, $reset = true, $params = array()) {
-		if(!$user = EpicDb_Auth::getInstance()->getUserProfile()) return '';
-		
 		if(!empty($params['requirePriv']) && in_array($route, array('post', 'record', 'profile')) && !EpicDb_Auth::getInstance()->hasPrivilege($url[$route], $params['requirePriv'])) {
 			return '';
 		}
