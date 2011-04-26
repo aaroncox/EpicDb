@@ -27,7 +27,7 @@ class EpicDb_View_Helper_VoteWidget extends MW_View_Helper_HtmlTag
 		}
 		// Return the widget
 		return $this->htmlTag("div", array("class" => "post-vote dark-bg rounded shadowy"), 
-			$this->htmlTag("p", array("class" => "text-small", "style" => "margin: 5px 0; font-weight: bold;"), "VOTES")."".
+			$this->htmlTag("p", array("class" => "text-verysmall font-sans", "style" => "margin: 5px 0; font-weight: bold;"), "VOTES")."".
 			$this->htmlTag("a", array(
 				"style" => "display: inline-block;",
 				"title" => "This question/answer is a good question and is helpful",

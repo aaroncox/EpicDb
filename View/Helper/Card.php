@@ -35,7 +35,7 @@ class EpicDb_View_Helper_Card extends MW_View_Helper_HtmlTag
 	}
 	public function cardDetails($record, $params = null) {
 		$details = '';
-		$details .= $this->htmlTag("h2", array('class' => 'text-large'), $this->link($record));
+		$details .= $this->htmlTag("h2", array('class' => 'text-medium'), $this->link($record));
 		if(isset($params['content'])) {
 			foreach($params['content'] as $qualifier => $content) {
 				$details .= $this->_detail($qualifier, $content);
@@ -72,7 +72,7 @@ class EpicDb_View_Helper_Card extends MW_View_Helper_HtmlTag
 			$params['class'] .= " faction-".$character->faction;
 		}
 		if(!$record instanceOf EpicDb_Interface_Cardable) return '';
-		return $this->htmlTag("div", array('class' => 'inline-flow db-card rounded font-header '.$params['class']), 
+		return $this->htmlTag("div", array('class' => 'inline-flow db-card rounded font-sans '.$params['class']), 
 			$this->htmlTag("div", array('class' => 'record-icon inline-flow rounded '.$params['iconClass']), 
 				$this->cardScore($record)."".
 				$this->link($record, array("text" => $this->htmlTag("img", array('src' => $this->getIcon($record), 'alt' => $record->name))))
