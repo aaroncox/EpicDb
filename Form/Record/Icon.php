@@ -93,11 +93,8 @@ class EpicDb_Form_Record_Icon extends EpicDb_Form_Record
 	}
 	public function render()
 	{
-		foreach($this->getElements() as $element) {
-			$element->setAttrib('class', 'ui-state-default');
-		}
-		$this->save->setAttrib('class','login r2-button ui-state-default ui-corner-all');
-		$this->getDecorator('HtmlTag')->setOption('class','r2-form transparent-bg rounded')->setOption('id', 'ad-edit');
+		$this->save->setAttrib('class','login epicdb-button ui-state-default ui-corner-all');
+		$this->getDecorator('HtmlTag')->setOption('class','epicdb-form rounded')->setOption('id', 'ad-edit');
 		return parent::render();
 	}	
 } // END class EpicDb_Form_Profile

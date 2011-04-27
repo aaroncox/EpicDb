@@ -27,15 +27,18 @@ class EpicDb_View_Helper_ProfileSummary extends MW_View_Helper_HtmlTag
 			));
 		}
 		if(EpicDb_Auth::getInstance()->getUserProfile()) {
-			$buttons .= $this->view->button(array(
-				'profile' => $profile,
-				'action' => 'follow',
-			), 'profile', true, array(
-				'text' => 'follow',
-				'icon' => 'gear',
-			));			
+			$buttons .= $this->view->followButton($profile);
 		}
 		if($buttons) $placeholder->widget($buttons);
 		$placeholder->widget($this->htmlTag("h3", array(), "Biography")."".$this->htmlTag("p", array(), $profile->bio));
+
+		$followers = $profile->getMyFollowers();
+		if($followers->count()) {
+			$placeholder->widget($this->htmlTag("h3", array(), $profile->name."'s Followers")."".$this->view->iconCloud($followers));			
+		}
+		
+		if($profile->following->export() != array()) {
+			$placeholder->widget($this->htmlTag("h3", array(), $profile->name." is following")."".$this->view->iconCloud($profile->following));			
+		}
 	}
 } // END class EpicDb_View_Helper_ProfileSummary
