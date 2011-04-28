@@ -30,7 +30,8 @@ class EpicDb_View_Helper_ProfileSummary extends MW_View_Helper_HtmlTag
 			$buttons .= $this->view->followButton($profile);
 		}
 		if($buttons) $placeholder->widget($buttons);
-		$placeholder->widget($this->htmlTag("h3", array(), "Biography")."".$this->htmlTag("p", array(), $profile->bio));
+		
+		if($profile->bio) $placeholder->widget($this->htmlTag("h3", array(), "Biography")."".$this->htmlTag("p", array(), $profile->bio));
 
 		$followers = $profile->getMyFollowers();
 		if($followers->count()) {
