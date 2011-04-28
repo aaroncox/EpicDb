@@ -13,7 +13,7 @@ class EpicDb_View_Helper_ProfileSummary extends MW_View_Helper_HtmlTag
 	public function profileSummary(EpicDb_Mongo_Profile $profile) {
 		// $this->card($this->profile, array("class" => "wide"))
 		$placeholder = $this->view->summary();
-		$placeholder->append($this->view->card($profile, array("class" => "wide")));
+		$placeholder->append($this->view->card($profile, array("class" => "wide"))."");
 
 		$buttons = '<h3>Available Actions</h3>';
 		if ($profile->user && MW_Auth::getInstance()->hasPrivilege(new MW_Auth_Resource_Super(), 'sudo')) {

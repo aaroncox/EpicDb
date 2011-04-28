@@ -12,9 +12,9 @@ class EpicDb_View_Helper_IconCloud extends MW_View_Helper_HtmlTag {
 		} else {
 			foreach($records as $record) {
 				// I thought the auto-loading mongo stuff would do this, but it's not apparently... FIX TODO NYI
-				if($record->_type == 'user') {
-					$record = EpicDb_Mongo::db('user')->find($record->_id);
-				}
+				// if($record->_type == 'user') {
+				// 	$record = EpicDb_Mongo::db('user')->find($record->_id);
+				// }
 				$html .= $this->htmlTag("div", array("class" => "inline-flow icon-cloud icon"), $this->view->iconLink($record));
 			}			
 		}

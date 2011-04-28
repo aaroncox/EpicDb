@@ -19,7 +19,7 @@ class EpicDb_Mongo_Profile_User extends EpicDb_Mongo_Profile
 	  if (!is_array($this->_requirements)) $this->_requirements = array();
 	  $this->_requirements += array(
 			'user' => array('Document:MW_Auth_Mongo_User', 'AsReference', 'Required'),
-			'following' => array('DocumentSet'),
+			'following' => array('DocumentSet:EpicDb_Mongo_DocumentSet_Dynamic'),
 			'following.$' => array('Document:MW_Mongo_Document', 'AsReference', 'Required'),
 	    );
 	  $return = parent::__construct($data, $config);
