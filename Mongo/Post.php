@@ -167,7 +167,7 @@ class EpicDb_Mongo_Post extends MW_Auth_Mongo_Resource_Document implements EpicD
 	}
 	
 	public function save() {
-		if (!$this->touched) {
+		if (!$this->touched && $this->tags->getTag('author')) {
 			$this->touched = $this->_created;
 			$this->touchedBy = $this->tags->getTag('author');
 		}
@@ -178,6 +178,18 @@ class EpicDb_Mongo_Post extends MW_Auth_Mongo_Resource_Document implements EpicD
 			$this->_viewers->addDocument(MW_Auth_Mongo_Role::getGroup(MW_Auth_Group_User::getInstance()));
 		}
 		return parent::save();
+	}
+	
+	public function findComments($limit = 10, $query = array(), $sort = array()) {
+		// var_dump($this->createReference());
+		$query = array(
+			"_parent" => $this->createReference(),
+			'_deleted' => array(
+					'$exists' => false
+				)
+		)+$query;
+		$sort = array("_created" => 1);
+		return $results = EpicDb_Mongo::db('comment')->fetchAll($query, $sort, $limit);
 	}
 
 	// This is for watching queries as they execute on posts, perhaps we could enable it by a flag? or mode? I just used it for debugging queries.
