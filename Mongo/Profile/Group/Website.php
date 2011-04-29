@@ -7,7 +7,7 @@
 class EpicDb_Mongo_Profile_Group_Website extends EpicDb_Mongo_Profile_Group
 {
 	protected static $_documentType = "website";
-	protected $_formClass = 'EpicDb_Form_Profile_Website';
+	protected static $_editForm = 'EpicDb_Form_Profile_Group_Website';
 	
 	public function isAdmin() {}
 	public function isMe() {}
