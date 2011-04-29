@@ -26,6 +26,13 @@ class EpicDb_View_Helper_ProfileSummary extends MW_View_Helper_HtmlTag
 				'icon' => 'key'
 			));
 		}
+		$buttons .= $this->view->button(array(
+			'action' => 'manual-crawl',
+			'profile' => $profile
+		), 'profile', true, array(
+			'text' => 'Scan RSS',
+			'icon' => 'key',
+		));
 		if(EpicDb_Auth::getInstance()->getUserProfile()) {
 			$buttons .= $this->view->followButton($profile);
 		}
@@ -38,7 +45,7 @@ class EpicDb_View_Helper_ProfileSummary extends MW_View_Helper_HtmlTag
 			$placeholder->widget($this->htmlTag("h3", array(), $profile->name."'s Followers")."".$this->view->iconCloud($followers));			
 		}
 		
-		if($profile->following->export() != array()) {
+		if($profile->following && $profile->following->export() != array()) {
 			$placeholder->widget($this->htmlTag("h3", array(), $profile->name." is following")."".$this->view->iconCloud($profile->following));			
 		}
 	}

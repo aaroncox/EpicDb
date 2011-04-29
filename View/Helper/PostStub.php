@@ -39,7 +39,7 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 	}
 	
 	public function postStub($post) {
-		$author = $post->tags->getTag("author");
+		$author = $post->tags->getTag("author")?:$post->tags->getTag("source");
 		
 		$parent = $post->_parent;
 		switch($post->_type) {
@@ -48,17 +48,18 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 				while($parent->_parent->_id) {
 					$parent = $parent->_parent;
 				}
+				if($parent->export() == array()) return null;
+				$post = $parent;
 				break;
 		}
-		if($parent->export() == array()) return null;
 		return $this->htmlTag("div", array("class" => "post-stub rounded center-shadow"),
 			// $this->htmlTag("div", array("class" => "inline-flow"), ">")."". // Minimize / Maximize
-			$this->htmlTag("div", array("class" => "stub-score rounded text-verylarge ".$this->color($this->scoring($parent?:$post))), $this->scoring($parent?:$post))."".
-			$this->htmlTag("div", array("class" => "stub-title rounded text-large center-shadow"), $this->view->postLink($parent?:$post))."".
+			$this->htmlTag("div", array("class" => "stub-score rounded text-verylarge ".$this->color($this->scoring($post))), $this->scoring($post))."".
+			$this->htmlTag("div", array("class" => "stub-title rounded text-large center-shadow"), $this->view->postLink($post))."".
 				$this->htmlTag("div", array("class" => "stub-meta inline-flow font-sans"), 
 					$this->htmlTag("span", array(), $this->view->profileLink($author))."".
 					$this->htmlTag("span", array(), " ".$this->whatsThis($post))."".
-					$this->htmlTag("span", array(), " ".$this->toWhat($parent?:$post))."".
+					$this->htmlTag("span", array(), " ".$this->toWhat($post))."".
 					$this->htmlTag("span", array(), " ○ ".$this->view->timeAgo($post->_created))
 				)			
 		);
