@@ -13,13 +13,13 @@ class EpicDb_Crawler
 	public static function crawl($profile, $throwErrors = true) {
 		// echo "Starting on ".$profile->feed;
 		$config = array(
-     'adapter' => 'Zend_Http_Client_Adapter_Proxy',
-     'timeout' => '15',
-     'useragent' => '',
-     'proxy_host' => '192.168.1.7',
-     'proxy_port' => '8888',
-     'proxy_user' => '', 
-     'proxy_pass' => '',
+     // 'adapter' => 'Zend_Http_Client_Adapter_Proxy',
+     // 'timeout' => '15',
+     // 'useragent' => '',
+     // 'proxy_host' => '192.168.1.7',
+     // 'proxy_port' => '8888',
+     // 'proxy_user' => '', 
+     // 'proxy_pass' => '',
 			'encoding'      => 'UTF-8'
 
 		);
@@ -36,7 +36,7 @@ class EpicDb_Crawler
 		}
 		if($profile->_deleted) return;
 		foreach($feed as $idx => $entry) {
-			$article = EpicDb_Mongo_Post_Article_RSS::retrieveArticle($profile, $entry);
+			$article = EpicDb_Mongo::db('article-rss')->retrieveArticle($profile, $entry);
 			$purifier = new MW_Filter_HtmlPurifier(array(array("HTML.Nofollow", 1)));
 
 			$article->title = $entry->getTitle();
