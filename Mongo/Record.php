@@ -8,7 +8,7 @@
  * @param undocumented class
  * @package undocumented class
  **/
-class EpicDb_Mongo_Record extends MW_Mongo_Document implements EpicDb_Interface_Cardable
+class EpicDb_Mongo_Record extends MW_Auth_Mongo_Resource_Document implements EpicDb_Interface_Cardable
 {
 	public $summaryHelper = 'recordSummary';
 	
@@ -50,6 +50,10 @@ class EpicDb_Mongo_Record extends MW_Mongo_Document implements EpicDb_Interface_
 		return array(
 			'is a' => $view->recordTypeLink($this)
 		);
+	}
+	
+	public function getParentResource() {
+		return new EpicDb_Auth_Resource_Record();
 	}
 	
 	public function getMyFollowers() {
