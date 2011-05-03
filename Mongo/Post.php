@@ -8,6 +8,8 @@
  **/
 class EpicDb_Mongo_Post extends MW_Auth_Mongo_Resource_Document implements EpicDb_Interface_Revisionable
 {
+	public $contextHelper = 'context';
+	
 	protected static $_collectionName = 'posts';
 	protected static $_documentType = null;
 	protected static $_documentSetClass = 'EpicDb_Mongo_Posts';
@@ -59,42 +61,6 @@ class EpicDb_Mongo_Post extends MW_Auth_Mongo_Resource_Document implements EpicD
 		if (isset($data['_type'])) {
 			return EpicDb_Mongo::dbClass($data['_type']);
 		}
-	}
-
-	public function getProfileFeed($profile, $query = array(), $sort = array("_created" => -1), $limit = 20, $skip = false) {
-		// Flag to hide any "deleted" messages
-		// var_dump($profile	->export());
-		// exit;/
-		$query['_deleted'] = array('$exists' => false);
-		// Show any messages that I have posted
-		$query['$or'][] = array('_profile' => $profile->createReference());
-		// Show any messages that are directed at me or I'm tagged in
-		$query['$or'][] = array(
-			'tags' => array(
-				'$elemMatch' => array(
-					'ref' => $profile->createReference(),
-				)
-			)
-		);
-		// Make sure I have the permissions to view this post
-		foreach(EpicDb_Auth::getInstance()->getUserRoles() as $role) {
-			$roles[] = $role->createReference();
-		}
-		// $query['_viewers'] = array('$in' => $roles);
-
-		$results = EpicDb_Mongo::db('post')->fetchAll($query, $sort, $limit, $skip);
-		// var_dump($query, $results->export()); exit;
-		// var_dump($results->export(), $query, $sort, $limit); exit;
-		// foreach($results as $idx => $result) {
-		// 	if($result->id == "200") {
-		// 		foreach($result->_viewers as $viewer) {
-		// 			// var_dump($viewer->export());
-		// 		}
-		// 		// var_dump($result->export()); exit;
-		// 	}
-		// }
-		// var_dump($query, $results->export()); exit;
-		return $results;
 	}
 
 	public function findResponses($limit = 10, $query = array(), $sort = array()) {
@@ -192,6 +158,24 @@ class EpicDb_Mongo_Post extends MW_Auth_Mongo_Resource_Document implements EpicD
 		return $results = EpicDb_Mongo::db('comment')->fetchAll($query, $sort, $limit);
 	}
 
+	public function getRelatedPosts() {
+		$tags = $this->tags->getTags('tag'); 
+		if(empty($tags)) return array();
+		// var_dump($tags); exit;
+		$query = array();
+		$sort = array("_created" => -1);
+		foreach($tags as $tag) {
+			$query['$or'][] = array(
+				'tags' =>
+					array('$elemMatch' => array(
+						'reason' => 'tag',
+						'ref' => $tag->createReference(),
+						)
+					)				
+				);
+		}
+		return $results = EpicDb_Mongo::db('post')->fetchAll($query, $sort, 10);
+	}
 	// This is for watching queries as they execute on posts, perhaps we could enable it by a flag? or mode? I just used it for debugging queries.
 	// public static function fetchAll($query = array(), $sort = array(), $limit = false, $skip = false) {
 	// 	$writer = new Zend_Log_Writer_Firebug();
