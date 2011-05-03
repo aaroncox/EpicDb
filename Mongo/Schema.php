@@ -26,6 +26,7 @@ class EpicDb_Mongo_Schema extends MW_Mongo_Schema {
 		'answer' => 'EpicDb_Mongo_Post_Question_Answer',
 		'comment' => 'EpicDb_Mongo_Post_Comment',
 		'article-rss' => 'EpicDb_Mongo_Post_Article_RSS',
+		'wiki' => 'EpicDb_Mongo_Wiki',
 		// votes
 		'vote' => 'EpicDb_Mongo_Vote',
 
