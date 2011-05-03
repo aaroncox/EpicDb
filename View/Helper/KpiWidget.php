@@ -19,7 +19,7 @@ class EpicDb_View_Helper_KpiWidget extends MW_View_Helper_HtmlTag
 		$label = "";
 		if(isset($params['class'])) $class = $params['class'];
 		if(isset($params['label'])) $label = $params['label'];
-		if(isset($params['description'])) $label .= $this->htmlTag("p", array("text-verysmall font-sans"), $params['description']);
+		if(isset($params['description'])) $label .= $this->htmlTag("p", array("class" => "text-verysmall font-sans"), $params['description']);
 		
 		// Return the widget
 		return $this->htmlTag("div", array("class" => "kpi-stat ".$class), 

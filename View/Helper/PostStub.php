@@ -22,13 +22,19 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 	public function whatsThis($post) {
 		switch($post->_type) {
 			case 'question-comment':
-				$type = 'comment';
+				$type = ' comment';
+				break;
+			case 'article-rss':
+				$type = 'n Article';
+				break;
+			case "answer":
+				$type = 'n answer';
 				break;
 			default:
-				$type = $post->_type;
+				$type = ' '.$post->_type;
 				break;
 		}
-		return " posted a ".$type;
+		return " posted a".$type;
 	}
 	
 	public function scoring($post) {
@@ -38,7 +44,7 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 		return 0;
 	}
 	
-	public function postStub($post) {
+	public function postStub($post, $options = array()) {
 		$author = $post->tags->getTag("author")?:$post->tags->getTag("source");
 		
 		$parent = $post->_parent;
@@ -49,13 +55,18 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 					$parent = $parent->_parent;
 				}
 				if($parent->export() == array()) return null;
-				$post = $parent;
+				// $post = $parent;
 				break;
 		}
-		return $this->htmlTag("div", array("class" => "post-stub rounded center-shadow"),
+
+		if($parent->export() == array()) {
+			$parent = $post;
+		}
+		
+		return $this->htmlTag("div", array("class" => "post-stub rounded center-shadow"), 
 			// $this->htmlTag("div", array("class" => "inline-flow"), ">")."". // Minimize / Maximize
 			$this->htmlTag("div", array("class" => "stub-score rounded text-verylarge ".$this->color($this->scoring($post))), $this->scoring($post))."".
-			$this->htmlTag("div", array("class" => "stub-title rounded text-large center-shadow"), $this->view->postLink($post))."".
+			$this->htmlTag("div", array("class" => "stub-title rounded text-large center-shadow"), $this->view->postLink($parent?:$post))."".
 				$this->htmlTag("div", array("class" => "stub-meta inline-flow font-sans"), 
 					$this->htmlTag("span", array(), $this->view->profileLink($author))."".
 					$this->htmlTag("span", array(), " ".$this->whatsThis($post))."".

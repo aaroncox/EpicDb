@@ -20,7 +20,7 @@ class EpicDb_View_Helper_FollowButton extends MW_View_Helper_HtmlTag
 					 $type => $record,
 					'action' => 'unfollow',
 				), $route, true, array(
-					'text' => 'unfollow',
+					'text' => 'Unfollow',
 					'icon' => 'gear',
 				));							
 			} else {
@@ -28,7 +28,7 @@ class EpicDb_View_Helper_FollowButton extends MW_View_Helper_HtmlTag
 					 $type => $record,
 					'action' => 'follow',
 				), $route, true, array(
-					'text' => 'follow',
+					'text' => 'Follow',
 					'icon' => 'gear',
 				));			
 			}
