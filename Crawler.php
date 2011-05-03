@@ -13,13 +13,13 @@ class EpicDb_Crawler
 	public static function crawl($profile, $throwErrors = true) {
 		// echo "Starting on ".$profile->feed;
 		$config = array(
-     // 'adapter' => 'Zend_Http_Client_Adapter_Proxy',
-     // 'timeout' => '15',
-     // 'useragent' => '',
-     // 'proxy_host' => '192.168.1.7',
-     // 'proxy_port' => '8888',
-     // 'proxy_user' => '', 
-     // 'proxy_pass' => '',
+     'adapter' => 'Zend_Http_Client_Adapter_Proxy',
+     'timeout' => '15',
+     'useragent' => '',
+     'proxy_host' => '192.168.1.7',
+     'proxy_port' => '8888',
+     'proxy_user' => '', 
+     'proxy_pass' => '',
 			'encoding'      => 'UTF-8'
 
 		);
