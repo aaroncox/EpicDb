@@ -24,10 +24,10 @@ class EpicDb_View_Helper_WikiWrapper extends Zend_View_Helper_Abstract
 			}
 		}
 		return "<div class='wiki-block rounded center-shadow padded-10'>
-			<h2 class='section-header'>			
+			<h2 class='section-header'>
 				".$header." 
 			</h2>
-			<div class='".$classes."'>
+			<div class='wiki-content ".$classes."'>
 			".$content."
 			</div>
 		</div>";
