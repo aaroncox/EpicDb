@@ -49,11 +49,12 @@ class EpicDb_View_Helper_QuestionStub extends MW_View_Helper_HtmlTag
 		// Loop through and generate tag block
 		foreach($question->tags as $tag) {
 			if($tag->reason == 'tag') {
-				$tags .= $this->view->recordLink($tag->ref, array(
-					"class" => "post-tag rounded", 
-					"text" => 
-						$this->htmlTag("img", array("class" => "tag-icon", "src" => $tag->ref->getIcon()), " ")."".
-						$this->htmlTag("span", array("class" => "tag-name font-serif"), $tag->ref->name)
+				$state = 'ui-state-default';
+				if(EpicDb_Auth::getInstance()->getUserProfile()->isFollowing($tag->ref)) $state = 'ui-state-active';
+				$tags .= $this->view->card($tag->ref, array(
+					"class" => "post-tag ".$state,
+					"iconClass" => "tag-icon", 
+					"content" => array(),
 				));
 			}
 		}

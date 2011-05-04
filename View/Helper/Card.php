@@ -33,9 +33,14 @@ class EpicDb_View_Helper_Card extends MW_View_Helper_HtmlTag
 		}
 		return $record->getIcon();
 	}
+	public function setTagType($type) {
+		$this->_tagType = $type;
+		return $this;
+	}
+	protected $_tagType = "h4";
 	public function cardDetails($record, $params = null) {
 		$details = '';
-		$details .= $this->htmlTag("h2", array('class' => 'text-medium'), $this->link($record));
+		$details .= $this->htmlTag($this->_tagType, array('class' => 'text-medium'), $this->link($record));
 		if(isset($params['content'])) {
 			foreach($params['content'] as $qualifier => $content) {
 				$details .= $this->_detail($qualifier, $content);
@@ -64,6 +69,9 @@ class EpicDb_View_Helper_Card extends MW_View_Helper_HtmlTag
 	}
 
 	public function card($record, $params = array()) {
+		// Reset for other times
+		$this->_tagType = 'h4';
+		if(isset($params['tagType'])) $this->setTagType($params['tagType']);
 		if(!$record) return $this->unknownCard($params);
 		if(!isset($params['extra'])) $params['extra'] = '';
 		if(!isset($params['class'])) $params['class'] = '';
@@ -72,7 +80,7 @@ class EpicDb_View_Helper_Card extends MW_View_Helper_HtmlTag
 			$params['class'] .= " faction-".$character->faction;
 		}
 		if(!$record instanceOf EpicDb_Interface_Cardable) return '';
-		return $this->htmlTag("div", array('class' => 'inline-flow db-card rounded font-sans '.$params['class']), 
+		return $this->htmlTag("div", array('class' => 'inline-flow ui-state-default db-card rounded font-sans '.$params['class']), 
 			$this->htmlTag("div", array('class' => 'record-icon inline-flow rounded '.$params['iconClass']), 
 				$this->cardScore($record)."".
 				$this->link($record, array("text" => $this->htmlTag("img", array('src' => $this->getIcon($record), 'alt' => $record->name))))

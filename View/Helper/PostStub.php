@@ -63,7 +63,7 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 			$parent = $post;
 		}
 		
-		return $this->htmlTag("div", array("class" => "post-stub rounded center-shadow"), 
+		return $this->htmlTag("div", array("class" => "post-stub rounded center-shadow ui-state-default"), 
 			// $this->htmlTag("div", array("class" => "inline-flow"), ">")."". // Minimize / Maximize
 			$this->htmlTag("div", array("class" => "stub-score rounded text-verylarge ".$this->color($this->scoring($post))), $this->scoring($post))."".
 			$this->htmlTag("div", array("class" => "stub-title rounded text-large center-shadow"), $this->view->postLink($parent?:$post))."".
