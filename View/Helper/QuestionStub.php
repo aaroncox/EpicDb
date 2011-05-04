@@ -50,7 +50,10 @@ class EpicDb_View_Helper_QuestionStub extends MW_View_Helper_HtmlTag
 		foreach($question->tags as $tag) {
 			if($tag->reason == 'tag') {
 				$state = 'ui-state-default';
-				if(EpicDb_Auth::getInstance()->getUserProfile()->isFollowing($tag->ref)) $state = 'ui-state-active';
+				$profile = EpicDb_Auth::getInstance()->getUserProfile();
+				if($profile && $profile->isFollowing($tag->ref)) {
+					$state = 'ui-state-active';
+				}
 				$tags .= $this->view->card($tag->ref, array(
 					"class" => "post-tag ".$state,
 					"iconClass" => "tag-icon", 
