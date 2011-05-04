@@ -44,6 +44,32 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 		return 0;
 	}
 	
+	public function voteUrl($post, $vote) {
+		return $this->view->url(array(
+			'type' => $post->_type,
+			'id' => $post->id,
+			'vote' => $vote,
+		), 'vote-cast', true);
+	}
+	
+	public function stubVote($post) {
+		$score = 0;
+		if(isset($post->votes['score'])) $score = $post->votes['score'];
+		$vote = null;
+		if($profile = EpicDb_Auth::getInstance()->getUserProfile()) {
+			$vote = EpicDb_Mongo::db('vote')->getVoteByProfile($post, $profile);			
+		}
+		// Return the widget
+		return 
+			$this->htmlTag("a", array(
+				"style" => "display: inline-block;",
+				"title" => "This content is a good, entertaining and helpful.",
+				"alt" => "Vote Up",
+				"class" => "vote-link vote-up ui-icon ui-icon-plusthick rounded ".(($vote && $vote->vote == "up")?" ui-state-active":" ui-state-default"),
+				"href" => ($profile)? $this->voteUrl($post, "up"): '#',
+			), " ");
+	}
+	
 	public function postStub($post, $options = array()) {
 		$author = $post->tags->getTag("author")?:$post->tags->getTag("source");
 		
@@ -63,16 +89,22 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 			$parent = $post;
 		}
 		
-		return $this->htmlTag("div", array("class" => "post-stub rounded center-shadow ui-state-default"), 
+		return $this->htmlTag("div", array("class" => "post-stub rounded center-shadow ui-state-default", "id" => $post->_type."-".$post->id), 
 			// $this->htmlTag("div", array("class" => "inline-flow"), ">")."". // Minimize / Maximize
-			$this->htmlTag("div", array("class" => "stub-score rounded text-verylarge ".$this->color($this->scoring($post))), $this->scoring($post))."".
-			$this->htmlTag("div", array("class" => "stub-title rounded text-large center-shadow"), $this->view->postLink($parent?:$post))."".
-				$this->htmlTag("div", array("class" => "stub-meta inline-flow font-sans"), 
-					$this->htmlTag("span", array(), $this->view->profileLink($author))."".
-					$this->htmlTag("span", array(), " ".$this->whatsThis($post))."".
-					$this->htmlTag("span", array(), " ".$this->toWhat($post))."".
-					$this->htmlTag("span", array(), " ○ ".$this->view->timeAgo($post->_created))
-				)			
+			$this->htmlTag("div", array("class" => "stub-score rounded text-verylarge vote-count ".$this->color($this->scoring($post))), 
+				$this->scoring($post)
+			)."".
+			$this->htmlTag("div", array("class" => "stub-title rounded text-large center-shadow"), 
+				$this->htmlTag("div", array("class" => "stub-vote rounded inline-flow", "style" => "float: right"), $this->stubVote($post))."".
+				$this->view->postLink($post, array("text" => $parent->title?:$post->title))
+			)."".
+			$this->htmlTag("div", array("class" => "stub-meta inline-flow font-sans"), 
+				$this->htmlTag("span", array(), $this->view->profileLink($author))."".
+				$this->htmlTag("span", array(), " ".$this->whatsThis($post))."".
+				$this->htmlTag("span", array(), " ".$this->toWhat($post))."".
+				$this->htmlTag("span", array(), " ○ ".$this->view->timeAgo($post->_created))
+			)."".
+			$this->htmlTag("div", array("class" => "stub-loadin"), ' ')	
 		);
 	}
 	
