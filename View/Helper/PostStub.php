@@ -58,6 +58,8 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 		$vote = null;
 		if($profile = EpicDb_Auth::getInstance()->getUserProfile()) {
 			$vote = EpicDb_Mongo::db('vote')->getVoteByProfile($post, $profile);			
+		} else {
+			return ' ';
 		}
 		// Return the widget
 		return 

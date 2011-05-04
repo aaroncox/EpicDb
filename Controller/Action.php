@@ -38,7 +38,7 @@ class EpicDb_Controller_Action extends MW_Controller_Action
 		if ($this->_userProfile) return $this->_userProfile;
 		if(!MW_Auth::getInstance()->getUser()) {
 			if($this->getRequest()->isXmlHttpRequest()) {
-				echo "You are not logged in!";
+				// echo "You are not logged in!";
 			}
 			return null;
 		}
