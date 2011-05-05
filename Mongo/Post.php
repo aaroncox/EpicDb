@@ -74,8 +74,9 @@ class EpicDb_Mongo_Post extends MW_Auth_Mongo_Resource_Document implements EpicD
 		return $results = EpicDb_Mongo::db('post')->fetchAll($query, $sort, $limit);
 	}
 
-	public static function getTagsByUsage($limit = 40) {
+	public static function getTagsByUsage($limit = 99) {
 		// TODO - XHProf Improvement: This function eats up about 1 second of processing time, needs caching or something.
+		// TODO - Actually it crashes as soon as it finds a user tagged as a tag, with 'unknown collection profiles'.
 		$query = array();
 		$map = new MongoCode("function() {
 			this.tags.forEach(function(ref) {
