@@ -17,5 +17,4 @@ class EpicDb_Mongo_Post_Question_Answer extends EpicDb_Mongo_Post_Question imple
 	    '_parent' => array('Document:EpicDb_Mongo_Post_Question', 'AsReference', 'Required'), 
 	  );
 
-
 } // END class EpicDb_Mongo_Post_Question_Answer

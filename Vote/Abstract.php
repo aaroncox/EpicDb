@@ -112,6 +112,9 @@ abstract class EpicDb_Vote_Abstract {
 	{
 		if ($this->_error = $this->isDisabled()) return false;
 		if ($this->hasCast()) {
+			if ($this->date > mktime() - 60*60*2) {
+				return $this->uncast();
+			}
 			$this->_error = "You have already cast this vote";
 			return false;
 		}
@@ -202,7 +205,7 @@ abstract class EpicDb_Vote_Abstract {
 	 **/
 	public function __get($columnName)
 	{
-		return $this->_data->$columName;
+		return $this->_data->$columnName;
 	}
 
 	/**

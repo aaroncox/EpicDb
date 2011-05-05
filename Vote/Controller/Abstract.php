@@ -12,6 +12,11 @@ abstract class EpicDb_Vote_Controller_Abstract extends MW_Controller_Action
 {
 	public function castAction()
 	{
+		// PROPOSAL!!!!
+		if (!$this->getRequest()->isPost() || !$this->_request->isXmlHttpRequest()) {
+			throw new Exception("Nope.");
+		}
+
 		$query = array(
 			'id' => (int) $this->getRequest()->getParam('id')
 		);
@@ -28,6 +33,7 @@ abstract class EpicDb_Vote_Controller_Abstract extends MW_Controller_Action
 			"error" => $vote->getError(),
 			"newScore" => EpicDb_Vote::countVotes($post),
 			"yourVote" => $value,
+			"hasCast" => $vote->hasCast(),
 		);
 
 		$params = $this->getRequest()->getParams();
