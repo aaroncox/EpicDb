@@ -56,11 +56,11 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 		$buttons = "";
 		if ($post instanceOf EpicDb_Vote_Interface_Votable) {
 			if (!$post instanceOf EpicDb_Vote_Interface_UpOnly) {
-				$buttons .= $this->view->voteWidget($post)->makeVoteButton($post, 'down');
+				$buttons .= $this->view->voteWidget($post)->makeVoteButton('down');
 			}
-			$buttons .= $this->view->voteWidget($post)->makeVoteButton($post, 'up');
+			$buttons .= $this->view->voteWidget($post)->makeVoteButton('up');
 			if ($post instanceOf EpicDb_Vote_Interface_Acceptable) {
-				$buttons .= $this->view->voteWidget($post)->makeVoteButton($post, 'accept');
+				$buttons .= $this->view->voteWidget($post)->makeVoteButton('accept');
 			}
 		}
 		return $buttons;

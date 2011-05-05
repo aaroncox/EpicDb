@@ -24,8 +24,9 @@ class EpicDb_View_Helper_VoteWidget extends MW_View_Helper_HtmlTag
 		'accept' => 'ui-icon-check',
 	);
 
-	public function makeVoteButton($post, $vote)
+	public function makeVoteButton($vote)
 	{
+		$post = $this->_post;
 		$dbVote = null;
 		$tagOpts = array(
 			"style" => "display: inline-block;",
@@ -45,32 +46,56 @@ class EpicDb_View_Helper_VoteWidget extends MW_View_Helper_HtmlTag
 				$tagOpts["title"] = $dbVote->linkTitle;
 				$tag = "a";
 			}
-			return $this->htmlTag($tag, $tagOpts, " ");
+			return $this->view->htmlTag($tag, $tagOpts, " ");
 		} else {
 			return "";
 		}
 		
 	}
+	protected $_post = null;
+	protected $_opts = array();
 
-	public function voteWidget($post) {
-		// Some default settings
+	public function render()
+	{
+		$post = $this->_post;
+		if (!$post) {
+			return "";
+		}
 		$score = 0;
 		if(isset($post->votes['score'])) $score = $post->votes['score'];
 		// Return the widget
-		$voteUp = $this->makeVoteButton($post, "up", "This question/answer is a good question and is helpful");
 		$content = "";
-		$content .= $this->htmlTag("p", array("class" => "text-verysmall font-sans", "style" => "margin: 5px 0; font-weight: bold;"), "VOTES");
-		$content .= $this->makeVoteButton($post, "up");
-		$content .= $this->htmlTag("p", array("class" => "ui-widget-content vote-count".$this->color($score)), $score);
-		$content .= $this->makeVoteButton($post, "down");
-		if ($post instanceOf EpicDb_Vote_Interface_Acceptable) {
-			if ($post->votes['accept']) {
-				$content .= "<div class='is-accepted tc-shadow tc-epic'> ✓ </div>";
-			}
-			$content .= $this->htmlTag("p", array(), $this->makeVoteButton($post, "accept")."");
+		// Move this somewhere, I haven't found it yet
+		if (!empty($this->_opts['title'])) {
+			$content .= $this->view->htmlTag("p", array(
+					"class" => "text-verysmall font-sans", 
+					"style" => "margin: 5px 0; font-weight: bold;"
+				), $this->_opts['title']);
 		}
+		if ($post instanceOf EpicDb_Vote_Interface_Votable) {
+			$content .= $this->makeVoteButton("up");
+			// using another htmlTag so we don't render using our render ours up...
+			$content .= $this->view->htmlTag("p", array("class" => "ui-widget-content vote-count".$this->color($score)), $score);
+			if (!$post instanceOf EpicDb_Vote_Interface_UpOnly) {
+				$content .= $this->makeVoteButton("down");
+			}
+			if ($post instanceOf EpicDb_Vote_Interface_Acceptable) {
+				if ($post->votes['accept']) {
+					$content .= "<div class='is-accepted tc-shadow tc-epic'> ✓ </div>";
+				}
+				$content .= $this->view->htmlTag("p", array(), $this->makeVoteButton("accept")."");
+			}
+		}
+		$this->htmlTag("div", array("class" => 'vote-widget ' . @$this->_opts['class'] ?: ''), $content);
+		return parent::render();
+	}
+	
+	public function voteWidget($post, array $opts = array()) {
+		if ($post) $this->_post = $post;
+		$this->_opts = $opts;
+		// Some default settings
 		
-		return $this->htmlTag("div", array("class" => "post-vote"), $content);
+		return $this;
 	}
 
 	public function color($value) {
