@@ -33,19 +33,22 @@ class EpicDb_View_Helper_VoteWidget extends MW_View_Helper_HtmlTag
 			"class" => "vote-link vote-".$vote." ui-icon ".$this->_iconClass[$vote]." rounded ",
 		);
 		$tag = "span";
-		$dbVote = EpicDb_Vote::factory( $post, $vote );
-		if ($message = $dbVote->isDisabled()) {
-			if ($vote == "accept") return "";
-			$tagOpts["class"] .= " ui-state-disabled";
-			$tagOpts["title"] = $message;
+		if ($dbVote = EpicDb_Vote::factory( $post, $vote )) {
+			if ($message = $dbVote->isDisabled()) {
+				if ($vote == "accept") return "";
+				$tagOpts["class"] .= " ui-state-disabled";
+				$tagOpts["title"] = $message;
+			} else {
+				$tagOpts["data-voteurl"] = $this->voteUrl($post, $vote);
+				$tagOpts["class"] .= (( $dbVote && $dbVote->hasCast() ) ? " ui-state-active" : " ");
+				$tagOpts["href"] = "#";
+				$tagOpts["title"] = $dbVote->linkTitle;
+				$tag = "a";
+			}
+			return $this->htmlTag($tag, $tagOpts, " ");
 		} else {
-			$tagOpts["data-voteurl"] = $this->voteUrl($post, $vote);
-			$tagOpts["class"] .= (( $dbVote && $dbVote->hasCast() ) ? " ui-state-active" : " ");
-			$tagOpts["href"] = "#";
-			$tagOpts["title"] = $dbVote->linkTitle;
-			$tag = "a";
+			return "";
 		}
-		return $this->htmlTag($tag, $tagOpts, " ");
 		
 	}
 
