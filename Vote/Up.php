@@ -25,6 +25,10 @@ class EpicDb_Vote_Up extends EpicDb_Vote_Abstract {
 		// check for an existing downvote first
 		$downVote = new EpicDb_Vote_Down($this->_userProfile, $this->_post);
 		if ($downVote->hasCast()) {
+			if ($downVote->date < mktime() - 60*60*2) {
+				$this->_error = "You can no longer change your vote";
+				return false;
+			}
 			$downVote->uncast();
 		}
 
