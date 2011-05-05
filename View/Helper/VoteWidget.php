@@ -35,6 +35,7 @@ class EpicDb_View_Helper_VoteWidget extends MW_View_Helper_HtmlTag
 		$tag = "span";
 		$dbVote = EpicDb_Vote::factory( $post, $vote );
 		if ($message = $dbVote->isDisabled()) {
+			if ($vote == "accept") return "";
 			$tagOpts["class"] .= " ui-state-disabled";
 			$tagOpts["title"] = $message;
 		} else {
