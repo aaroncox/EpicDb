@@ -18,7 +18,7 @@ class EpicDb_View_Helper_QuestionStub extends MW_View_Helper_HtmlTag
 		$answerCount = $question->findAnswers()->count();
 
 		$answerStatus = ' unanswered';
-		if($question->findAnswers(false, array('score.accepted' => array('$gt' => 0)))->count() > 0) {
+		if($question->findAnswers(false, array('votes.accept' => array('$gt' => 0)))->count() > 0) {
 			$answerStatus = ' answered-accepted'; 
 		} elseif($answerCount > 0) {
 			$answerStatus = ' answered';
