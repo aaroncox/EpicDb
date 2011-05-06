@@ -19,6 +19,7 @@ abstract class EpicDb_Controller_Cli extends Zend_Controller_Action {
 
 	public function crawlFeedsAction()
 	{
+		
 		$feeders = EpicDb_Mongo::db('profile')->fetchAll(array(
 				'_deleted' => array('$exists'=>false),
 				'feed' => array('$exists'=>true, '$ne' => ''),

@@ -184,6 +184,19 @@ class EpicDb_Mongo_Post extends MW_Auth_Mongo_Resource_Document implements EpicD
 		}
 		return $results = EpicDb_Mongo::db('post')->fetchAll($query, $sort, 10);
 	}
+	
+	public function getPublicPosts() {
+		$query['_deleted'] = array('$exists' => false);
+		$sort = array("_created" => -1);
+		// Make sure I have the permissions to view this post
+		foreach(EpicDb_Auth::getInstance()->getUserRoles() as $role) {
+			$roles[] = $role->createReference();
+		}
+		$query['_viewers'] = array('$in' => $roles);
+
+		$results = EpicDb_Mongo::db('post')->fetchAll($query, $sort);
+		return $results;
+	}
 	// This is for watching queries as they execute on posts, perhaps we could enable it by a flag? or mode? I just used it for debugging queries.
 	// public static function fetchAll($query = array(), $sort = array(), $limit = false, $skip = false) {
 	// 	$writer = new Zend_Log_Writer_Firebug();

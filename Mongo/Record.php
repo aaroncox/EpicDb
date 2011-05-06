@@ -11,6 +11,7 @@
 class EpicDb_Mongo_Record extends MW_Auth_Mongo_Resource_Document implements EpicDb_Interface_Cardable
 {
 	public $summaryHelper = 'recordSummary';
+	public $contextHelper = 'recordContext';
 	
 	protected static $_collectionName = 'records';
 	protected static $_documentType = null;
@@ -68,5 +69,19 @@ class EpicDb_Mongo_Record extends MW_Auth_Mongo_Resource_Document implements Epi
 		$forms['changeIcon'] = new EpicDb_Form_Record_Icon(array("record" => $this, "title" => "Change Icon", "description" => "Change the Icon that this record uses, image should be an 80x80 jpg/png/gif."));
 		return $forms;
 	}
+	
+	public function getRelatedPosts() {
+		$sort = array("_created" => -1);
+		$query = array(
+			'tags' =>
+				array('$elemMatch' => array(
+					'reason' => 'tag',
+					'ref' => $this->createReference(),
+					)
+				)				
+			);
+		return $results = EpicDb_Mongo::db('post')->fetchAll($query, $sort);
+	}
+	
 	
 } // END class EpicDb_Mongo_Record

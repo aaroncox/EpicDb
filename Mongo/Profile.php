@@ -71,7 +71,7 @@ class EpicDb_Mongo_Profile extends MW_Auth_Mongo_Resource_Document implements Ep
 		);
 	}
 	
-	public function getFollowedPosts($query = array(), $sort = array("_created" => -1), $limit = 20, $skip = false) {
+	public function getFollowedPosts($query = array(), $sort = array("_created" => -1)) {
 		// Flag to hide any "deleted" messages
 		// var_dump($profile	->export());
 		// exit;/
@@ -97,6 +97,7 @@ class EpicDb_Mongo_Profile extends MW_Auth_Mongo_Resource_Document implements Ep
 		$query['$or'][] = array(
 			'tags' => array(
 				'$elemMatch' => array(
+					'reason' => 'tag',
 					'ref' => $this->createReference()
 				)
 			)
@@ -115,7 +116,7 @@ class EpicDb_Mongo_Profile extends MW_Auth_Mongo_Resource_Document implements Ep
 		}
 		$query['_viewers'] = array('$in' => $roles);
 
-		$results = EpicDb_Mongo::db('post')->fetchAll($query, $sort, $limit, $skip);
+		$results = EpicDb_Mongo::db('post')->fetchAll($query, $sort);
 		return $results;
 	}
 	
