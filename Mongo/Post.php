@@ -139,10 +139,17 @@ class EpicDb_Mongo_Post extends MW_Auth_Mongo_Resource_Document implements EpicD
 			$this->touchedBy = $this->tags->getTag('author');
 		}
 		// This could probably be handled elsewhere better? Just pushing things forward
-		if($this->_viewers->export() == array()) {
-			// Else lets give everyone access.
-			$this->_viewers->addDocument(MW_Auth_Mongo_Role::getGroup(MW_Auth_Group_Guest::getInstance()));
-			$this->_viewers->addDocument(MW_Auth_Mongo_Role::getGroup(MW_Auth_Group_User::getInstance()));
+
+		// This is how this should be handled...
+		// $this->_viewers->setFromArary($this->getRolesWithPrivilege('view'));
+
+		// This is how it works right now...
+		$viewers = $this->getRolesWithPrivilege('view');
+		for($i = 0; $i < count($viewers); $i++) {
+			$this->_viewers->setProperty($i, $viewers[$i]);
+		}
+		for(;$i<count($this->_viewers); $i++) {
+			$this->_viewers->setProperty($i, null);
 		}
 		return parent::save();
 	}
