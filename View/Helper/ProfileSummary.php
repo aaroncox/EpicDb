@@ -37,6 +37,7 @@ class EpicDb_View_Helper_ProfileSummary extends MW_View_Helper_HtmlTag
 		}
 		if(EpicDb_Auth::getInstance()->getUserProfile()) {
 			$buttons .= $this->view->followButton($profile);
+			$buttons .= $this->view->followButton($profile, array("mode" => "block"));
 		}
 		if($buttons) $placeholder->widget($buttons);
 		

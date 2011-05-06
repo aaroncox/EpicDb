@@ -41,6 +41,7 @@ class EpicDb_Route_Post extends Zend_Controller_Router_Route {
 	public function assemble($data = array(), $reset = false, $encode = false, $partial = false)
 	{
 		$record = false;
+		$postHash = '';
 		if(isset($data['post'])) {
 			$post = $data['post'];
 		} elseif(isset($this->_values['post'])) {
@@ -49,11 +50,6 @@ class EpicDb_Route_Post extends Zend_Controller_Router_Route {
 		if ($post instanceOf EpicDb_Mongo_Post) {
 			$data['type'] = $post->_type;
 			$data['id'] = $post->id;
-			// if ($post->tldr)
-			// {
-			//   $slug = new MW_Filter_Slug();
-			//   $data['slug'] = $slug->filter($post->tldr);
-			// }
 			unset($data['post']);
 		} else {
 			throw new Exception("Expected EpicDb_Mongo_Post, got ".get_class($data['post']));
@@ -64,7 +60,7 @@ class EpicDb_Route_Post extends Zend_Controller_Router_Route {
 			}
 		}
 		$result = parent::assemble($data, $reset, $encode, $partial);
-		return $result;
+		return $result.$postHash;
 	}
 
 	public function getPost($params)

@@ -43,9 +43,12 @@ abstract class EpicDb_Controller_Cli extends Zend_Controller_Action {
 		$posts = EpicDb_Mongo::db('post')->fetchAll();
 		echo "Resaving ".count($posts)." posts...\n";
 		$i = 0;
+		
+		$adapter = new Zend_ProgressBar_Adapter_Console();
+		$bar = new Zend_ProgressBar($adapter, 0, count($posts));
 		foreach($posts as $post) {
 			$i++;
-			if(!($i % 25)) echo "Saved up to ".$i."\n"; 
+			$bar->update($i, 'Saved '.$post->_type.'/'.$post->_id);
 			$post->save();
 		}
 		exit;

@@ -38,4 +38,18 @@ class EpicDb_Auth_Controller_Action_Helper extends MW_Auth_Controller_Action_Hel
 			$result = $userProfile->unfollow($document)->save();
 		}
 	}
+	
+	public function block($document) {
+		$userProfile = $this->getUserProfile();
+		if($document && $userProfile) {
+			$result = $userProfile->block($document)->save();
+		}
+	}
+	
+	public function unblock($document) {
+		$userProfile = $this->getUserProfile();
+		if($document && $userProfile) {
+			$result = $userProfile->unblock($document)->save();
+		}
+	}
 } // END class EpicDb_Auth_Controller_Plugin_UserProfile

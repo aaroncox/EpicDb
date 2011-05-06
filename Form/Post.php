@@ -127,6 +127,7 @@ class EpicDb_Form_Post extends EpicDb_Form
 			$post->_requestType = $this->requestType->getValue();
 		}
 		if($post->_parent && $post->_parent->export() != array()) {
+			$post->tags->tag($post->_parent->tags->getTag('author'), 'responding-to');
 			$post->_parent->bump($me);
 		}
 		return $post->save();
