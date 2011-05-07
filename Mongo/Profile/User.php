@@ -21,6 +21,8 @@ class EpicDb_Mongo_Profile_User extends EpicDb_Mongo_Profile
 			'user' => array('Document:MW_Auth_Mongo_User', 'AsReference', 'Required'),
 			'following' => array('DocumentSet:EpicDb_Mongo_DocumentSet_Dynamic'),
 			'following.$' => array('Document:MW_Mongo_Document', 'AsReference', 'Required'),
+			'blocking' => array('DocumentSet:EpicDb_Mongo_DocumentSet_Dynamic'),
+			'blocking.$' => array('Document:MW_Mongo_Document', 'AsReference', 'Required'),
 	    );
 	  $return = parent::__construct($data, $config);
 	}
@@ -53,6 +55,36 @@ class EpicDb_Mongo_Profile_User extends EpicDb_Mongo_Profile
     }
 		return $this;
   }
+
+  public function isBlocking(MW_Mongo_Document $record)  
+  {
+    $id = (string) $record->_id;
+    foreach ($this->blocking as $key => $target) {
+      if ( (string) $target->_id == $id) {
+        return true;
+      } 
+    }    
+    return false;
+  }
+
+	public function block($record)
+  {
+    if (!$this->isBlocking($record))
+      $this->blocking->addDocument($record);
+		return $this;
+  }
+
+  public function unblock($record)
+  {
+    $id = (string)$record->_id;
+    foreach ($this->blocking as $key => $target) {
+      if ((string)$target->_id == $id) {
+        $this->blocking->setProperty($key, null);
+      }
+    }
+		return $this;
+  }
+
 
 	public static function getProfile($user) {
 		if(!$user) return null;

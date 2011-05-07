@@ -75,7 +75,7 @@ class EpicDb_View_Helper_VoteWidget extends MW_View_Helper_HtmlTag
 		if ($post instanceOf EpicDb_Vote_Interface_Votable) {
 			$content .= $this->makeVoteButton("up");
 			// using another htmlTag so we don't render using our render ours up...
-			$content .= $this->view->htmlTag("p", array("class" => "ui-widget-content vote-count".$this->color($score)), $score);
+			$content .= $this->view->htmlTag("p", array("class" => "rounded vote-count".$this->color($score)), $score);
 			if (!$post instanceOf EpicDb_Vote_Interface_UpOnly) {
 				$content .= $this->makeVoteButton("down");
 			}

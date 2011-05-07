@@ -71,7 +71,7 @@ class EpicDb_Mongo_Profile extends MW_Auth_Mongo_Resource_Document implements Ep
 		);
 	}
 	
-	public function getMyWall($query = array(), $sort = array("_created" => -1), $limit = 20, $skip = false) {
+	public function getFollowedPosts($query = array(), $sort = array("_created" => -1)) {
 		// Flag to hide any "deleted" messages
 		// var_dump($profile	->export());
 		// exit;/
@@ -85,24 +85,38 @@ class EpicDb_Mongo_Profile extends MW_Auth_Mongo_Resource_Document implements Ep
 				)
 			);
 		}
+		foreach($this->blocking as $record) {
+			$query['$nor'][] = array(
+				'tags' => array(
+					'$elemMatch' => array(
+						'ref' => $record->createReference(),
+					)
+				)
+			);
+		}
+		$query['$or'][] = array(
+			'tags' => array(
+				'$elemMatch' => array(
+					'reason' => 'tag',
+					'ref' => $this->createReference()
+				)
+			)
+		);
+		$query['$nor'][] = array(
+			'tags' => array(
+				'$elemMatch' => array(
+					'reason' => 'author',
+					'ref' => $this->createReference()
+				)
+			)
+		);
 		// Make sure I have the permissions to view this post
 		foreach(EpicDb_Auth::getInstance()->getUserRoles() as $role) {
 			$roles[] = $role->createReference();
 		}
 		$query['_viewers'] = array('$in' => $roles);
 
-		$results = EpicDb_Mongo::db('post')->fetchAll($query, $sort, $limit, $skip);
-		// var_dump($query, $results->export()); exit;
-		// var_dump($results->export(), $query, $sort, $limit); exit;
-		// foreach($results as $idx => $result) {
-		// 	if($result->id == "200") {
-		// 		foreach($result->_viewers as $viewer) {
-		// 			// var_dump($viewer->export());
-		// 		}
-		// 		// var_dump($result->export()); exit;
-		// 	}
-		// }
-		// var_dump($query, $results->export()); exit;
+		$results = EpicDb_Mongo::db('post')->fetchAll($query, $sort);
 		return $results;
 	}
 	

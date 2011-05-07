@@ -53,7 +53,7 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 	}
 	
 	public function stubVote($post) {
-		$buttons = "";
+		$buttons = " ";
 		if ($post instanceOf EpicDb_Vote_Interface_Votable) {
 			if (!$post instanceOf EpicDb_Vote_Interface_UpOnly) {
 				$buttons .= $this->view->voteWidget($post)->makeVoteButton('down');
