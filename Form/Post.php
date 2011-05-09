@@ -69,13 +69,15 @@ class EpicDb_Form_Post extends EpicDb_Form
 		if($this->_isNew) {
 			// If we have a new post, lets establish a few things
 			$profile = MW_Auth::getInstance()->getUserProfile();
-			// grant the default permissions to this post.
-			$post->grant($profile->user);
-			// $post->grant(MW_Auth_Group_Super::getInstance());
-			// $post->grant(MW_Auth_Group_User::getInstance(), "comment");
-			// $post->grant(MW_Auth_Group_User::getInstance(), "answer");
-			// Tag the author as the author
-			$post->tags->tag($profile, 'author');
+			if($profile) {
+				// grant the default permissions to this post.
+				$post->grant($profile->user);
+				// $post->grant(MW_Auth_Group_Super::getInstance());
+				// $post->grant(MW_Auth_Group_User::getInstance(), "comment");
+				// $post->grant(MW_Auth_Group_User::getInstance(), "answer");
+				// Tag the author as the author
+				$post->tags->tag($profile, 'author');
+			}
 		} else {
 			// Add a reason for your edit
 			$this->addElement("text", "reason", array(

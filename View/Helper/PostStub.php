@@ -22,13 +22,13 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 	public function whatsThis($post) {
 		switch($post->_type) {
 			case 'question-comment':
-				$type = ' comment';
+				$type = ' comment on '.$this->view->postLink($post->_parent, array("text" => "this ".$post->_parent->_type));
 				break;
 			case 'article-rss':
 				$type = 'n Article';
 				break;
 			case "answer":
-				$type = 'n answer';
+				$type = 'n answer to '.$this->view->postLink($post->_parent, array("text" => "this question"));
 				break;
 			default:
 				$type = ' '.$post->_type;
@@ -113,10 +113,10 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 				$this->view->postLink($post, array("text" => $parent->title?:$post->title))
 			)."".
 			$this->htmlTag("div", array("class" => "stub-meta inline-flow font-sans"), 
-				$this->htmlTag("span", array(), $this->view->profileLink($author))."".
+				$this->htmlTag("span", array(), $this->view->timeAgo($post->_created)." ○ ")."".
+				$this->htmlTag("span", array(), ($author) ? $this->view->profileLink($author) : 'an anonymous user')."".
 				$this->htmlTag("span", array(), " ".$this->whatsThis($post))."".
-				$this->htmlTag("span", array(), " ".$this->toWhat($post))."".
-				$this->htmlTag("span", array(), " ○ ".$this->view->timeAgo($post->_created))
+				$this->htmlTag("span", array(), " ".$this->toWhat($post))
 			)."".
 			$this->htmlTag("div", array("class" => "stub-loadin"), ' ')	
 		);

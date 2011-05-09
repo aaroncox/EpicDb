@@ -35,7 +35,7 @@ class EpicDb_View_Helper_ProfileLink extends MW_View_Helper_HtmlTag
 			$tooltip = false;
 		}
 		if (!is_object($profile)) {
-			return '';
+			return 'anonymous';
 		}
 		$text = $this->getDiamonds($profile).$profile->name;
 		if(isset($params['text'])) {

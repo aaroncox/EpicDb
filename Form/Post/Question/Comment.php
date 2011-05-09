@@ -30,7 +30,7 @@ class EpicDb_Form_Post_Question_Comment extends EpicDb_Form_Post
 				'required' => true,
 				'label' => 'Your comment...',
 				'description' => '',
-				'cols' => 92,
+				'cols' => 80,
 				'rows' => 15,
 			));
 		$this->setButtons(array("save" => "Post Comment"));

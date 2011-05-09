@@ -18,12 +18,20 @@ class EpicDb_View_Helper_PostLink extends MW_View_Helper_HtmlTag
 		if(isset($params['text'])) {
 			$text = $params['text'];
 		}
+		$hash = '';
+		// This will let us pass in the post as a # and hit it directly.
+		// if(isset($params['#'])) {
+		// 	if($params['#'] instanceOf EpicDb_Mongo_Post) {
+		// 		$hash = $params['#']->_type."-".$params['#']->id;
+		// 	}
+		// 	$hash = "#".$hash;
+		// }
 		return $this->htmlTag("a", array(
 			"rel" => 'no-tooltip nofollow',
 			"href" => $this->view->url(array(
 				'action'=> 'view',
 				'post' => $post,
-			), 'post', true),
+			), 'post', true).$hash,
 		), (string) $text);
 	}
 }

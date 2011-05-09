@@ -109,6 +109,39 @@ class EpicDb_Mongo_Post extends MW_Auth_Mongo_Resource_Document implements EpicD
 		}
 		return $tags;
 	}
+	
+	public static function getPopularTags($limit = 99) {
+		// TODO - XHProf Improvement: This function eats up about 1 second of processing time, needs caching or something.
+		// TODO - Actually it crashes as soon as it finds a user tagged as a tag, with 'unknown collection profiles'.
+		$query = array();
+		$map = new MongoCode("function() {
+			this.tags.forEach(function(ref) {
+				if(ref.reason == 'tag') {
+					emit(ref, 1);
+				}
+			})
+		}");
+		$reduce = new MongoCode("function(key, values) {
+			var sum = 0;
+			for (var i in values) { sum += values[i]; }
+			return sum;
+		}");
+
+		$db = self::getMongoDb();
+		$result = $db->command(array(
+				"mapreduce" => static::$_collectionName,
+				"map" => $map,
+				"reduce" => $reduce,
+				"query" => $query,
+		));
+		$tags = array();
+		$data = $db->selectCollection($result['result']);
+		foreach($data->find()->sort(array('value' => -1, 'name' => 1))->limit($limit) as $d) {
+			$record = EpicDb_Mongo::db($d['_id']['ref']['$ref'])->find($d['_id']['ref']['$id']);
+			$tags[$record->slug] = $record;
+		}
+		return $tags;		
+	}
 
 	public function getEditForm() {
 		$className = static::$_editForm;
