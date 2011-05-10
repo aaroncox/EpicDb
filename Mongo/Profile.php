@@ -77,6 +77,7 @@ class EpicDb_Mongo_Profile extends MW_Auth_Mongo_Resource_Document implements Ep
 		// exit;/
 		$query['_deleted'] = array('$exists' => false);
 		foreach($this->following as $record) { 
+			if(!$record) continue;
 			$query['$or'][] = array(
 				'tags' => array(
 					'$elemMatch' => array(
