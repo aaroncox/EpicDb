@@ -34,7 +34,7 @@ class EpicDb_Mongo_Record extends MW_Auth_Mongo_Resource_Document implements Epi
 		return parent::__construct($data, $config);
 	}
 
-	public function getPropertyClass() {
+	public function getPropertyClass($property, $data) {
 		if (isset($data['_type'])) {
 			return EpicDb_Mongo::db($data['_type']);
 		}

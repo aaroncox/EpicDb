@@ -39,19 +39,36 @@ abstract class EpicDb_Controller_Cli extends Zend_Controller_Action {
 			}
 		}
 	}
+
+	public function resaveEverythingAction() {
+		$this->resave('post');
+		$this->resave('profile');
+		$this->resave('record');
+	}
 	
 	public function resavePostsAction() {
-		$posts = EpicDb_Mongo::db('post')->fetchAll();
-		echo "Resaving ".count($posts)." posts...\n";
+		$this->resave('post');		
+	}
+	
+	public function resaveProfilesAction() {
+		$this->resave('profile');
+	}
+	
+	public function resaveRecordsAction() {
+		$this->resave('record');
+	}
+	
+	public function resave($collection) {
+		$docs = EpicDb_Mongo::db($collection)->fetchAll(array(), array("id" => 1));
+		echo "Resaving ".count($docs)." documents in ".$collection."...\n";
 		$i = 0;
 		
 		$adapter = new Zend_ProgressBar_Adapter_Console();
-		$bar = new Zend_ProgressBar($adapter, 0, count($posts));
-		foreach($posts as $post) {
+		$bar = new Zend_ProgressBar($adapter, 0, count($docs));
+		foreach($docs as $doc) {
 			$i++;
-			$bar->update($i, 'Saved '.$post->_type.'/'.$post->_id);
-			$post->save();
+			$bar->update($i, 'Saved '.$doc->_type.'/'.$doc->_id);
+			$doc->save();
 		}
-		exit;
 	}
 }
