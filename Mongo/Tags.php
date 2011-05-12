@@ -100,4 +100,9 @@ class EpicDb_Mongo_Tags extends Shanty_Mongo_DocumentSet
 		}
 		return $return;
 	}
+	
+	public function setTag($reason, $tag) {
+		$this->setTags(array($tag), $reason);
+		return $this;
+	}
 } // END class EpicDb_Mongo_Tags
