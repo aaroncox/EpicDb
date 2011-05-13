@@ -58,6 +58,10 @@ abstract class EpicDb_Controller_Cli extends Zend_Controller_Action {
 		$this->resave('record');
 	}
 	
+	public function resaveUsersAction() {
+		$this->resave('user');
+	}
+	
 	public function resave($collection) {
 		$docs = EpicDb_Mongo::db($collection)->fetchAll(array(), array("id" => 1));
 		echo "Resaving ".count($docs)." documents in ".$collection."...\n";

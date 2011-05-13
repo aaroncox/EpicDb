@@ -14,7 +14,7 @@ class EpicDb_View_Helper_ProfileSummary extends MW_View_Helper_HtmlTag
 		// $this->card($this->profile, array("class" => "wide"))
 		$placeholder = $this->view->summary();
 		$placeholder->append($this->view->card($profile, array("class" => "wide", "tagType" => "h2"))."");
-
+		
 		$buttons = '';
 		if ($profile->user && MW_Auth::getInstance()->hasPrivilege(new MW_Auth_Resource_Super(), 'sudo')) {
 			$buttons .= $this->view->button(array(
@@ -42,7 +42,7 @@ class EpicDb_View_Helper_ProfileSummary extends MW_View_Helper_HtmlTag
 		if($buttons != "") "<h3>Available Actions</h3>".$placeholder->widget($buttons);
 		
 		if($profile->bio) $placeholder->widget($this->htmlTag("h3", array(), "Biography")."".$this->htmlTag("p", array(), $profile->bio));
-
+		
 		$followers = $profile->getMyFollowers();
 		if($followers->count()) {
 			$placeholder->widget($this->htmlTag("h3", array(), $profile->name."'s Followers")."".$this->view->iconCloud($followers));			

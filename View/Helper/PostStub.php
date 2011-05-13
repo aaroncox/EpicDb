@@ -84,6 +84,12 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 			), " ");
 	}
 	
+	public function postHeader($post) {
+		if($post->title) return $post->title;
+		if($post->body) return $this->view->htmlFragment(strip_tags($post->body), 70);
+		return "no title";
+	}
+	
 	public function postStub($post, $options = array()) {
 		$author = $post->tags->getTag("author")?:$post->tags->getTag("source");
 		
@@ -103,14 +109,14 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 			$parent = $post;
 		}
 		
-		return $this->htmlTag("div", array("class" => "post-stub rounded center-shadow ui-state-default", "id" => $post->_type."-".$post->id), 
+		return $this->htmlTag("div", array("class" => "post-stub rounded center-shadow ui-state-default ui-helper-clearfix", "id" => $post->_type."-".$post->id), 
 			// $this->htmlTag("div", array("class" => "inline-flow"), ">")."". // Minimize / Maximize
 			$this->htmlTag("div", array("class" => "stub-score rounded text-verylarge vote-count ".$this->color($this->scoring($post))), 
 				$this->scoring($post)
 			)."".
 			$this->htmlTag("div", array("class" => "stub-title rounded text-large center-shadow"), 
 				$this->htmlTag("div", array("class" => "stub-vote rounded inline-flow", "style" => "float: right"), $this->stubVote($post))."".
-				$this->view->postLink($post, array("text" => $parent->title?:$post->title))
+				$this->view->postLink($post, array("text" => $this->postHeader($parent?:$post)))
 			)."".
 			$this->htmlTag("div", array("class" => "stub-meta inline-flow font-sans"), 
 				$this->htmlTag("span", array(), $this->view->timeAgo($post->_created)." ○ ")."".

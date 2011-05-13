@@ -76,7 +76,8 @@ class EpicDb_View_Helper_Card extends MW_View_Helper_HtmlTag
 		if(!isset($params['extra'])) $params['extra'] = '';
 		if(!isset($params['class'])) $params['class'] = '';
 		if(!isset($params['iconClass'])) $params['iconClass'] = '';
-		if($record instanceOf EpicAdvice_Mongo_Profile_User && $record->characters && $character = $record->characters->getPrimary()) {
+
+		if($record instanceOf EpicDb_Mongo_Profile_User && $record->characters && $character = $record->characters->getPrimary()) {
 			$params['class'] .= " faction-".$character->faction;
 		}
 		if(!$record instanceOf EpicDb_Interface_Cardable) return '';

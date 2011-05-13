@@ -12,6 +12,7 @@ class EpicDb_View_Helper_RecordLink extends MW_View_Helper_HtmlTag
 {
 	public function recordLink($record, $params = array()) {
 		if($record instanceOf EpicDb_Mongo_Profile) return $this->view->profileLink($record); 
+		if($record instanceOf EpicDb_Mongo_Post) return $this->view->postLink($record); 
 		$tooltip = true;
 		if(isset($params['tooltip']) && $params['tooltip'] == false) {
 			$tooltip = false;

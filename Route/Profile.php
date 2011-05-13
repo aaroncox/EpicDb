@@ -23,11 +23,9 @@ class EpicDb_Route_Profile extends Zend_Controller_Router_Route
     $reqs = array(
       'type' => "(".implode('|',static::$types).")",
     );
-
 		$route = $config->route;
     $reqs = ($config->reqs instanceof Zend_Config) ? array_merge($config->reqs->toArray(),$reqs) : $reqs;
     $defs = ($config->defaults instanceof Zend_Config) ? $config->defaults->toArray() + $defaults : $defaults;
-		// var_dump($route, $defs, $reqs);
     return new static($route, $defs, $reqs);
   }
   
@@ -40,7 +38,7 @@ class EpicDb_Route_Profile extends Zend_Controller_Router_Route
 			$profile = $this->_values['profile'];
 		} 
 		if(!$profile instanceOf EpicDb_Mongo_Profile && $profile instanceOf Shanty_Mongo_Document) {
-			$profile = EpicDb_Mongo_Schema::getInstance()->getCollectionForType('profile')->find($profile->_id);
+			$profile = EpicDb_Mongo::db('profile')->find($profile->_id);
 		}
     if($profile instanceOf EpicDb_Mongo_Profile) {
       $data['id'] = $profile->id;				
@@ -56,15 +54,15 @@ class EpicDb_Route_Profile extends Zend_Controller_Router_Route
 		// if(!isset($data['type'])) {
 		// 	var_dump($data, $profile); exit;
 		// }
-		if(!isset($data['type'])) {
-			var_dump($profile, $data); exit;			
-		}
+		// if(!isset($data['type'])) {
+		// 	var_dump($profile, $data); exit;			
+		// }
     return parent::assemble($data, $reset, $encode, $partial);
   }
 
 	public function getProfile($params)
 	{
-		return EpicDb_Mongo_Schema::getInstance()->getCollectionForType($params['type'])->fetchOne(array("id" => (int) $params['id']));		
+		return EpicDb_Mongo::db($params['type'])->fetchOne(array("id" => (int) $params['id']));		
 	}
 
   public function match($path, $partial = false)
