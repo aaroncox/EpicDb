@@ -59,20 +59,20 @@ class EpicDb_View_Helper_VoteWidget extends MW_View_Helper_HtmlTag
 	{
 		$post = $this->_post;
 		if (!$post) {
-			return "";
+			return " ";
 		}
 		$score = 0;
 		if(isset($post->votes['score'])) $score = $post->votes['score'];
 		// Return the widget
-		$content = "";
+		$content = " ";
 		// Move this somewhere, I haven't found it yet
-		if (!empty($this->_opts['title'])) {
-			$content .= $this->view->htmlTag("p", array(
-					"class" => "text-verysmall font-sans", 
-					"style" => "margin: 5px 0; font-weight: bold;"
-				), $this->_opts['title']);
-		}
 		if ($post instanceOf EpicDb_Vote_Interface_Votable) {
+			if (!empty($this->_opts['title'])) {
+				$content .= $this->view->htmlTag("p", array(
+						"class" => "text-verysmall font-sans", 
+						"style" => "margin: 5px 0; font-weight: bold;"
+					), $this->_opts['title']);
+			}
 			$content .= $this->makeVoteButton("up");
 			// using another htmlTag so we don't render using our render ours up...
 			$content .= $this->view->htmlTag("p", array("class" => "rounded vote-count".$this->color($score)), $score);
