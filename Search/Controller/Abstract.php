@@ -16,7 +16,7 @@ class EpicDb_Search_Controller_Abstract extends MW_Controller_Action
 			->initContext();
 	}
 
-	public function indexAction()
+	public function questionAction()
 	{
 		$request = $this->getRequest();
 		$format = $request->getParam('format');
