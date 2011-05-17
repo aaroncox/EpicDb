@@ -16,6 +16,34 @@ class EpicDb_Search_Controller_Abstract extends MW_Controller_Action
 			->initContext();
 	}
 
+	public function indexAction() 
+	{
+		$request = $this->getRequest();
+		$format = $request->getParam('format');
+		$search = EpicDb_Search::getInstance();
+		$this->view->layout()->searchQuery = $q = $request->getParam('q');
+
+		$queryData = $search->parseQueryString($q);
+		$this->view->searchTerms = $queryData['terms'];
+		$query = $queryData['query'];
+
+		$sort = array( 'touched' => -1, '_created' => -1 );
+
+		// $posts = EpicDb_Mongo::db('post')->fetchAll($query, $sort);
+		// 
+		// $paginator = Zend_Paginator::factory($posts);
+		// $paginator->setCurrentPageNumber($this->getRequest()->getParam('page', 1));
+		// 
+		// $this->view->posts = $paginator;
+		// 
+		// if ($posts->count() == 1 && !$format) {
+		// 	$posts->next();
+		// 	return $this->_redirect($this->view->url(array('post'=>$posts->current()),'post',true));
+		// }
+		
+		
+	}
+
 	public function questionAction()
 	{
 		$request = $this->getRequest();

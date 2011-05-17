@@ -25,13 +25,14 @@ class EpicDb_View_Helper_QuestionStub extends MW_View_Helper_HtmlTag
 		}
 
 		$author = $question->tags->getTag('author');
+		
 		$cardDetails = array(
 			"posted this" => $this->view->timeAgo($question->_created)
 		);
 		
 		// var_dump($question->export()); exit;
 		
-		if($question->touched && $question->touchedBy instanceOf EpicDb_Mongo_Profile) {
+		if($question->touched && $question->touchedBy instanceOf EpicDb_Mongo_Profile_User) {
 			$author = $question->touchedBy;
 			$cardDetails = array(
 				"updated this" => $this->view->timeAgo($question->touched)
@@ -61,7 +62,7 @@ class EpicDb_View_Helper_QuestionStub extends MW_View_Helper_HtmlTag
 				));
 			}
 		}
-		
+		// var_dump($question->tags->getTag('author')); 
 		return $this->htmlTag('div', array('class' => 'question-summary ui-helper-clearfix rounded shadowy'), 
 			$this->htmlTag('div', array('style' => 'float: right'), 
 				$this->view->card($author, array(
@@ -71,15 +72,15 @@ class EpicDb_View_Helper_QuestionStub extends MW_View_Helper_HtmlTag
 			))."".
 			$this->htmlTag('div', array('class' => 'votes font-sans inline-flow'), 
 				$this->htmlTag('div', array('class' => 'mini-counts'), isset($question->votes['score'])? $question->votes['score'] : 0)."".
-				$this->htmlTag('div', array(), 'votes')
+				$this->htmlTag('div', array('class' => 'mini-label'), 'votes')
 			)."".
 			$this->htmlTag('div', array('class' => 'status font-sans inline-flow'.$answerStatus), 
 				$this->htmlTag('div', array('class' => 'mini-counts'), $answerCount)."".
-				$this->htmlTag('div', array(), 'answers')
+				$this->htmlTag('div', array('class' => 'mini-label'), 'answers')
 			)."".
 			$this->htmlTag('div', array('class' => 'summary inline-flow'),
 				$this->htmlTag("h3", array(), 
-					$this->view->seQuestionLink($question)
+					$this->view->questionLink($question)
 				)."".
 				$this->htmlTag('div', array('class' => 'tags'), $tags)
 			)

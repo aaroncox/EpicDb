@@ -25,15 +25,18 @@ class EpicDb_View_Helper_Button extends MW_View_Helper_HtmlTag
 
 		$style = '';
 		$external = null;
+		$tooltip = null;
 		if(isset($params['icon'])) $icon = $params['icon'];
 		if(isset($params['style'])) $style = $params['style'];
 		if(isset($params['url'])) $external = $params['url'];
-		return $this->htmlTag("a", array(
+		$options = array(
 			'class' => 'no-tooltip epicdb-button epicdb-button-icon-left ui-state-default ui-corner-all',
 			'href' => $external?:$this->view->url($url, $route, $reset),
 			'rel' => 'nofollow',
 			'style' => $style,
-			), $this->htmlTag("span", array(
+		);
+		if(isset($params['tooltip'])) $options['data-tooltip'] = $params['tooltip'];
+		return $this->htmlTag("a", $options, $this->htmlTag("span", array(
 					'class' => 'ui-icon ui-icon-'.$icon,
 				), " ")."".$text
 		);

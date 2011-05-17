@@ -12,7 +12,8 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 {
 	public function toWhat($post) {
 		$tags = array();
-		foreach($post->tags->getTags('tag') as $tag) {	
+		foreach($post->tags->getTags('tag') as $tag) {
+			if($tag['reason'] != 'tag') continue;	
 			$tags[] = (string)$this->view->recordLink($tag);
 		}
 		// var_dump($tags); exit;
@@ -25,7 +26,7 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 				$type = ' comment on '.$this->view->postLink($post->_parent, array("text" => "this ".$post->_parent->_type));
 				break;
 			case 'article-rss':
-				$type = 'n Article';
+				$type = 'n article';
 				break;
 			case "answer":
 				$type = 'n answer to '.$this->view->postLink($post->_parent, array("text" => "this question"));
@@ -84,10 +85,18 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 			), " ");
 	}
 	
-	public function postHeader($post) {
+	public function postHeader($post, $options) {
 		if($post->title) return $post->title;
-		if($post->body) return $this->view->htmlFragment(strip_tags($post->body), 70);
+		if($post->body) return $this->view->htmlFragment(strip_tags($post->body), 60);
 		return "no title";
+	}
+	
+	public function showIcon($post, $options) {
+		if(isset($options['headerIcon']) && $options['headerIcon'] == true) {
+			$author = $post->tags->getTag('author')?:$post->tags->getTag('source');
+			if($author) return $this->htmlTag('img', array('src' => $author->getIcon(), 'class' => 'feed-icon'));
+		} 
+		return " ";
 	}
 	
 	public function postStub($post, $options = array()) {
@@ -105,20 +114,32 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 				break;
 		}
 
+		$wrapClass = '';
+		if(isset($options['wrapClass'])) {
+			$wrapClass = $options['wrapClass'];
+		}
+
+		$headerClass = '';
+		if(isset($options['headerClass'])) {
+			$headerClass = $options['headerClass'];
+		}
+
 		if($parent->export() == array()) {
 			$parent = $post;
 		}
 		
-		return $this->htmlTag("div", array("class" => "post-stub rounded center-shadow ui-state-default ui-helper-clearfix", "id" => $post->_type."-".$post->id), 
+		return $this->htmlTag("div", array("class" => "post-stub rounded center-shadow ui-helper-clearfix ".$wrapClass, "id" => $post->_type."-".$post->id), 
 			// $this->htmlTag("div", array("class" => "inline-flow"), ">")."". // Minimize / Maximize
 			$this->htmlTag("div", array("class" => "stub-score rounded text-verylarge vote-count ".$this->color($this->scoring($post))), 
 				$this->scoring($post)
 			)."".
-			$this->htmlTag("div", array("class" => "stub-title rounded text-large center-shadow"), 
+			$this->htmlTag("div", array("class" => "stub-title rounded text-large center-shadow ".$headerClass), 
 				$this->htmlTag("div", array("class" => "stub-vote rounded inline-flow", "style" => "float: right"), $this->stubVote($post))."".
-				$this->view->postLink($post, array("text" => $this->postHeader($parent?:$post)))
+				// $this->view->profileLink($post->tags->getTag('author')?:$post->tags->getTag('source'))." POSTS ".
+				$this->showIcon($post, $options)."".
+				$this->view->postLink($post, array("text" => $this->postHeader($parent?:$post, $options)))
 			)."".
-			$this->htmlTag("div", array("class" => "stub-meta inline-flow font-sans"), 
+			$this->htmlTag("div", array("class" => "stub-meta font-sans"), 
 				$this->htmlTag("span", array(), $this->view->timeAgo($post->_created)." ○ ")."".
 				$this->htmlTag("span", array(), ($author) ? $this->view->profileLink($author) : 'an anonymous user')."".
 				$this->htmlTag("span", array(), " ".$this->whatsThis($post))."".

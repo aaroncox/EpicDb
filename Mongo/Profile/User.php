@@ -112,4 +112,12 @@ class EpicDb_Mongo_Profile_User extends EpicDb_Mongo_Profile
 		}
 		return $profile;
 	}
+	
+	public function getIcon() {
+		if($this->email) {
+			$helper = new EpicDb_View_Helper_Gravatar();
+			return $helper->gravatar($this->email)->url();
+		}
+		return "/images/icons/unknown.jpg";
+	}
 } // END class EpicDb_Mongo_Profile_User

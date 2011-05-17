@@ -10,6 +10,43 @@
  **/
 class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 {
+	/**
+	 * getPost - undocumented function
+	 *
+	 * @return void
+	 * @author Aaron Cox <aaronc@fmanet.org>
+	 **/
+	public function getPost()
+	{
+		$this->view->post = $post = $this->_request->getParam('post');
+		if(!$post) {
+			throw new Exception("Unable to load post...");
+		}
+		return $post;
+	}
+
+	public function commentAction() {
+		$parent = $this->view->parent = $this->getPost();
+		$newComment = EpicDb_Mongo::db('comment');
+		$newComment->_parent = $parent;
+		$commentForm = $this->view->form = $newComment->getEditForm();
+		$this->_handleMWForm($commentForm, 'comment');
+	}
+	
+	public function answerAction() {
+		$query = array(
+			'id' => (int) $this->getRequest()->getParam('id')
+		);
+		$question = $this->view->post = EpicDb_Mongo::db('question')->fetchOne($query);
+		$this->view->hideComments = true;
+		if($this->_helper->auth->getUserProfile()) {
+			$newAnswer = EpicDb_Mongo::db('answer');
+			$newAnswer->_parent = $question;
+			$answerForm = $this->view->form = $newAnswer->getEditForm();
+			$this->_handleMWForm($answerForm, 'answer');
+		}
+	}
+
 	public function questionsAction() {
 
 		$request = $this->getRequest();
@@ -96,12 +133,10 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 			}
 			
 			$questions = EpicDb_Mongo::db('question')->fetchAll($query, $sort);
-
 			$paginator = Zend_Paginator::factory($questions);
 			$paginator->setCurrentPageNumber($this->getRequest()->getParam('page', 1));
 
 			$this->view->questions = $paginator;
-
 
 			$this->view->popularTags = array();// EpicDb_Mongo_Post::getTagsByUsage();
 		}
@@ -122,6 +157,17 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 			
 			// Default Controls for every post...
 			$controls = array(
+				'permaLink' => (string) $this->view->button(
+					array(
+						'post' => $this->view->post, 
+						'action' => 'view'
+					), 'post', true,
+					array(
+						'icon' => 'comment',
+						'text' => 'Read',
+						'tooltip' => 'Read the full version on R2-Db.com',
+					)
+				),
 				'parentLink' => (string) $this->view->button(
 					array(
 						'post' => ($parent->export() != array()) ? $parent : $this->view->post,
@@ -133,27 +179,19 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 						'style' => 'float: right'
 					)
 				),
-				'permaLink' => (string) $this->view->button(
-					array(
-						'post' => $this->view->post, 
-						'action' => 'view'
-					), 'post', true,
-					array(
-						'icon' => 'pencil',
-						'text' => 'Perma-Link',
-					)
-				),
 			);
 			
 			if($post instanceOf EpicDb_Mongo_Post_Article_Rss) {	
+				$site = $post->tags->getTag('source');
 				$controls['parentLink'] = (string) $this->view->button(
 					array(
 					), null, true,
 					array(
 						'url' => $post->link,
 						'icon' => 'pencil',
-						'text' => 'View Original on '.$post->tags->getTag('source')->name,
-						'style' => 'float: right'
+						'text' => 'View Original',
+						'style' => 'float: right',
+						'tooltip' => 'Head on over to '.$site->name.' to check out the full article!',
 					)
 				);
 			}
@@ -166,9 +204,9 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 							'action' => 'answer',
 						), 'post', true,
 						array(
-							'url' => $post->link,
 							'icon' => 'pencil',
-							'text' => 'Answer this Question',
+							'text' => 'Answer',
+							'tooltip' => 'Post an answer to this question.',
 						)
 					);
 				}
@@ -180,9 +218,9 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 							'action' => 'comment',
 						), 'post', true,
 						array(
-							'url' => $post->link,
 							'icon' => 'pencil',
-							'text' => 'Leave Comment',
+							'text' => 'Comment',
+							'tooltip' => 'Post a comment on this post.',
 						)
 					);				
 				}				
