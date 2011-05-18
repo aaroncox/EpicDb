@@ -164,8 +164,8 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 					), 'post', true,
 					array(
 						'icon' => 'comment',
-						'text' => 'Read',
-						'tooltip' => 'Read the full version on R2-Db.com',
+						'text' => 'Read w/ '.$this->view->post->findComments()->count().' comments',
+						'tooltip' => 'Read the full version including comments',
 					)
 				),
 				'parentLink' => (string) $this->view->button(
