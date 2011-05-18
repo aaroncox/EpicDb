@@ -44,12 +44,30 @@ class EpicDb_View_Helper_ProfileSummary extends MW_View_Helper_HtmlTag
 		if($profile->bio) $placeholder->widget($this->htmlTag("h3", array(), "Biography")."".$this->htmlTag("p", array(), $profile->bio));
 		
 		$followers = $profile->getMyFollowers();
-		if($followers->count()) {
-			$placeholder->widget($this->htmlTag("h3", array(), $profile->name."'s Followers")."".$this->view->iconCloud($followers));			
+		if($totalFollowers = $followers->count()) {
+			$placeholder->widget(
+				$this->htmlTag("h3", array(), $profile->name."'s Followers")."".
+				$this->view->iconCloud($followers, 21)."".
+				$this->htmlTag("p", array("class" => 'iconCloud-label'), 				
+					$this->htmlTag("a", array('href' => $this->view->url(array(
+						'profile' => $profile,
+						'action'=>'followers',
+					), 'profile', true)), 'View All '.$totalFollowers)
+				)
+			);			
 		}
 		
 		if($profile->following && $profile->following->export() != array()) {
-			$placeholder->widget($this->htmlTag("h3", array(), $profile->name." is following")."".$this->view->iconCloud($profile->following));			
+			$placeholder->widget(
+				$this->htmlTag("h3", array(), $profile->name." is following")."".
+				$this->view->iconCloud($profile->following, 21)."".
+				$this->htmlTag("p", array("class" => 'iconCloud-label'), 
+					$this->htmlTag("a", array('href' => $this->view->url(array(
+						'profile' => $profile,
+						'action'=>'following',
+					), 'profile', true)), 'View All '.$profile->following->count())
+				)
+			);
 		}
 	}
 } // END class EpicDb_View_Helper_ProfileSummary

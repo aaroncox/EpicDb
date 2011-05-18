@@ -115,4 +115,13 @@ abstract class EpicDb_Profile_Controller_Abstract extends MW_Controller_Action
 		$this->_getProfileForm($profile);
 		$this->_handleMWForm($this->view->profileForm);
 	}
+	public function followersAction() {
+		$profile = $this->getProfile();
+		$paginator = Zend_Paginator::factory($profile->getMyFollowers());
+		$paginator->setCurrentPageNumber($this->getRequest()->getParam('page', 1))->setItemCountPerPage(30);
+		$this->view->followers = $paginator;
+	}
+	public function followingAction() {
+		$profile = $this->getProfile();
+	}
 } // END class EpicDb_Profile_Controller_Abstract

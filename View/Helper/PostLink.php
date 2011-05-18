@@ -14,11 +14,28 @@ class EpicDb_View_Helper_PostLink extends MW_View_Helper_HtmlTag
 		if (!is_object($post)) {
 			return '';
 		}
+		$hash = '';
 		$text = $post->title;
 		if(isset($params['text'])) {
 			$text = $params['text'];
 		}
-		$hash = '';
+		// var_dump($text);
+		if($text == null) {
+			$text = '[Read More]';
+			$preview = $this->view->htmlFragment($post->body, 80);
+			return 
+				$this->htmlTag("span", array(
+					'class' => 'post-preview',
+				), $preview)." ".
+				$this->htmlTag("a", array(
+				"rel" => 'no-tooltip nofollow',
+				"href" => $this->view->url(array(
+					'action'=> 'view',
+					'post' => $post,
+				), 'post', true).$hash,
+			), (string) $text);
+		}
+
 		// This will let us pass in the post as a # and hit it directly.
 		// if(isset($params['#'])) {
 		// 	if($params['#'] instanceOf EpicDb_Mongo_Post) {

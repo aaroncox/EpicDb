@@ -2,19 +2,28 @@
 
 class EpicDb_View_Helper_IconCloud extends MW_View_Helper_HtmlTag {
 
-  public function iconCloud($records)
+  public function iconCloud($records, $limit = null)
   {
 		$html = "";
+		$count = 1;
 		if($records instanceOf EpicDb_Mongo_Tags) {
-			foreach($records as $record) {
+			foreach($records as $idx => $record) {
+				if($limit) {
+					if($count > $limit) {
+						continue;
+					}
+					$count++;					
+				}
 				$html .= $this->htmlTag("div", array("class" => "inline-flow icon-cloud icon"), $this->view->iconLink($record->ref));
 			}			
 		} else {
-			foreach($records as $record) {
-				// I thought the auto-loading mongo stuff would do this, but it's not apparently... FIX TODO NYI
-				// if($record->_type == 'user') {
-				// 	$record = EpicDb_Mongo::db('user')->find($record->_id);
-				// }
+			foreach($records as $idx => $record) {
+				if($limit) {
+					if($count > $limit) {
+						continue;
+					}
+					$count++;					
+				}
 				$html .= $this->htmlTag("div", array("class" => "inline-flow icon-cloud icon"), $this->view->iconLink($record));
 			}			
 		}

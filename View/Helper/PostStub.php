@@ -123,14 +123,20 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 		if(isset($options['headerClass'])) {
 			$headerClass = $options['headerClass'];
 		}
-
+		
+		$voteClass = '';
+		if(isset($options['voteClass'])) {
+			$voteClass = $options['voteClass'];
+		}
+ 
 		if($parent->export() == array()) {
 			$parent = $post;
 		}
 		
 		return $this->htmlTag("div", array("class" => "post-stub rounded center-shadow ui-helper-clearfix ".$wrapClass, "id" => $post->_type."-".$post->id), 
 			// $this->htmlTag("div", array("class" => "inline-flow"), ">")."". // Minimize / Maximize
-			$this->htmlTag("div", array("class" => "stub-score rounded text-verylarge vote-count ".$this->color($this->scoring($post))), 
+			$this->htmlTag("div", array("class" => "stub-score rounded text-verylarge vote-count ".$voteClass.$this->color($this->scoring($post))), 
+				$this->htmlTag("span", array("class" => "vote-label"), 'SCORE')."".
 				$this->scoring($post)
 			)."".
 			$this->htmlTag("div", array("class" => "stub-title rounded text-large center-shadow ".$headerClass), 
