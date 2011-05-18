@@ -44,6 +44,8 @@ abstract class EpicDb_Controller_Cli extends Zend_Controller_Action {
 		$this->resave('post');
 		$this->resave('profile');
 		$this->resave('record');
+		$this->resave('media');
+		$this->resave('wiki');
 	}
 	
 	public function resavePostsAction() {
@@ -60,6 +62,14 @@ abstract class EpicDb_Controller_Cli extends Zend_Controller_Action {
 	
 	public function resaveUsersAction() {
 		$this->resave('user');
+	}
+	
+	public function resaveMediaAction() {
+		$this->resave('media');
+	}
+	
+	public function resaveWikiAction() {
+		$this->resave('wiki');
 	}
 	
 	public function resave($collection) {

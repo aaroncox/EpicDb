@@ -238,4 +238,5 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 			exit;
 		}
 	}
+
 } // END class EpicDb_Post_Controller_Abstract

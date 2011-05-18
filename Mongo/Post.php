@@ -230,6 +230,14 @@ class EpicDb_Mongo_Post extends MW_Auth_Mongo_Resource_Document implements EpicD
 		$results = EpicDb_Mongo::db('post')->fetchAll($query, $sort);
 		return $results;
 	}
+	
+	public function findRelated($record) {
+		$query = array(
+			'tags.ref' => $record->createReference(),
+			'tags.reason' => 'tag',
+		);
+		return EpicDb_Mongo::db('post')->fetchAll($query);
+	}
 	// This is for watching queries as they execute on posts, perhaps we could enable it by a flag? or mode? I just used it for debugging queries.
 	// public static function fetchAll($query = array(), $sort = array(), $limit = false, $skip = false) {
 	// 	$writer = new Zend_Log_Writer_Firebug();
