@@ -106,6 +106,8 @@ class EpicDb_Search_Controller_Abstract extends MW_Controller_Action
 			}
 		}
 		$this->view->results = $format == 'json' ? $return : $results;
+		
+		echo json_encode(array('results' => $this->view->results)); exit;
 	}
 	
 } // END class EpicDb_Search_Controller_Abstract
