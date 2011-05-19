@@ -11,7 +11,7 @@
 class EpicDb_Form_Post_Question_Comment extends EpicDb_Form_Post
 {
 	protected $_isNew = false;
-	protected $_recordType = 'comment';
+	protected $_recordType = 'question-comment';
 	protected $_parent = false;
 	/**
 	 * init - undocumented function

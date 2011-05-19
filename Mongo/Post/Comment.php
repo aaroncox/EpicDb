@@ -18,13 +18,13 @@ class EpicDb_Mongo_Post_Comment extends EpicDb_Mongo_Post implements EpicDb_Vote
 	 * @return void
 	 * @author Aaron Cox <aaronc@fmanet.org>
 	 **/
-	public function __construct($data = array(), $config = array())
-	{
+	// public function __construct($data = array(), $config = array())
+	// {
 		// $this->addRequirements(array(
 		// 	'revisions' => array('DocumentSet'),
 		// 	'revisions.$' => array('Document:EpicDb_Mongo_Revision'),
 		// ));
-		return parent::__construct($data, $config);
-	}
+		// return parent::__construct($data, $config);
+	// }
 
 } // END class EpicDb_Mongo_Post

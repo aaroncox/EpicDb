@@ -27,7 +27,11 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 
 	public function commentAction() {
 		$parent = $this->view->parent = $this->getPost();
-		$newComment = EpicDb_Mongo::db('comment');
+		if($parent instanceOf EpicDb_Mongo_Post_Question) {
+			$newComment = EpicDb_Mongo::db('question-comment');			
+		} else {
+			$newComment = EpicDb_Mongo::db('comment');
+		}
 		$newComment->_parent = $parent;
 		$commentForm = $this->view->form = $newComment->getEditForm();
 		$this->_handleMWForm($commentForm, 'comment');
