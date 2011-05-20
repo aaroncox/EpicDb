@@ -50,6 +50,19 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 			$this->_handleMWForm($answerForm, 'answer');
 		}
 	}
+	
+	protected function _formRedirect($form, $key, $ajax) {
+		if($post = $form->getPost()) $this->_redirect($this->view->url(array(
+			'post'=>$post,
+			'action'=>'view',
+		), 'post', true));
+ 
+		if($referrer = $form->getElement('referrer')->getValue()) {
+			$this->_redirect($referrer);
+		}
+		parent::_formRedirect($form, $key, $ajax);
+	}
+	
 
 	public function questionsAction() {
 
@@ -241,6 +254,24 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 			echo Zend_Json::encode($result); 
 			exit;
 		}
+	}
+
+	public function sourceAction() {
+    $this->_helper->layout->disableLayout();
+    $this->_helper->viewRenderer->setNoRender(true);
+	  $post = $this->getPost();
+	  $rev = $this->getRequest()->getParam("rev");
+	  if(strlen($rev)) {
+	    $rev = (int) $rev;
+	    $source = $post->revisions[$rev]->source;
+	  } else {
+	    $source = $post->source;
+	  }
+    $this->getResponse()->setHeader("Content-type", "text/plain");
+    echo $source;
+	}
+	public function revisionsAction() {
+	  $this->getPost();
 	}
 
 } // END class EpicDb_Post_Controller_Abstract
