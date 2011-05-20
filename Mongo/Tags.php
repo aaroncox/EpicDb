@@ -20,6 +20,7 @@ class EpicDb_Mongo_Tags extends Shanty_Mongo_DocumentSet
 		$tag = $this->new();
 		$tag->set($ref);
 		$tag->reason = $reason;
+		$tag->refType = $ref->_type;
 		$this->addDocument($tag);
 	}
 
@@ -94,6 +95,7 @@ class EpicDb_Mongo_Tags extends Shanty_Mongo_DocumentSet
 			if (!in_array($ref, $now)) {
 				$tag = $this->new();
 				$tag->ref = $tags[$idx];
+				$tag->refType = $tags[$idx]->_type;
 				$tag->reason = $reason;
 				$this->addDocument($tag);
 			}
