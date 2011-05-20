@@ -220,6 +220,7 @@ class EpicDb_Mongo_Post extends MW_Auth_Mongo_Resource_Document implements EpicD
 	
 	public function getPublicPosts() {
 		$query['_deleted'] = array('$exists' => false);
+		$query['_created'] = array('$ne' => false);
 		$sort = array("_created" => -1);
 		// Make sure I have the permissions to view this post
 		foreach(EpicDb_Auth::getInstance()->getUserRoles() as $role) {
