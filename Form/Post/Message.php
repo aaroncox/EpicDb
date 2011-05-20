@@ -23,7 +23,22 @@ class EpicDb_Form_Post_Message extends EpicDb_Form_Post
 		{
 			$post = $this->getPost();
 			parent::init();
+			$this->addElement("text", "title", array(
+					'order' => 50,
+					'validators' => array(
+						array('StringLength',120,10),
+					),
+					'label' => 'Message Title (Optional)',
+					'size' => 80,
+					'description' => '120 character or less title for your message.'
+				));
 			$this->source->setLabel("Your Message");
 			$this->setButtons(array("save" => "Post Message"));
 		}
+		public function save() {
+			$message = $this->getPost();
+			$message->title = $this->title->getValue();
+			return parent::save();
+		}
+		
 	} // END class EpicDb_Form_Post_Message
