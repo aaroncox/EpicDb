@@ -14,6 +14,9 @@ class EpicDb_View_Helper_PostLink extends MW_View_Helper_HtmlTag
 		if (!is_object($post)) {
 			return '';
 		}
+		if($post->_type == 'question') {
+			return $this->view->questionLink($post, $params);
+		}
 		$hash = '';
 		$text = $post->title;
 		if(isset($params['text'])) {
