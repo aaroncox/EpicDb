@@ -29,21 +29,10 @@ class EpicDb_Auth_Form_Register extends MW_Form
 		$this->addElement("text", "display_email", array(
 				'autocomplete'=>'off',
 				'label' => 'Email',
-				'description' => '(We will never publish your email address)',
+				'description' => '(We will never publish your email address, but we do need to make sure your human)',
 				'required' => true,
 				'filters'  => array('StringToLower','StringTrim'),
 				'validators' => array(new EpicDb_Auth_Form_Validate_UniqueEmail())
-			));
-		$this->addElement("text", "username", array(
-				'autocomplete'=>'off',
-				'label' => 'Username',
-				'description' => 'No spaces, only numbers, letters and dashes',
-				'required' => true,
-				'filters'  => array('StringToLower','StringTrim'),
-				'validators' => array(
-					new EpicDb_Auth_Form_Validate_Username(),
-					new Zend_Validate_Regex(array('pattern' => '/^[a-zA-Z0-9\-]*$/')),
-				)
 			));
 		$this->addElement("password", "password1", array(
 				'autocomplete'=>'off',
