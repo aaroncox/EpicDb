@@ -29,7 +29,7 @@ class EpicDb_Mongo_Record extends MW_Auth_Mongo_Resource_Document implements Epi
 			'_lastEditedBy' => array('Document:EpicDb_Mongo_Profile', 'AsReference'),
 			'revisions' => array('DocumentSet'),
 			'revisions.$' => array('Document:EpicDb_Mongo_Revision'),
-
+			'tags' => array('DocumentSet:EpicDb_Mongo_Tags'),
 		));
 		return parent::__construct($data, $config);
 	}

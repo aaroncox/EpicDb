@@ -234,8 +234,16 @@ class EpicDb_Mongo_Post extends MW_Auth_Mongo_Resource_Document implements EpicD
 	
 	public function findRelated($record) {
 		$query = array(
+			// 'tags.ref' => $record->createReference(),
+			// 'tags.reason' => 'tag',
+		);
+		$query['$or'][] = array(
 			'tags.ref' => $record->createReference(),
-			'tags.reason' => 'tag',
+			'tags.reason' => 'tag'
+		);
+		$query['$or'][] = array(
+			'tags.ref' => $record->createReference(),
+			'tags.reason' => 'subject'
 		);
 		$sort = array("_created" => -1);
 		return EpicDb_Mongo::db('post')->fetchAll($query, $sort);
