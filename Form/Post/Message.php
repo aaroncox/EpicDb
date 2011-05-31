@@ -26,7 +26,7 @@ class EpicDb_Form_Post_Message extends EpicDb_Form_Post
 			$this->addElement("text", "title", array(
 					'order' => 50,
 					'validators' => array(
-						array('StringLength',120,10),
+						array('StringLength',120,0),
 					),
 					'label' => 'Message Title (Optional)',
 					'size' => 80,
