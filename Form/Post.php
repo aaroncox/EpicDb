@@ -77,6 +77,10 @@ class EpicDb_Form_Post extends EpicDb_Form
 				// $post->grant(MW_Auth_Group_User::getInstance(), "answer");
 				// Tag the author as the author
 				$post->tags->tag($profile, 'author');
+				$this->setDefaults(array(
+					"tags" => $post->tags->getTags('tag'),
+				));
+				
 			}
 		} else {
 			// Add a reason for your edit
