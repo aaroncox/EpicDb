@@ -74,14 +74,16 @@ class EpicDb_Search_Controller_Abstract extends MW_Controller_Action
 	{
 		$request = $this->getRequest();
 		$format = $request->getParam('format');
+		$exactMatch = false;
 
 		$q = $request->getParam('q');
+		$lower = strtolower($q);
 
 		$query = array("name" => new MongoRegex("/".$q."/i"));
 
 		$return = array();
 
-		$results = EpicDb_Mongo::db('record')->fetchAll($query, array(), 20);
+		$results = EpicDb_Mongo::db('record')->fetchAll($query, array());
 		foreach ($results as $result) {
 			$ref = $result->createReference();
 			$return[] = array(
@@ -90,11 +92,14 @@ class EpicDb_Search_Controller_Abstract extends MW_Controller_Action
 				'card' => $this->view->card($result, array("class" => "medium-icon", "content" => array("is a" => $result->_type)))."",
 				'name' => $result->name,
 			);
+			if ($lower == strtolower($result->name)) {
+				$exactMatch = true;
+			}
 		}
 
 		$length = count($return);
 		if ($length != 20) {
-			$results = EpicDb_Mongo::db('profile')->fetchAll($query, array(), 20 - $length);
+			$results = EpicDb_Mongo::db('profile')->fetchAll($query, array());
 			foreach ($results as $result) {
 				$ref = $result->createReference();
 				$return[] = array(
@@ -105,6 +110,18 @@ class EpicDb_Search_Controller_Abstract extends MW_Controller_Action
 				);
 			}
 		}
+		if (!$exactMatch) {
+			$blank = EpicDb_Mongo::newDoc('tag');
+			$blank->name = $q;
+
+			$return[] = array(
+				'$new' => true,
+				'name' => $q,
+				'card' => $this->view->card($blank, array("class" => "medium-icon create-new", "content" => array("not found..." => "Create New Tag" ) ) )."",
+			);
+		}
+		
+		// there is a bug here with non-json -- results doesn't contain them all... fix it later
 		$this->view->results = $format == 'json' ? $return : $results;
 		
 		echo json_encode(array('results' => $this->view->results)); exit;

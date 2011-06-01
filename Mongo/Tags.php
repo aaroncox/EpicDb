@@ -77,8 +77,15 @@ class EpicDb_Mongo_Tags extends Shanty_Mongo_DocumentSet
 		return $return;
 	}
 
-	public function setTags($tags, $reason)
+	public function setTags($reason, $tags)
 	{
+		if (is_string($tags)) {
+			// swap argument order.
+			$tmp = $reason;
+			$reason = $tags;
+			$tags = $tmp;
+			// trigger_error("Switch argument order....", E_USER_NOTICE);
+		}
 		$refs = array();
 		foreach ($tags as $idx => $tag) { 
 			$refs[$idx] = $tag->createReference();
@@ -104,7 +111,7 @@ class EpicDb_Mongo_Tags extends Shanty_Mongo_DocumentSet
 	}
 	
 	public function setTag($reason, $tag) {
-		$this->setTags(array($tag), $reason);
+		$this->setTags($reason, array($tag));
 		return $this;
 	}
 } // END class EpicDb_Mongo_Tags

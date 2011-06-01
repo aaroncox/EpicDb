@@ -14,10 +14,14 @@ class EpicDb_View_Helper_Card extends MW_View_Helper_HtmlTag
 	// 	return
 	// }
 	public function link($record, $params = array()) {
-		if($record instanceOf EpicDb_Mongo_Profile) {
-			return $this->view->profileLink($record, $params);
+		if ($record->id) {
+			if($record instanceOf EpicDb_Mongo_Profile) {
+				return $this->view->profileLink($record, $params);
+			}
+			return $this->view->recordLink($record, $params);
+		} else {
+			return (isset($params['text'])) ? $params['text'] : $this->view->escape($record->name);
 		}
-		return $this->view->recordLink($record, $params);
 	}
 	public function addExtra($extra) {
 		return $this->htmlTag("p", array("class" => 'text-small'), $extra);
