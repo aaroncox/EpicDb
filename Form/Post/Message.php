@@ -32,6 +32,9 @@ class EpicDb_Form_Post_Message extends EpicDb_Form_Post
 					'size' => 80,
 					'description' => '120 character or less title for your message.'
 				));
+			if($post->title) {
+				$this->setDefaults(array("title" => $post->title));
+			}
 			$this->source->setLabel("Your Message");
 			$this->setButtons(array("save" => "Post Message"));
 		}
