@@ -17,6 +17,7 @@ class EpicDb_Mongo_Schema extends MW_Mongo_Schema {
 		'user' => 'EpicDb_Mongo_Profile_User',
 		'group' => 'EpicDb_Mongo_Profile_Group',
 		'website' => 'EpicDb_Mongo_Profile_Group_Website',
+		'guild' => 'EpicDb_Mongo_Profile_Group_Guild',
 		// Record Types
 		'tag' => 'EpicDb_Mongo_Record_Tag',
 		'record' => 'EpicDb_Mongo_Record',
