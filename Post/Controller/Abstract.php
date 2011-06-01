@@ -65,6 +65,7 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 	
 
 	public function questionsAction() {
+		$this->view->profile = $this->_helper->auth->getUserProfile();
 
 		$request = $this->getRequest();
 		$auth = $this->_helper->auth;
