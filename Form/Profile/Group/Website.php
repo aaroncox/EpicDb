@@ -78,7 +78,7 @@ class EpicDb_Form_Profile_Group_Website extends EpicDb_Form_Profile
 			$profile->logo = $this->logo->getValue();
 			$profile->icon = $this->icon->getValue();
 			$profile->description = $this->description->getValue();
-			if($this->_isNew) {
+			if($profile->isNewDocument()) {
 				// Do we need this still?
 				$user = MW_Auth::getInstance()->getUser();
 				$profile->_owner = $user;
@@ -89,4 +89,5 @@ class EpicDb_Form_Profile_Group_Website extends EpicDb_Form_Profile
 			return true;
 		}
 	}
+	
 } // END class EpicDb_Form_Profile

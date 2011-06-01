@@ -75,12 +75,11 @@ class EpicDb_Form_Profile extends MW_Form
 	}
 	public function render()
 	{
-		// foreach($this->getElements() as $element) {
-		// 	$element->setAttrib('class', 'ui-state-default');
-		// }
-		// $this->save->setAttrib('class','login r2-button ui-state-default ui-corner-all');
-		// $this->getDecorator('HtmlTag')->setOption('class','r2-form transparent-bg rounded padded-10')->setOption('id', 'ad-edit');
+		foreach($this->getElements() as $element) {
+			$element->setAttrib('class', 'ui-state-default');
+		}
+		$this->save->setAttrib('class','login r2-button ui-state-default ui-corner-all');
+		$this->getDecorator('HtmlTag')->setOption('class','r2-form transparent-bg rounded')->setOption('id', 'ad-edit');
 		return parent::render();
 	}	
-	
 } // END class R2Db_Form_Profile
