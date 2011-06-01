@@ -6,6 +6,7 @@
  **/
 class EpicDb_Mongo_Profile_Group_Website extends EpicDb_Mongo_Profile_Group
 {
+	public $summaryHelper = 'websiteSummary';
 	protected static $_documentType = "website";
 	protected static $_editForm = 'EpicDb_Form_Profile_Group_Website';
 	
