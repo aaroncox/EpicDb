@@ -26,15 +26,6 @@ class EpicDb_View_Helper_ProfileSummary extends MW_View_Helper_HtmlTag
 				'icon' => 'key'
 			));
 		}
-		if($profile->feed) {
-			$buttons .= $this->view->button(array(
-				'action' => 'manual-crawl',
-				'profile' => $profile
-			), 'profile', true, array(
-				'text' => 'Scan RSS',
-				'icon' => 'key',
-			));			
-		}
 		if(EpicDb_Auth::getInstance()->getUserProfile()) {
 			$buttons .= $this->view->followButton($profile);
 			$buttons .= $this->view->followButton($profile, array("mode" => "block"));
