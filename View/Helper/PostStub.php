@@ -28,6 +28,14 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 			case 'article-rss':
 				$type = 'n article';
 				break;
+			case "message":
+				$subject = $post->tags->getTag('subject');
+				if($subject) {
+					$type = ' message about '.$this->view->profileLink($subject);
+				} else {
+					$type = ' message';
+				}
+				break;
 			case "answer":
 				$type = 'n answer to '.$this->view->postLink($post->_parent, array("text" => "this question"));
 				break;
