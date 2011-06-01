@@ -190,7 +190,7 @@ class EpicDb_Mongo_Post extends MW_Auth_Mongo_Resource_Document implements EpicD
 	public function findComments($limit = 10, $query = array(), $sort = array()) {
 		// var_dump($this->createReference());
 		$query = array(
-			"_parent" => $this->createReference(),
+			'_parent' => $this->createReference(),
 			'_deleted' => array(
 					'$exists' => false
 				)

@@ -24,7 +24,7 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 		}
 		return $post;
 	}
-
+	
 	public function commentAction() {
 		$parent = $this->view->parent = $this->getPost();
 		if($parent instanceOf EpicDb_Mongo_Post_Question) {
@@ -33,6 +33,7 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 			$newComment = EpicDb_Mongo::db('comment');
 		}
 		$newComment->_parent = $parent;
+		$newComment->tags->tag($parent, 'parent');
 		$commentForm = $this->view->form = $newComment->getEditForm();
 		$this->_handleMWForm($commentForm, 'comment');
 	}
@@ -46,12 +47,22 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 		if($this->_helper->auth->getUserProfile()) {
 			$newAnswer = EpicDb_Mongo::db('answer');
 			$newAnswer->_parent = $question;
+			$newAnswer->tags->tag($question, 'parent');
 			$answerForm = $this->view->form = $newAnswer->getEditForm();
 			$this->_handleMWForm($answerForm, 'answer');
 		}
 	}
 	
 	protected function _formRedirect($form, $key, $ajax) {
+		$post = $form->getPost();
+		if($post->_parent->hasId() && $post->_parent->_parent->hasId() && $parentParent = $post->_parent->_parent) $this->_redirect($this->view->url(array(
+			'post'=>$parentParent,
+			'action'=>'view',
+		), 'post', true));
+		if($post->_parent->hasId() && $parent = $post->_parent) $this->_redirect($this->view->url(array(
+			'post'=>$parent,
+			'action'=>'view',
+		), 'post', true));
 		if($post = $form->getPost()) $this->_redirect($this->view->url(array(
 			'post'=>$post,
 			'action'=>'view',
