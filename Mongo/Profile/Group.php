@@ -132,7 +132,6 @@ class EpicDb_Mongo_Profile_Group extends EpicDb_Mongo_Profile
     $this->save();
     return $role;
   }
-
   
   public function setMembership(EpicDb_Mongo_Profile $profile, $type)
   {

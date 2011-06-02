@@ -12,7 +12,7 @@ class EpicDb_View_Helper_GuildSummary extends MW_View_Helper_HtmlTag
 {
 	public function guildSummary(EpicDb_Mongo_Profile_Group_Guild $profile) {
 		$placeholder = $this->view->summary();
-		$placeholder->append($this->view->card($profile, array("class" => "wide", "tagType" => "h2"))."");
+		$placeholder->append($this->htmlTag("div", array("class" => "transparent-bg rounded"), $this->view->profileSlider($profile)."")."");
 		
 		$buttons = '';
 		if ($profile->user && MW_Auth::getInstance()->hasPrivilege(new MW_Auth_Resource_Super(), 'sudo')) {

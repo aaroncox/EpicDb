@@ -14,4 +14,15 @@ class EpicDb_Mongo_Profile_Group_Guild extends EpicDb_Mongo_Profile_Group
 	public function getParentResource() {
 		return new EpicDb_Auth_Resource_Profile();
 	}
+	
+	public function getIcon() {
+		if($this->logo) {
+			return $this->logo;
+		}
+		if($this->icon) {
+			return $this->icon;
+		}
+		return "/images/icons/unknown.jpg";
+	}
+	
 }

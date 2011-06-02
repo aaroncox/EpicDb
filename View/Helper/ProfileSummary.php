@@ -26,7 +26,17 @@ class EpicDb_View_Helper_ProfileSummary extends MW_View_Helper_HtmlTag
 				'icon' => 'key'
 			));
 		}
-		if(EpicDb_Auth::getInstance()->getUserProfile()) {
+		if(R2Db_Auth::getInstance()->hasPrivilege($profile, 'edit')) {
+			$buttons .= $this->view->button(array(
+				'action' => 'edit',
+				'profile' => $profile
+			), 'profile', true, array(
+				'text' => 'Edit Profile',
+				'icon' => 'key',
+			));						
+		}	
+		$currentUser = EpicDb_Auth::getInstance()->getUserProfile();	
+		if($currentUser && $currentUser->createReference() != $profile->createReference()) {
 			$buttons .= $this->view->followButton($profile);
 			$buttons .= $this->view->followButton($profile, array("mode" => "block"));
 		}
