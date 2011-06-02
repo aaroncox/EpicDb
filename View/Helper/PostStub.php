@@ -22,8 +22,24 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 	}
 	public function whatsThis($post) {
 		switch($post->_type) {
+			case 'question':
+				$subject = $post->tags->getTag('subject');
+				if($subject) {
+					$type = ' question about '.$this->view->recordLink($subject);
+				} else {
+					$type = ' question';
+				}
+				break;
 			case 'question-comment':
 				$type = ' comment on '.$this->view->postLink($post->_parent, array("text" => "this ".$post->_parent->_type));
+				break;
+			case 'comment':
+				$subject = $post->tags->getTag('subject');
+				if($subject) {
+					$type = ' comment on '.$this->view->recordLink($subject);
+				} else {
+					$type = ' comment';
+				}
 				break;
 			case 'article-rss':
 				$type = 'n article';
