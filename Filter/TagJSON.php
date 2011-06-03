@@ -42,7 +42,14 @@ class EpicDb_Filter_TagJSON implements Zend_Filter_Interface {
 		$refs = json_decode($value,true);
 		if (!is_array($refs)) $refs = array();
 		foreach($refs as $value) {
-			if ($value) {
+			if ( isset( $value['$new'] ) ) {
+				$ref = EpicDb_Mongo::newDoc('tag');
+				$ref->name = $value['name'];
+				$ref->tags->setTag('author', EpicDb_Auth::getInstance()->getUserProfile());
+				$ref->_created = time();
+				$ref->save();
+				$return[] = $ref;
+			} elseif ($value) {
 				$return[] = EpicDb_Mongo::resolveReference($value);
 			}
 		}
