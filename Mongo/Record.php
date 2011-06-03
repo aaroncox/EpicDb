@@ -64,6 +64,21 @@ class EpicDb_Mongo_Record extends MW_Auth_Mongo_Resource_Document implements Epi
 		return $return = EpicDb_Mongo::db('profile')->fetchAll(array("following" => $record->createReference()), array(), $limit);
 	}
 	
+	public function toJSON() {
+		$filter = new MW_Filter_Slug();
+		$return = array(
+			'_id' => (string)$this->_id,
+			'_type' => $this->_type,
+			'_name' => $this->name,
+			'_slug' => $this->name,
+			'name' => $filter->filter($this->name),
+			'icon' => $this->icon,
+			'color' => $this->color,
+		);
+		return $return;
+		// echo "<pre>"; var_dump($return); exit;
+	}
+	
 	public function getAdminForms() {
 		$forms = array();
 		$forms['changeIcon'] = new EpicDb_Form_Record_Icon(array("record" => $this, "title" => "Change Icon", "description" => "Change the Icon that this record uses, image should be an 80x80 jpg/png/gif."));
