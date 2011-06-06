@@ -32,6 +32,7 @@ class EpicDb_Mongo_Schema extends MW_Mongo_Schema {
 		'message' => 'EpicDb_Mongo_Post_Message',
 		// votes
 		'vote' => 'EpicDb_Mongo_Vote',
+		'follows-cache' => 'EpicDb_Mongo_Cache_Followers',
 
 	);
 	

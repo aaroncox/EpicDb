@@ -28,6 +28,7 @@ class EpicDb_View_Helper_Card extends MW_View_Helper_HtmlTag
 	}
 	protected function _detail($qualifier, $content) {
 		if(!$qualifier || !$content) return '';
+		if(is_int($qualifier)) return $this->htmlTag("p", array('class' => 'text-small'), $content);	
 		return $this->htmlTag("p", array('class' => 'text-verysmall'), $qualifier)."".
 			$this->htmlTag("p", array('class' => 'text-small'), $content);
 	}
@@ -45,7 +46,7 @@ class EpicDb_View_Helper_Card extends MW_View_Helper_HtmlTag
 	public function cardDetails($record, $params = null) {
 		$details = '';
 		$details .= $this->htmlTag($this->_tagType, array('class' => 'text-medium'), $this->link($record));
-		if(isset($params['content'])) {
+		if(isset($params['content']) && !empty($params['content'])) {
 			foreach($params['content'] as $qualifier => $content) {
 				$details .= $this->_detail($qualifier, $content);
 			}
@@ -74,6 +75,7 @@ class EpicDb_View_Helper_Card extends MW_View_Helper_HtmlTag
 
 	public function card($record, $params = array()) {
 		// Reset for other times
+		// var_dump($record);exit;
 		$this->_tagType = 'h4';
 		if(isset($params['tagType'])) $this->setTagType($params['tagType']);
 		if(!$record) return $this->unknownCard($params);
