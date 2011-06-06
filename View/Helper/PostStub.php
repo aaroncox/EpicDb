@@ -80,11 +80,13 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 	public function stubVote($post) {
 		$buttons = " ";
 		if ($post instanceOf EpicDb_Vote_Interface_Votable) {
+			$buttons .= $this->htmlTag("span", array("class" => "vote-label"), "YOUR VOTE!");
 			if (!$post instanceOf EpicDb_Vote_Interface_UpOnly) {
 				$buttons .= $this->view->voteWidget($post)->makeVoteButton('down');
 			}
 			$buttons .= $this->view->voteWidget($post)->makeVoteButton('up');
 			if ($post instanceOf EpicDb_Vote_Interface_Acceptable) {
+				$buttons .= $this->htmlTag("span", array("class" => "vote-label"), "ACCEPT ANSWER");
 				$buttons .= $this->view->voteWidget($post)->makeVoteButton('accept');
 			}
 		}
@@ -161,10 +163,13 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 			// $this->htmlTag("div", array("class" => "inline-flow"), ">")."". // Minimize / Maximize
 			$this->htmlTag("div", array("class" => "stub-score rounded text-verylarge vote-count ".$voteClass.$this->color($this->scoring($post))), 
 				$this->htmlTag("span", array("class" => "vote-label"), 'SCORE')."".
-				$this->scoring($post)
+				$this->scoring($post)."<br/>".
+				$this->htmlTag("span", array("class" => "vote-controls"),
+					$this->stubVote($post)
+				)
 			)."".
 			$this->htmlTag("div", array("class" => "stub-title rounded text-large center-shadow ".$headerClass), 
-				$this->htmlTag("div", array("class" => "stub-vote rounded inline-flow", "style" => "float: right"), $this->stubVote($post))."".
+				// $this->htmlTag("div", array("class" => "stub-vote rounded inline-flow", "style" => "float: right"), $this->stubVote($post))."".
 				// $this->view->profileLink($post->tags->getTag('author')?:$post->tags->getTag('source'))." POSTS ".
 				$this->showIcon($post, $options)."".
 				$this->view->postLink($post, array("text" => $this->postHeader($parent?:$post, $options)))
