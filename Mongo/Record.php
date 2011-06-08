@@ -8,7 +8,7 @@
  * @param undocumented class
  * @package undocumented class
  **/
-class EpicDb_Mongo_Record extends MW_Auth_Mongo_Resource_Document implements EpicDb_Interface_Cardable
+class EpicDb_Mongo_Record extends MW_Auth_Mongo_Resource_Document implements EpicDb_Interface_Cardable, EpicDb_Interface_Tooltiped
 {
 	public $summaryHelper = 'recordSummary';
 	public $contextHelper = 'recordContext';
@@ -30,6 +30,7 @@ class EpicDb_Mongo_Record extends MW_Auth_Mongo_Resource_Document implements Epi
 			'revisions' => array('DocumentSet'),
 			'revisions.$' => array('Document:EpicDb_Mongo_Revision'),
 			'tags' => array('DocumentSet:EpicDb_Mongo_Tags'),
+			'attribs' => array('Document:EpicDb_Mongo_Meta'),
 		));
 		return parent::__construct($data, $config);
 	}
@@ -40,11 +41,27 @@ class EpicDb_Mongo_Record extends MW_Auth_Mongo_Resource_Document implements Epi
 		}
 	}
 
+	// Returns the string URL of where to load the icon for this
 	public function getIcon() {
 		if($this->icon) {
 			return $this->icon;
 		}
 		return "/images/icons/unknown.jpg";
+	}
+	
+	// Returns the string name of this
+	public function getName() {
+		return $this->name;
+	}
+	
+	// Returns the string description
+	public function getDescription() {
+		return $this->description;
+	}
+	
+	// Returns an array of strings representing view helpers to execute
+	public function getTooltipHelpers() {
+		return array('icon', 'name', 'description');
 	}
 
 	public function cardProperties($view) {

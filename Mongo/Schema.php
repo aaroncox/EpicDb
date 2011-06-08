@@ -21,6 +21,7 @@ class EpicDb_Mongo_Schema extends MW_Mongo_Schema {
 		// Record Types
 		'tag' => 'EpicDb_Mongo_Record_Tag',
 		'record' => 'EpicDb_Mongo_Record',
+		'resource' => 'EpicDb_Mongo_Record_Resource',
 		// Post Types
 		'post' => 'EpicDb_Mongo_Post',
 		'question' => 'EpicDb_Mongo_Post_Question',
@@ -33,7 +34,7 @@ class EpicDb_Mongo_Schema extends MW_Mongo_Schema {
 		// votes
 		'vote' => 'EpicDb_Mongo_Vote',
 		'follows-cache' => 'EpicDb_Mongo_Cache_Followers',
-
+		'metaKeys' => 'EpicDb_Mongo_MetaKeys',
 	);
 	
 	/**
