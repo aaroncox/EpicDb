@@ -12,7 +12,7 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 {
 	public function wrap($content) {
 		return $this->view->htmlTag("div", array(
-			"class" => "tooltip rounded", 
+			"class" => "tooltip tooltip-rounded", 
 			"id" => $this->_doc->_type."-".$this->_doc->id
 			), 
 			$this->view->htmlTag("div", array("class" => "tooltip-reset tooltip-inner ui-helper-clearfix"),
@@ -29,22 +29,88 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 			$this->htmlTag("span", array("class" => "avail"), 0)
 		);
 	}
+	public function link() {
+		$doc = $this->_doc; 
+		if(!$doc->url) return '';
+		return $this->view->htmlTag("h4", array(), $this->view->externalTo($this->_doc->url));
+	}
 	public function icon() {
+		if(!$icon = $this->_doc->getIcon()) return '';
 		return $this->view->htmlTag("div", array("class" => "tooltip-icon-box"), 
 			$this->view->htmlTag("div", array(
-				"class" => "tooltip-icon rounded",
+				"class" => "tooltip-icon tooltip-rounded",
 				"style" => "background: url('".$this->_doc->getIcon()."') no-repeat top center",
 			), " ")."".
 			$this->counter()
 		)."";
 	}
 	public function name() {
-		return $this->_doc ? $this->view->htmlTag("h3", array(), $this->_doc->getName()).'' : '';
+		return $this->_doc ? $this->view->htmlTag("h3", array(), $this->view->recordLink($this->_doc)).'' : '';
+	}
+	public function parentTitle() {
+		$doc = $this->_doc;
+		if(!$doc->getName()) return '';
+		$profile = $doc->tags->getTag('author')?:$doc->tags->getTag('source');
+		$parentDoc = $doc->tags->getTag('parent')?:$doc->_parent;
+		return $this->view->htmlTag("p", array(), "An ".$doc->_type." in response to...")."".
+						$this->view->htmlTag("h3", array(), 
+							($parentDoc->getName()) ? $this->view->postLink($parentDoc, array(
+								"text" => $this->view->htmlFragment($parentDoc->getName(), 50)
+							)) : ''
+							).'';
+						;		
+	}
+	public function subjectTitle() {
+		$doc = $this->_doc;
+		if(!$doc->getName()) return '';
+		$profile = $doc->tags->getTag('author')?:$doc->tags->getTag('source');
+		$parentDoc = $doc->tags->getTag('subject')?:$doc->_record;
+		return $this->view->htmlTag("p", array(), "A ".$doc->_type." on...")."".
+						$this->view->htmlTag("h3", array(), 
+							($parentDoc->getName()) ? $this->view->recordLink($parentDoc, array(
+								"text" => $this->view->htmlFragment($parentDoc->getName(), 50)
+							)) : ''
+							).'';
+						;		
+	}
+	public function title() {
+		if(!$this->_doc->getName()) return '';
+		return $this->_doc ? $this->view->htmlTag("h3", array(), 
+			($this->_doc->getName()) ? $this->view->postLink($this->_doc, array(
+				"text" => $this->view->htmlFragment($this->_doc->getName(), 50)
+			)) : ''
+			).'' : '';
 	}
 	public function description() {
 		$doc = $this->_doc;
 		if (!$doc) return '';
 		return $this->view->htmlTag("div", array("class" => "description"), $doc->getDescription()?:" ");
+	}
+	public function limitDescription() {
+		$doc = $this->_doc;
+		if (!$doc) return '';
+		return $this->view->htmlTag("div", array("class" => "description"), 
+			$this->view->htmlFragment($doc->getDescription(), 250)?:" "
+		);
+		
+	}
+	public function follow() {
+		return $this->view->followButton($this->_doc);
+	}
+	public function body() {
+		$doc = $this->_doc;
+		if (!$doc) return '';
+		
+		$description = $this->view->htmlFragment($doc->getDescription(), 250);
+		if(!$description) return '';
+		
+		$profile = $doc->tags->getTag('author')?:$doc->tags->getTag('source');
+		
+		$html = $this->view->htmlTag("p", array("style" => "font-style: italic"), $this->view->profileLink($profile)." writes...");
+		$html .= $description;
+		$html .= $this->view->htmlTag("p", array(), $this->view->postLink($doc, array("text" => "Read More...")));
+
+		return $this->view->htmlTag("div", array("class" => "description"), $html);
 	}
 	public function effect() {
 		
@@ -54,6 +120,15 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 	}
 	public function flavor() {
 		
+	}
+	public function label($text, $escape = true) {
+		return $this->view->htmlTag("h4", array("class" => "label"), $text, $escape);
+	}
+	public function cloud($documentSet, $label = "") {
+		return $this->view->htmlTag("div", array("class" => "tooltip-cloud", "style" => "display: inline-block"), 
+			$this->view->htmlTag("h4", array("class" => "label transparent-bg-blue inline-flow"), $label)."".
+			$this->view->iconCloud($documentSet)
+		);
 	}
 	public function render() {
 		$doc = $this->_doc;
@@ -68,6 +143,9 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 			if (is_array($helper)) {
 				$args = $helper;
 				$helper = array_shift($args);
+			}
+			if ($helper == 'tooltip') {
+				return $this->tooltip(array_shift($args))."";
 			}
 			if (method_exists($this, $helper)) {
 				$content .= call_user_func_array(array($this, $helper), $args);
