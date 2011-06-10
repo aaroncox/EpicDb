@@ -39,8 +39,9 @@ class EpicDb_Vote_Down extends EpicDb_Vote_Abstract {
 	{
 		if ((!$this->_post instanceOf EpicDb_Vote_Interface_Votable) ||
 				($this->_post instanceOf EpicDb_Vote_Interface_UpOnly) ) return "This object can't be down-voted";
-
-		if ($this->_post->tags->getTag('author')->createReference() == $this->_userProfile->createReference()) {
+			
+		$author = $this->_post->tags->getTag('author');
+		if ($author && $author->createReference() == $this->_userProfile->createReference()) {
 			return "You can not vote on your own post";
 		}
 	}
