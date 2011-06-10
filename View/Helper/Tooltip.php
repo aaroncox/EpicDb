@@ -47,19 +47,7 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 	public function name() {
 		return $this->_doc ? $this->view->htmlTag("h3", array(), $this->view->recordLink($this->_doc)).'' : '';
 	}
-	public function superparentTitle() {
-		$parentDoc = $this->_doc;
-		while($newParent = $parentDoc->tags->getTag('parent')) {
-			$parentDoc = $newParent;
-		}
-		return $this->view->htmlTag("p", array("style" => "font-size: 10px"), "A comment on this question...")."".
-						$this->view->htmlTag("h3", array(), 
-							($parentDoc->getName()) ? $this->view->postLink($parentDoc, array(
-								"text" => $this->view->htmlFragment($parentDoc->getName(), 50)
-							)) : ''
-							).'';
-						;		
-	}
+	
 	public function parentTitle() {
 		$doc = $this->_doc;
 		if(!$doc->getName()) return '';

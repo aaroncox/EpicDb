@@ -19,7 +19,7 @@ class EpicDb_Mongo_Post_Question_Answer extends EpicDb_Mongo_Post_Question imple
 	
 	// Returns the string name of this
 	public function getName() {
-		if($parent = $this->tags->getTag('parent')) {
+		if($parent = $this->tags->getTag('parent')?:$this->_parent) {
 			return $parent->title;
 		}
 		return "";

@@ -22,9 +22,9 @@ class EpicDb_View_Helper_QuestionLink extends MW_View_Helper_HtmlTag
 		return $this->htmlTag("a", array(
 			"rel" => 'no-tooltip nofollow',
 			"href" => $this->view->url(array(
-				'id' => $question->id,
+				'post' => $question,
 				'slug' => $slug->filter($question->title),
-			), 'seo_questions', true),
+			), 'questions', true),
 		), (string) $text);
 	}
 }

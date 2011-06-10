@@ -20,6 +20,6 @@ class EpicDb_Mongo_Post_Question_Comment extends EpicDb_Mongo_Post implements Ep
 
 	// Returns an array of strings representing view helpers to execute
 	public function getTooltipHelpers() {
-		return array("icon", "superparentTitle", "body");
+		return array("icon", "parentTitle", "body");
 	}
 } // END class EpicDb_Mongo_Post_Question_Answer
