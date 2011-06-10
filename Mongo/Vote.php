@@ -4,7 +4,7 @@
  *
  * @author Aaron Cox <aaronc@fmanet.org>
  **/
-class EpicDb_Mongo_Vote extends MW_Mongo_Document
+class EpicDb_Mongo_Vote extends EpicDb_Mongo_Document
 {
 	protected static $_collectionName = 'votes';
 

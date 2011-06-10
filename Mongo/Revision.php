@@ -17,7 +17,7 @@
  * @copyright Copyright (c) 2011 Momentum Workshop, Inc
  * @version $Id: Revision.php 699 2011-03-19 01:56:51Z root $
  */
-class EpicDb_Mongo_Revision extends MW_Mongo_Document {
+class EpicDb_Mongo_Revision extends EpicDb_Mongo_Document {
 	protected $_requirements = array(
 		'_lastEditedBy' => array('Document:EpicDb_Mongo_Profile', 'AsReference'),
 	);

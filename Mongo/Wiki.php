@@ -4,7 +4,7 @@
  *
  * @author Aaron Cox <aaronc@fmanet.org>
  **/
-class EpicDb_Mongo_Wiki extends MW_Auth_Mongo_Resource_Document
+class EpicDb_Mongo_Wiki extends EpicDb_Auth_Mongo_Resource_Document
 {
   protected static $_collectionName = 'wiki';
 	

@@ -8,4 +8,15 @@ class EpicDb_Mongo_Post_Article extends EpicDb_Mongo_Post implements EpicDb_Vote
 {
 	protected static $_documentType = 'article';
 
+	// Returns the string name of this
+	public function getName() {
+		if($this->title) {
+			return $this->title;
+		}
+		return "";
+	}
+	
+	public function getTooltipHelpers() {
+		return array('icon', 'title', 'body');
+	}
 } // END class EpicDb_Mongo_Record_Skill

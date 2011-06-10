@@ -16,5 +16,19 @@ class EpicDb_Mongo_Post_Question_Answer extends EpicDb_Mongo_Post_Question imple
 	protected $_requirements = array(
 	    '_parent' => array('Document:EpicDb_Mongo_Post_Question', 'AsReference', 'Required'), 
 	  );
+	
+	// Returns the string name of this
+	public function getName() {
+		if($parent = $this->tags->getTag('parent')) {
+			return $parent->title;
+		}
+		return "";
+	}
+	
+	// Returns an array of strings representing view helpers to execute
+	public function getTooltipHelpers() {
+		return array("icon", "parentTitle", "body");
+	}
+	
 
 } // END class EpicDb_Mongo_Post_Question_Answer

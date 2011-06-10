@@ -17,4 +17,5 @@ class EpicDb_Mongo_Post_Question_Comment extends EpicDb_Mongo_Post implements Ep
 	protected $_requirements = array(
 	    '_parent' => array('Document:EpicDb_Mongo_Post_Question', 'AsReference', 'Required'), 
 	  );
+	
 } // END class EpicDb_Mongo_Post_Question_Answer

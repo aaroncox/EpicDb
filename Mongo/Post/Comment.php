@@ -26,5 +26,17 @@ class EpicDb_Mongo_Post_Comment extends EpicDb_Mongo_Post implements EpicDb_Vote
 		// ));
 		// return parent::__construct($data, $config);
 	// }
+	
+	// Returns the string name of this
+	public function getName() {
+		if($subject = $this->tags->getTag('subject')?:$this->tags->getTag('parent')) {
+			return $subject->name?:$parent->title;
+		}
+		return "";
+	}
+	
+	public function getTooltipHelpers() {
+		return array('icon', 'subjectTitle', 'body');
+	}
 
 } // END class EpicDb_Mongo_Post

@@ -8,7 +8,7 @@
  * @param undocumented class
  * @package undocumented class
  **/
-class EpicDb_Mongo_Meta extends MW_Mongo_Document
+class EpicDb_Mongo_Meta extends EpicDb_Mongo_Document
 {
 	public function init() {
 		$this->addRequirements(EpicDb_Mongo::db('metaKeys')->getRequirementsArray());

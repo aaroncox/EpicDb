@@ -6,7 +6,7 @@
  *
  * @author Aaron Cox <aaronc@fmanet.org>
  **/
-class EpicDb_Mongo_Post extends MW_Auth_Mongo_Resource_Document implements EpicDb_Interface_Revisionable
+class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements EpicDb_Interface_Revisionable, EpicDb_Interface_Tooltiped
 {
 	public $contextHelper = 'context';
 	
@@ -36,6 +36,31 @@ class EpicDb_Mongo_Post extends MW_Auth_Mongo_Resource_Document implements EpicD
 			'revisions.$' => array('Document:EpicDb_Mongo_Revision'),
 		));
 		return parent::__construct($data, $config);
+	}
+	
+	// Returns the string URL of where to load the icon for this
+	public function getIcon() {
+		if($poster = $this->tags->getTag('author')?:$this->tags->getTag('source')) {
+			return $poster->getIcon();
+		}
+		return "";
+	}
+	
+	// Returns the string name of this
+	public function getName() {
+		if($this->title) return $this->title;
+		return "";
+	}
+	
+	// Returns the string description
+	public function getDescription() {
+		if($this->body) return $this->body;
+		return "";
+	}
+	
+	// Returns an array of strings representing view helpers to execute
+	public function getTooltipHelpers() {
+		return array("icon", "title", "body", array('cloud', $this->tags, 'Tags'));
 	}
 
 	public function getPermaLink( $view )

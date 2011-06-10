@@ -27,6 +27,11 @@ class EpicDb_Mongo_Profile_User extends EpicDb_Mongo_Profile
 	  $return = parent::__construct($data, $config);
 	}
 	
+	public function getDescription() {
+		if($this->bio) return $this->bio; 
+		return '';
+	}
+	
   public function isFollowing(MW_Mongo_Document $record)  
   {
     $id = (string) $record->_id;

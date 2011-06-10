@@ -8,7 +8,7 @@
  * @param undocumented class
  * @package undocumented class
  **/
-class EpicDb_Mongo_Record extends MW_Auth_Mongo_Resource_Document implements EpicDb_Interface_Cardable, EpicDb_Interface_Tooltiped
+class EpicDb_Mongo_Record extends EpicDb_Auth_Mongo_Resource_Document implements EpicDb_Interface_Cardable, EpicDb_Interface_Tooltiped
 {
 	public $summaryHelper = 'recordSummary';
 	public $contextHelper = 'recordContext';
@@ -99,6 +99,7 @@ class EpicDb_Mongo_Record extends MW_Auth_Mongo_Resource_Document implements Epi
 	public function getAdminForms() {
 		$forms = array();
 		$forms['changeIcon'] = new EpicDb_Form_Record_Icon(array("record" => $this, "title" => "Change Icon", "description" => "Change the Icon that this record uses, image should be an 80x80 jpg/png/gif."));
+		$forms['changeDescription'] = new EpicDb_Form_Record_Description(array("record" => $this, "title" => "Change Description", "description" => "Change the description that this record uses for it's tooltips."));
 		return $forms;
 	}
 	
