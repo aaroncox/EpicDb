@@ -30,7 +30,7 @@ class EpicDb_Mongo_Post_Comment extends EpicDb_Mongo_Post implements EpicDb_Vote
 	// Returns the string name of this
 	public function getName() {
 		if($subject = $this->tags->getTag('subject')?:$this->tags->getTag('parent')) {
-			return $subject->name?:$parent->title;
+			return $subject->name?:$subject->title;
 		}
 		return "";
 	}
