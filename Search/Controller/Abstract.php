@@ -13,6 +13,7 @@ class EpicDb_Search_Controller_Abstract extends MW_Controller_Action
 	public function init() {
 		$ajaxContext = $this->_helper->getHelper('AjaxContext');
 		$ajaxContext->addActionContext('tag', 'json')
+			->addActionContext('index', 'json')
 			->initContext();
 	}
 
@@ -21,21 +22,67 @@ class EpicDb_Search_Controller_Abstract extends MW_Controller_Action
 		$request = $this->getRequest();
 		$format = $request->getParam('format');
 		$search = EpicDb_Search::getInstance();
-		$this->view->layout()->searchQuery = $q = $request->getParam('q');
+		$this->view->layout()->searchQuery = $q = trim($request->getParam('q'));
+
+		if(strlen($q) < 3) return; 
 
 		$queryData = $search->parseQueryString($q);
 		$this->view->searchTerms = $queryData['terms'];
 		$query = $queryData['query'];
 
-		$sort = array( 'touched' => -1, '_created' => -1 );
+		$records = EpicDb_Mongo::db('record')->fetchAll($query);
+		$paginator = Zend_Paginator::factory($records);
+		$paginator->setCurrentPageNumber($this->getRequest()->getParam('page', 1));
+		$this->view->records = $paginator;
 
-		// $posts = EpicDb_Mongo::db('post')->fetchAll($query, $sort);
-		// 
-		// $paginator = Zend_Paginator::factory($posts);
-		// $paginator->setCurrentPageNumber($this->getRequest()->getParam('page', 1));
-		// 
-		// $this->view->posts = $paginator;
-		// 
+		$profiles = EpicDb_Mongo::db('profile')->fetchAll($query);
+		$paginator = Zend_Paginator::factory($profiles);
+		$paginator->setCurrentPageNumber($this->getRequest()->getParam('page', 1));
+		$this->view->profiles = $paginator;
+
+		$sort = array( 'touched' => -1, '_created' => -1 );
+		$posts = EpicDb_Mongo::db('post')->fetchAll($query, $sort);		
+		$paginator = Zend_Paginator::factory($posts);
+		$paginator->setCurrentPageNumber($this->getRequest()->getParam('page', 1));
+		$this->view->posts = $paginator;
+		
+		if($format == "json") {
+			$results = array();
+			foreach($this->view->records as $record) {
+				$results[] = array(
+					'id' => $record->id,
+					'_type' => $record->_type,
+					'_name' => $record->name,
+					'label' => $this->view->partial("search/_result.ajax.phtml", array("document" => $record)),
+					'name' => $record->name,
+					'link' => $this->view->recordLink($record).""
+				);
+			}
+			foreach($this->view->profiles as $record) {
+				if(count($results) > 20) continue;
+				$results[] = array(
+					'id' => $record->id,
+					'_type' => $record->_type,
+					'_name' => $record->name,
+					'label' => $this->view->partial("search/_result.ajax.phtml", array("document" => $record)),
+					'name' => $record->name,
+					'link' => $this->view->recordLink($record).""
+				);
+			}
+			foreach($this->view->posts as $record) {
+				if(count($results) > 20) continue;
+				$results[] = array(
+					'id' => $record->id,
+					'_type' => $record->_type,
+					'_name' => $record->name,
+					'label' => $this->view->partial("search/_result.ajax.phtml", array("document" => $record)),
+					'name' => $record->name,
+					'link' => $this->view->recordLink($record).""
+				);
+			}
+			$this->view->results = $results;
+			echo json_encode(array('results' => $this->view->results)); exit;
+		} 
 		// if ($posts->count() == 1 && !$format) {
 		// 	$posts->next();
 		// 	return $this->_redirect($this->view->url(array('post'=>$posts->current()),'post',true));
@@ -89,7 +136,8 @@ class EpicDb_Search_Controller_Abstract extends MW_Controller_Action
 			$return[] = array(
 				'$ref' => $ref['$ref'],
 				'$id' => $ref['$id'].'',
-				'card' => $this->view->card($result, array("class" => "medium-icon", "content" => array("is a" => $result->_type)))."",
+				'label' => $this->view->partial("search/_result.ajax.phtml", array("document" => $result)),
+				'card' => $this->view->card($result, array("class" => "medium-icon create-new") )."",
 				'name' => $result->name,
 			);
 			if ($lower == strtolower($result->name)) {
@@ -105,19 +153,22 @@ class EpicDb_Search_Controller_Abstract extends MW_Controller_Action
 				$return[] = array(
 					'$ref' => $ref['$ref'],
 					'$id' => $ref['$id'].'',
-					'card' => $this->view->card($result, array("class" => "medium-icon", "content" => array("is a" => $result->_type)))."",
+					'label' => $this->view->partial("search/_result.ajax.phtml", array("document" => $result)),
 					'name' => $result->name,
+					'card' => $this->view->card($result, array("class" => "medium-icon create-new") )."",
 				);
 			}
 		}
 		if (!$exactMatch) {
 			$blank = EpicDb_Mongo::newDoc('tag');
 			$blank->name = $q;
-
+			$blank->_type = 'create tag';
 			$return[] = array(
 				'$new' => true,
 				'name' => $q,
+				'label' => $this->view->partial("search/_result.ajax.phtml", array("document" => $blank)),
 				'card' => $this->view->card($blank, array("class" => "medium-icon create-new", "content" => array("not found..." => "Create New Tag" ) ) )."",
+				
 			);
 		}
 		

@@ -64,12 +64,13 @@ class EpicDb_Search {
 				$type = 'tag';
 				$term = $tag;
 			} else {
-				$re = new MongoRegex("/\b".preg_quote($term)."\b/i");
+				$re = new MongoRegex("/\b".preg_quote($term)."/i");
 				return array(
 					"terms" => array("contains" => array($term)), 
 					"query" => array('$or' => array(
-						array("body" => $re),
+						array("name" => $re),
 						array("title" => $re),
+						array("body" => $re),
 					))
 				);
 			}
@@ -161,7 +162,7 @@ class EpicDb_Search {
 		}
 		$pushCur($state);
 		
-		// var_dump($query, json_encode($return), $results->export()); exit;
+		// var_dump(json_encode($return)); exit;
 		return $return;
 	}
 
