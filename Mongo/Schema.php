@@ -9,7 +9,7 @@
  * @package undocumented class
  **/
 class EpicDb_Mongo_Schema extends MW_Mongo_Schema {
-	protected $_version = 3;
+	protected $_version = 4;
   protected $_tag = 'epicdb';
 	protected $_classMap = array(
 		// Profile Types
@@ -72,6 +72,9 @@ class EpicDb_Mongo_Schema extends MW_Mongo_Schema {
 				$db->execute("db.posts.ensureIndex({_created:1, touched:1})");
 				$db->execute("db.posts.ensureIndex({_parent:1})");
 				$db->execute("db.posts.ensureIndex({_parent:1, 'score.accepted':1})");
+			case 3:
+				$db->execute("db.posts.ensureIndex({touched:1, _created:1})");
+				
     }
 	}
 }
