@@ -16,9 +16,9 @@ class EpicDb_View_Helper_ProfileLink extends MW_View_Helper_HtmlTag
 		$admin = $moderator = null;
 		if($user instanceOf MW_Auth_Mongo_Role) {
 			$admin = $user->isMember(MW_Auth_Group_Super::getInstance());
-			// if (!$admin) {
-			// 	$moderator = $user->isMember(R2Db_Auth_Group_Moderators::getInstance());
-			// }
+			if (!$admin) {
+				$moderator = $user->isMember(EpicDb_Auth_Group_Moderators::getInstance());
+			}
 		}
 		$title = '';
 		if($admin || $moderator) {
