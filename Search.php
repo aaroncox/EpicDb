@@ -65,13 +65,20 @@ class EpicDb_Search {
 				$term = $tag;
 			} else {
 				$re = new MongoRegex("/\b".preg_quote($term)."/i");
+				$nameQuery = array('$or' => array(
+					array("name" => $re),
+				));
+				$postQuery = array('$or' => array(
+					array("title" => $re),
+					array("body" => $re),
+				));
 				return array(
 					"terms" => array("contains" => array($term)), 
-					"query" => array('$or' => array(
-						array("name" => $re),
-						array("title" => $re),
-						array("body" => $re),
-					))
+					"query" => array(
+						"records" => $nameQuery,
+						"profiles" => $nameQuery,
+						"posts" => $postQuery,
+					)
 				);
 			}
 		}
@@ -80,12 +87,17 @@ class EpicDb_Search {
 				$term = $this->findTagByName( $term );
 			}
 			if ($term instanceOf MW_Mongo_Document) {
+				$query = array();
+				$query['$or'][] = array(
+					"tags.ref" => array(
+						'$all' => array($term->createReference())
+					)					
+				);
 				return array(
 					"terms" => array("tagged" => array($term)), 
 					"query" => array(
-						"tags.ref" => array(
-							'$all' => array($term->createReference())
-						)
+						"records" => $query,
+						"posts" => $query,
 					)
 				);
 			}
@@ -110,7 +122,7 @@ class EpicDb_Search {
 	{
 		$return = array(
 			'terms' => array('tagged'=>array(), 'contains'=>array()),
-			'query' => array(),
+			'query' => array('posts' => array(), 'profiles' => array(), 'records' => array()),
 		);
 		$curParse = "";
 		$state = "string";
