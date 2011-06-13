@@ -36,6 +36,7 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 	}
 	public function icon() {
 		if(!$icon = $this->_doc->getIcon()) return '';
+		if(isset($this->_params['icon']) && $this->_params['icon'] == false) return '';
 		return $this->view->htmlTag("div", array("class" => "tooltip-icon-box"), 
 			$this->view->htmlTag("div", array(
 				"class" => "tooltip-icon tooltip-rounded",
@@ -165,8 +166,9 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 		}
 		return $content;
 	}
-	public function tooltip($document) {
+	public function tooltip($document, $params = array()) {
 		$this->_doc = false;
+		$this->_params = $params;
 		if($document instanceOf EpicDb_Interface_Tooltiped) $this->_doc = $document;
 		return $this;
 	}

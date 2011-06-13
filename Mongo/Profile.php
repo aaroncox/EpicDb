@@ -64,7 +64,7 @@ class EpicDb_Mongo_Profile extends EpicDb_Auth_Mongo_Resource_Document implement
 		if($this->icon) {
 			return $this->icon;
 		}
-		return "/images/icons/unknown.jpg";
+		return "http://s3.r2-db.com/unknown.jpg";
 	}
 
 	// Returns the string name of this

@@ -9,7 +9,7 @@
 class EpicDb_View_Helper_Gravatar extends Zend_View_Helper_Gravatar
 {
 	protected $_defaultOptions = array(
-		// 'defaultImg' => 'http://epicadvice.com/images/icons/unknown.jpg',
+		// 'defaultImg' => 'http://s3.r2-db.com/unknown.jpg',
 		'defaultImg' => 'identicon',
 		'rating' => 'pg',
 	);

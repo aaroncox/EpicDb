@@ -67,7 +67,7 @@ class EpicDb_View_Helper_Card extends MW_View_Helper_HtmlTag
 	public function unknownCard($params) {
 		return $this->htmlTag("div", array('class' => 'inline-flow db-card rounded '.$params['class']),
 			$this->htmlTag("div", array('class' => 'record-icon inline-flow rounded'),
-				$this->htmlTag("img", array('src' => '/images/icons/unknown.jpg'))
+				$this->htmlTag("img", array('src' => 'http://s3.r2-db.com/unknown.jpg'))
 			)."".
 			$this->htmlTag("div", array('class' => 'record-info inline-flow'), $this->htmlTag("h2", array('class' => 'text-large'), 'Missing Account'))
 		);

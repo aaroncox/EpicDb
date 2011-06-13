@@ -22,7 +22,7 @@ class EpicDb_Mongo_Profile_Group_Guild extends EpicDb_Mongo_Profile_Group
 		if($this->icon) {
 			return $this->icon;
 		}
-		return "/images/icons/unknown.jpg";
+		return "http://s3.r2-db.com/unknown.jpg";
 	}
 	
 }

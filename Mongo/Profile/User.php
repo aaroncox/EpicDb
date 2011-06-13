@@ -123,6 +123,6 @@ class EpicDb_Mongo_Profile_User extends EpicDb_Mongo_Profile
 			$helper = new EpicDb_View_Helper_Gravatar();
 			return $helper->gravatar($this->email)->url();
 		}
-		return "/images/icons/unknown.jpg";
+		return "http://s3.r2-db.com/unknown.jpg";
 	}
 } // END class EpicDb_Mongo_Profile_User
