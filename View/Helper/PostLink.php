@@ -22,6 +22,10 @@ class EpicDb_View_Helper_PostLink extends MW_View_Helper_HtmlTag
 		if(isset($params['text'])) {
 			$text = $params['text'];
 		}
+		$rel = "";
+		if(isset($params['rel'])) {
+			$rel = $params['rel'];
+		}
 		// var_dump($text);
 		if($text == null) {
 			$text = '[Read More]';
@@ -31,7 +35,7 @@ class EpicDb_View_Helper_PostLink extends MW_View_Helper_HtmlTag
 					'class' => 'post-preview',
 				), $preview)." ".
 				$this->htmlTag("a", array(
-				"rel" => 'no-tooltip nofollow',
+				"rel" => $rel,
 				"href" => $this->view->url(array(
 					'action'=> 'view',
 					'post' => $post,

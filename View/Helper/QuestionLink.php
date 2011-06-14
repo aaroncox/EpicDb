@@ -18,9 +18,13 @@ class EpicDb_View_Helper_QuestionLink extends MW_View_Helper_HtmlTag
 		if(isset($params['text'])) {
 			$text = $params['text'];
 		}
+		$rel = "";
+		if(isset($params['rel'])) {
+			$rel = $params['rel'];
+		}
 		$slug = new MW_Filter_Slug();
 		return $this->htmlTag("a", array(
-			"rel" => 'no-tooltip nofollow',
+			"rel" => $rel,
 			"href" => $this->view->url(array(
 				'post' => $question,
 				'slug' => $slug->filter($question->title),

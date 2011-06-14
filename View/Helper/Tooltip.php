@@ -46,7 +46,7 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 		)."";
 	}
 	public function name() {
-		return $this->_doc ? $this->view->htmlTag("h3", array(), $this->view->recordLink($this->_doc)).'' : '';
+		return $this->_doc ? $this->view->htmlTag("h3", array(), $this->view->recordLink($this->_doc, array("rel" => "no-tooltip"))).'' : '';
 	}
 	
 	public function parentTitle() {
@@ -70,7 +70,8 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 		return $this->view->htmlTag("p", array("style" => "font-size: 10px"), "A ".$doc->_type." on...")."".
 						$this->view->htmlTag("h3", array(), 
 							($parentDoc->getName()) ? $this->view->recordLink($parentDoc, array(
-								"text" => $this->view->htmlFragment($parentDoc->getName(), 50)
+								"text" => $this->view->htmlFragment($parentDoc->getName(), 50),
+								"rel" => "no-tooltip",
 							)) : ''
 							).'';
 						;		
@@ -79,7 +80,8 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 		if(!$this->_doc->getName()) return '';
 		return $this->_doc ? $this->view->htmlTag("h3", array(), 
 			($this->_doc->getName()) ? $this->view->postLink($this->_doc, array(
-				"text" => $this->view->htmlFragment($this->_doc->getName(), 50)
+				"text" => $this->view->htmlFragment($this->_doc->getName(), 50),
+				"rel" => "no-tooltip",
 			)) : ''
 			).'' : '';
 	}

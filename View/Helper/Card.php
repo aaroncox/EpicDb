@@ -46,7 +46,7 @@ class EpicDb_View_Helper_Card extends MW_View_Helper_HtmlTag
 	public function cardDetails($record, $params = null) {
 		$details = '';
 		$details .= $this->htmlTag($this->_tagType, array('class' => 'text-medium'), $this->link($record));
-		if($params['content'] === false) return $details;
+		if(!isset($params['content']) || $params['content'] === false) return $details;
 		if(isset($params['content']) && !empty($params['content'])) {
 			foreach($params['content'] as $qualifier => $content) {
 				$details .= $this->_detail($qualifier, $content);

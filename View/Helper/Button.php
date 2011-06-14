@@ -32,7 +32,7 @@ class EpicDb_View_Helper_Button extends MW_View_Helper_HtmlTag
 		$options = array(
 			'class' => 'no-tooltip epicdb-button epicdb-button-icon-left ui-state-default ui-corner-all',
 			'href' => $external?:$this->view->url($url, $route, $reset),
-			'rel' => 'nofollow',
+			'rel' => 'no-tooltip',
 			'style' => $style,
 		);
 		if(isset($params['tooltip'])) $options['data-tooltip'] = $params['tooltip'];

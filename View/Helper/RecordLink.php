@@ -28,8 +28,12 @@ class EpicDb_View_Helper_RecordLink extends MW_View_Helper_HtmlTag
 		if(isset($params['class'])) {
 			$class = $params['class'];
 		}
+		$rel = "";
+		if(isset($params['rel'])) {
+			$rel = $params['rel'];
+		}
 		return $this->htmlTag("a", array(
-			"rel" => 'no-tooltip nofollow',
+			"rel" => $rel,
 			"class" => $class,
 			"href" => $this->view->url(array(
 				'action'=> 'view',
