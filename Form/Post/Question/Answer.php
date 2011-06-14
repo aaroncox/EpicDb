@@ -22,8 +22,8 @@ class EpicDb_Form_Post_Question_Answer extends EpicDb_Form_Post
 	{
 		parent::init();
 		$post = $this->getPost();
-		if(!R2Db_Auth::getInstance()->getUser()->isMember(MW_Auth_Group_Super::getInstance())) {
-			$this->tags->removeElement();
+		if(!R2Db_Auth::getInstance()->getUser() || !R2Db_Auth::getInstance()->getUser()->isMember(MW_Auth_Group_Super::getInstance())) {
+			$this->removeElement('tags');
 		} else {
 			$this->tags->setLabel('Tag records as the answer...')->setDescription('Does an item, quest or NPC in the database answer this question? Tag it!');
 			$this->setDefaults(array(
