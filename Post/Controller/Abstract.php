@@ -25,6 +25,14 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 		return $post;
 	}
 	
+	public function editAction() {
+		$post = $this->getPost();
+		// MW_Auth::getInstance()->requirePrivilege($post, 'edit');
+		$revision = $this->getRequest()->getParam("rev");
+		$this->view->form = $form = $post->getEditForm(array("rev" => $revision));
+		$this->_handleMWForm($form);
+	}
+	
 	public function commentAction() {
 		$parent = $this->view->parent = $this->getPost();
 		if($parent instanceOf EpicDb_Mongo_Post_Question) {

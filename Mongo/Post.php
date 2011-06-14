@@ -168,9 +168,9 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 		return $tags;		
 	}
 
-	public function getEditForm() {
+	public function getEditForm($params = array()) {
 		$className = static::$_editForm;
-		return new $className(array('post' => $this));
+		return new $className(array('post' => $this)+$params);
 	}
 
 	public function newRevision()
