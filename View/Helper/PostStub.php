@@ -13,7 +13,7 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 	public function toWhat($post) {
 		$tags = array();
 		foreach($post->tags->getTags('tag') as $tag) {
-			if($tag['reason'] != 'tag') continue;	
+			if($tag['reason'] != 'tag' && $tag['reason'] != 'subject') continue;	
 			$tags[] = (string)$this->view->recordLink($tag);
 		}
 		// var_dump($tags); exit;
@@ -35,8 +35,13 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 				break;
 			case 'comment':
 				$subject = $post->tags->getTag('subject');
-				if($subject) {
-					$type = ' comment on '.$this->view->recordLink($subject);
+				$parent = $post->tags->getTag('parent')?:$post->_parent;
+				if($subject || $parent) {
+					if($parent instanceOf EpicDb_Mongo_Comment || $subject) {
+						$type = ' comment on '.$this->view->recordLink($subject?:$parent);						
+					} else {
+						$type = ' comment';
+					}
 				} else {
 					$type = ' comment';
 				}
@@ -49,7 +54,7 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 				if($subject) {
 					$type = ' message about '.$this->view->profileLink($subject);
 				} else {
-					$type = ' message';
+					$type = 'n announcement.';
 				}
 				break;
 			case "answer":
