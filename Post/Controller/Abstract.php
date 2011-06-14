@@ -28,7 +28,7 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 	public function editAction() {
 		$post = $this->getPost();
 		MW_Auth::getInstance()->requirePrivilege($post, 'edit');
-		$revision = $this->getRequest()->getParam("rev");
+		$revision = $this->getRequest()->getParam("rev", false);
 		$this->view->form = $form = $post->getEditForm(array("rev" => $revision));
 		$this->_handleMWForm($form);
 	}
