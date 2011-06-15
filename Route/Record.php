@@ -1,7 +1,7 @@
 <?php
 class EpicDb_Route_Record extends Zend_Controller_Router_Route {
 
-	static public $types = array('tag', 'skill','item','npc','class','place','race','achievement','badge','faction');
+	static public $types = array('tag');
 
 	public static function getInstance(Zend_Config $config)
 	{
@@ -12,7 +12,7 @@ class EpicDb_Route_Record extends Zend_Controller_Router_Route {
 			'slug'=>'-',
 		);
 		$reqs = array(
-			'type' => implode('|',self::$types),
+			'type' => implode('|',static::$types),
 			'id' => '\d+|[a-f0-9]{24}',
 		);
 
