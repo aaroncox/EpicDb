@@ -257,11 +257,7 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 		return $results;
 	}
 	
-	public function findRelated($record) {
-		$query = array(
-			// 'tags.ref' => $record->createReference(),
-			// 'tags.reason' => 'tag',
-		);
+	public function findRelated($record, $query = array()) {
 		$query['$or'][] = array(
 			'tags.ref' => $record->createReference(),
 			'tags.reason' => 'tag'
