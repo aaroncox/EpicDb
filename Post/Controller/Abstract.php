@@ -225,10 +225,10 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 					), null, true,
 					array(
 						'url' => $post->link,
-						'icon' => 'pencil',
-						'text' => 'View Original',
+						'icon' => 'link',
+						'text' => 'View Link',
 						'style' => 'float: right',
-						'tooltip' => 'Head on over to '.$site->name.' to check out the full article!',
+						'tooltip' => 'Head on over to '.$site->name.' to view the original!',
 					)
 				);
 			}
