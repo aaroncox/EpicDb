@@ -78,7 +78,9 @@ class EpicDb_Mongo_Vote extends EpicDb_Mongo_Document
 		}");
 		$reduce = new MongoCode("function(key, values) {
 			var sum = 0;
-			for (var i in values) { sum += values[i]; }
+			values.forEach(function(a) {
+				sum += a;
+			});
 			return sum;
 		}");
 
@@ -88,28 +90,15 @@ class EpicDb_Mongo_Vote extends EpicDb_Mongo_Document
 				"map" => $map,
 				"reduce" => $reduce,
 				"query" => $query,
+				"out" => array("inline" => 1)
 		));
-
-		$voteData = $db->selectCollection($result['result']);
-
+		$data = array();
+		foreach ($result['results'] as $entry) {
+			$data[$entry['_id']] = $entry['value'];
+		}
 		if ($type) {
-			$data = $voteData->findOne(array('type'=>$type));
-			
-			$db->dropCollection($result['result']);
-			if (!$data) return 0;
-			return $data['value'];
+			return isset( $data[$type] ) ? $data[$type] : 0 ;
 		}
-
-		$votes = array();
-		$voteTally = $voteData->find();
-		foreach ($voteTally as $voteData)
-		{
-			$type = $voteData['_id'];
-			$count = $voteData['value'];
-			$votes[$type] = $count;
-		}
-		$db->dropCollection($result['result']);
-
-		return $votes;
+		return $data;
 	}
 } // END class EpicDb_Mongo_Record_Skill
