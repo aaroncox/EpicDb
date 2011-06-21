@@ -249,9 +249,16 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 				}
 
 				if($post instanceOf EpicDb_Mongo_Post) {
+					$target = $post;
+					if($post instanceOf EpicDb_Mongo_Post_Question_Comment) {
+						$target = $post->_parent;
+					}
+					if($post instanceOf EpicDb_Mongo_Post_Comment && $post->_parent) {
+						$target = $post->_parent;
+					} 
 					$controls['commentLink'] = (string) $this->view->button(
 						array(
-							'post' => ($post instanceOf EpicDb_Mongo_Post_Question_Comment) ? $post->_parent : $post, // You can't comment on a comment currently, so let's comment on what they commented on.
+							'post' => $target,
 							'action' => 'comment',
 						), 'post', true,
 						array(
