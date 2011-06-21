@@ -54,6 +54,7 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 		if(!$doc->getName()) return '';
 		$profile = $doc->tags->getTag('author')?:$doc->tags->getTag('source');
 		$parentDoc = $doc->tags->getTag('parent')?:$doc->_parent;
+		if(!$parentDoc) return '';
 		return $this->view->htmlTag("p", array("style" => "font-size: 10px"), "An ".$doc->_type." in response to...")."".
 						$this->view->htmlTag("h3", array(), 
 							($parentDoc->getName()) ? $this->view->postLink($parentDoc, array(
