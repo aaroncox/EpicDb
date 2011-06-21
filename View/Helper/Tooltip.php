@@ -68,6 +68,7 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 		if(!$doc->getName()) return '';
 		$profile = $doc->tags->getTag('author')?:$doc->tags->getTag('source');
 		$parentDoc = $doc->tags->getTag('subject')?:$doc->_record;
+		if(!is_object($parentDoc)) return '';
 		return $this->view->htmlTag("p", array("style" => "font-size: 10px"), "A ".$doc->_type." on...")."".
 						$this->view->htmlTag("h3", array(), 
 							($parentDoc->getName()) ? $this->view->recordLink($parentDoc, array(
