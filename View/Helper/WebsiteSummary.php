@@ -36,7 +36,7 @@ class EpicDb_View_Helper_WebsiteSummary extends MW_View_Helper_HtmlTag
 		}
 		if($profile->feed) {
 			$buttons .= $this->view->button(array(
-				'action' => 'manual-crawl',
+				'action' => 'crawl',
 				'profile' => $profile
 			), 'profile', true, array(
 				'text' => 'Scan RSS',
