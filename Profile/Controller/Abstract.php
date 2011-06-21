@@ -124,4 +124,12 @@ abstract class EpicDb_Profile_Controller_Abstract extends MW_Controller_Action
 	public function followingAction() {
 		$profile = $this->getProfile();
 	}
+	public function crawlAction() {
+		$profile = $this->getProfile();
+		try {
+			EpicDb_Crawler::crawl($profile, true);
+		} catch (Exception $e) {
+			$this->view->error = "Error: Caught ".get_class($e)." ".$e->getMessage()." \n";
+		}
+	}
 } // END class EpicDb_Profile_Controller_Abstract
