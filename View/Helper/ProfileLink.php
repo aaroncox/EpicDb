@@ -53,6 +53,7 @@ class EpicDb_View_Helper_ProfileLink extends MW_View_Helper_HtmlTag
 		return $this->htmlTag("a", array(
 			"rel" => $rel,
 			"class" => $class,
+			"title" => $profile->name."'s Profile",
 			"href" => $this->view->url(array(
 				'action'=> 'view',
 				'profile' => $profile,
