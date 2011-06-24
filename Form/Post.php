@@ -12,6 +12,9 @@ class EpicDb_Form_Post extends EpicDb_Form
 {
 	protected $_isNew = false;
 	protected $_post = null;
+	// These need to move into the config, just trying to get the protection online. 
+	private $_publickey = "6Lf4j8USAAAAAKDmcKGNlZSGLxWa-lm1hL3II3pu";
+	private $_privatekey = "6Lf4j8USAAAAAPi5c4-afd6QOhwuOdr0Yh0MDRb5";
 
 	/**
 	 * getPost - undocumented function
@@ -109,6 +112,13 @@ class EpicDb_Form_Post extends EpicDb_Form
 				"tags" => $post->tags->getTags('tag'),
 			));
 		}
+		if(!MW_Auth::getInstance()->getUser()) {
+			$recaptcha = new Zend_Service_ReCaptcha($this->_publickey, $this->_privatekey);
+       $captcha = new Zend_Form_Element_Captcha('challenge',
+             array('order' => 2000, 'label' => 'Prove your a human','captcha'        => 'ReCaptcha',
+                   'captchaOptions' => array('captcha' => 'ReCaptcha', 'service' => $recaptcha)));
+       $this->addElement($captcha);			
+		}
 		$this->setButtons(array("save" => "Post"));
 
 	}
@@ -143,6 +153,14 @@ class EpicDb_Form_Post extends EpicDb_Form
 	}
 	public function process($data) {
 		if($this->isValid($data)) {
+			if(!MW_Auth::getInstance()->getUser()) {
+				$recaptcha = new Zend_Service_ReCaptcha($this->_publickey, $this->_privatekey);
+				$result = $recaptcha->verify($this->_getParam('recaptcha_challenge_field'),
+				          $this->_getParam('recaptcha_response_field'));
+				if (!$result->isValid()) {
+					return false;
+				}
+			}
 			$this->save();
 			return true;
 		}
