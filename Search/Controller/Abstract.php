@@ -14,6 +14,7 @@ class EpicDb_Search_Controller_Abstract extends MW_Controller_Action
 		$ajaxContext = $this->_helper->getHelper('AjaxContext');
 		$ajaxContext->addActionContext('tag', 'json')
 			->addActionContext('index', 'json')
+			->addActionContext('index', 'html')
 			->initContext();
 	}
 
