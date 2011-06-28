@@ -25,7 +25,7 @@ class EpicDb_Search_Controller_Abstract extends MW_Controller_Action
 		$search = EpicDb_Search::getInstance();
 		$this->view->layout()->searchQuery = $q = trim($request->getParam('q'));
 
-		if(strlen($q) < 3) return; 
+		// if(strlen($q) < 3) return; 
 
 		$queryData = $search->parseQueryString($q);
 		$this->view->searchTerms = $queryData['terms'];
