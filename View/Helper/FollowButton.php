@@ -3,7 +3,7 @@
  * EpicDb_View_Helper_FollowButton
  *
  * undocumented class
- * 
+ *
  * @author Aaron Cox <aaronc@fmanet.org>
  * @param undocumented class
  * @package undocumented class
@@ -28,7 +28,8 @@ class EpicDb_View_Helper_FollowButton extends MW_View_Helper_HtmlTag
 				), $route, true, array(
 					'text' => 'Un'.$mode,
 					'icon' => 'gear',
-				));							
+					'class' => 'epicdb-ajaxbutton',
+				));
 			} else {
 				return $this->view->button(array(
 					 $type => $record,
@@ -36,11 +37,12 @@ class EpicDb_View_Helper_FollowButton extends MW_View_Helper_HtmlTag
 				), $route, true, array(
 					'text' => $mode,
 					'icon' => 'gear',
-				));			
+					'class' => 'epicdb-ajaxbutton',
+				));
 			}
-		} 
+		}
 		return null;
-		
+
 	}
 } // END class EpicDb_View_Helper_FollowButton
 

@@ -82,13 +82,25 @@ abstract class EpicDb_Profile_Controller_Abstract extends MW_Controller_Action
 
 
 	public function unfollowAction() {
-		$this->_helper->auth->unfollow($this->getProfile());
+		$record = $this->getProfile();
+		$this->_helper->auth->unfollow($record);
+		if ($this->getRequest()->isXmlHttpRequest()) {
+			$this->_helper->layout->disableLayout();
+			echo $this->view->followButton($record);
+			exit;
+		}
 		$this->_redirect($this->getRequest()->getServer('HTTP_REFERER'));
 	}
 
 
 	public function followAction() {
-		$this->_helper->auth->follow($this->getProfile());
+		$record = $this->getProfile();
+		$this->_helper->auth->follow($record);
+		if ($this->getRequest()->isXmlHttpRequest()) {
+			$this->_helper->layout->disableLayout();
+			echo $this->view->followButton($record);
+			exit;
+		}
 		$this->_redirect($this->getRequest()->getServer('HTTP_REFERER'));
 	}
 
