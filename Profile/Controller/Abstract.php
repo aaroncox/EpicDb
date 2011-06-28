@@ -63,6 +63,38 @@ abstract class EpicDb_Profile_Controller_Abstract extends MW_Controller_Action
 		}
 		$generator->toRss()->send();
 	}
+	
+	public function homepageAction()
+	{
+		$this->view->layout()->setLayout('2-column');
+		$profile = $this->getProfile();
+		$query = array(
+		);
+		$query['$or'][] = array('tags' =>
+			array('$elemMatch' => array(
+				'reason' => 'author',
+				'ref' => $profile->createReference(),
+				)
+			)
+		);
+		$query['$or'][] = array('tags' =>
+			array('$elemMatch' => array(
+				'reason' => 'source',
+				'ref' => $profile->createReference(),
+				)
+			)
+		);
+		$query['$or'][] = array('tags' =>
+			array('$elemMatch' => array(
+				'reason' => 'subject',
+				'ref' => $profile->createReference(),
+				)
+			)
+		);
+		$paginator = Zend_Paginator::factory(EpicDb_Mongo::db('post')->fetchAll($query));
+		$paginator->setCurrentPageNumber($this->getRequest()->getParam('page', 1))->setItemCountPerPage(30);
+		$this->view->posts = $posts = $paginator;
+	}
 
 	public function getProfile()
 	{
