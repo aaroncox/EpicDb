@@ -13,7 +13,7 @@ class EpicDb_View_Helper_RecordSummary extends MW_View_Helper_HtmlTag
 	public function recordSummary(EpicDb_Mongo_Record $record) {
 		// $this->card($this->profile, array("class" => "wide"))
 		$placeholder = $this->view->summary();
-		$placeholder->append($this->view->card($record, array("class" => "wide")));
+		$placeholder->append($this->view->tooltip($record));
 
 		$buttons = '<h3>Available Actions</h3>';
 		if(EpicDb_Auth::getInstance()->getUserProfile()) {
