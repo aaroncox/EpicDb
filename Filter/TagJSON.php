@@ -18,20 +18,41 @@
  * @version $Id:$
  */
 class EpicDb_Filter_TagJSON implements Zend_Filter_Interface {
+	protected $_type;
+
+	public function __construct($options = array()) {
+		if (isset($options['type'])) $this->_type = $options['type'];
+	}
+	
 	public function filter($value)
 	{
 		if (is_array($value)) {
 			// tags array
+			$type = $this->_type;
+			$contained = array();
+			$mapped = array_filter($value, function( $value ) use($type, &$contained) {
+				if (in_array($value->_id."", $contained)) return false;
+				if ($type && $value->_type != $type ) return false;
+				$contained[] = $value->_id."";
+				return true;
+			});
+			
 			$map = function($value) {
 				$ref = $value->createReference();
 				$ref['$id'].='';
 				return $ref;
 			};
-			$mapped = array_map($map, $value);
+			$mapped = array_map($map, $mapped);
 			return json_encode($mapped);
 		} else {
-			$refs = json_decode($value);
+			$refs = json_decode($value, true);
+			$contained = array();
 			if (!is_array($refs)) $refs = array();
+			$refs = array_filter($refs, function($ref) use(&$contained) {
+				if (in_array($ref['$id'], $contained)) return false;
+				$contained[] = $ref['$id'];
+				return true;
+			});
 			return json_encode($refs);
 		}
 	}
@@ -50,7 +71,14 @@ class EpicDb_Filter_TagJSON implements Zend_Filter_Interface {
 				$ref->save();
 				$return[] = $ref;
 			} elseif ($value) {
-				$return[] = EpicDb_Mongo::resolveReference($value);
+				$added = array();
+				$record = EpicDb_Mongo::resolveReference($value);
+				$id = $record->_id."";
+				if (in_array($id, $added)) continue;
+				if ($record && (!$this->_type || $this->_type == $record->_type) ) {
+					$return[] = $record;					
+					$added[] = $id;
+				}
 			}
 		}
 		return $return;

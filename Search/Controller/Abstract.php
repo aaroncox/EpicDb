@@ -134,12 +134,16 @@ class EpicDb_Search_Controller_Abstract extends MW_Controller_Action
 	{
 		$request = $this->getRequest();
 		$format = $request->getParam('format');
+		$type = $request->getParam('type', false);
 		$exactMatch = false;
 
 		$q = $request->getParam('q');
 		$lower = strtolower($q);
 
 		$query = array("name" => new MongoRegex("/".$q."/i"));
+		if ($type) {
+			$query['_type'] = $type;
+		}
 
 		$return = array();
 
@@ -172,7 +176,7 @@ class EpicDb_Search_Controller_Abstract extends MW_Controller_Action
 				);
 			}
 		}
-		if (!$exactMatch) {
+		if (!$exactMatch && !$type) {
 			$blank = EpicDb_Mongo::newDoc('tag');
 			$blank->name = $q;
 			$blank->_type = 'create tag';
