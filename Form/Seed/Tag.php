@@ -115,7 +115,7 @@ class EpicDb_Form_Seed_Tag extends EpicDb_Form
 		$seed = $this->getSeed();
 		$this->addElement('tags', 'tags', array(
 			'required' => true,
-			'label' => 'Records to tag as an answer',
+			'label' => 'Edit/Add tags as the answer.',
 			'recordType' => $seed->tagType
 		));
 		$this->setDefaults(array(

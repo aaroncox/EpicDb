@@ -16,4 +16,8 @@ class EpicDb_Mongo_Seed extends EpicDb_Auth_Mongo_Resource_Document
 		'types' => array('Array'),
 	);
 	
+	public function renderTitle($record) {
+		return str_replace(array("[[NAME]]", "[[TYPE]]"), array($record->name, $record->_type), $this->title);
+	}
+	
 } // END class EpicDb_Mongo_Post_Question_System extends EpicDb_Mongo_Post_Question

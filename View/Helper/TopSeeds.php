@@ -12,7 +12,7 @@ class EpicDb_View_Helper_TopSeeds extends MW_View_Helper_HtmlTag
 			'types' => $record->_type
 		);
 		$seeds = EpicDb_Mongo::db('seed')->fetchAll($query);
-		$html = '';
+		$html = ' ';
 		foreach($seeds as $seed) {
 			$html .= $this->view->seedStub($seed, $record);
 		}

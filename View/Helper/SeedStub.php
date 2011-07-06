@@ -7,8 +7,23 @@
  **/
 class EpicDb_View_Helper_SeedStub extends EpicDb_View_Helper_PostStub
 {
-	public function renderTitle() {
-		return str_replace(array("[[NAME]]", "[[TYPE]]"), array($this->_record->name, $this->_record->_type), $this->_seed->title);
+	public function renderControls() {
+		$html = " ";
+		$seed = $this->_seed;
+		$record = $this->_record;
+		$user = EpicDb_Auth::getInstance()->getUser();
+		if($user && MW_Auth::getInstance()->hasPrivilege(new MW_Auth_Resource_Super(), 'answer-seed')) {
+			$html .= $this->view->button(array(
+				'controller'=>'record',
+				'action'=>'seed',
+				'record'=>$record,
+				'seed'=>$seed->id,
+			), 'record', true, array(
+				'text' => 'Answer',
+				'icon' => 'help'
+			));
+		}
+		return $this->htmlTag("div", array("class" => "seed-controls"), $html);
 	}
 	public function renderBody() {
 		$html = " ";
@@ -44,10 +59,11 @@ class EpicDb_View_Helper_SeedStub extends EpicDb_View_Helper_PostStub
 		return $this->htmlTag("div", array("class" => "seed-stub padded-10a", "id" => "seed-".$seed->id), 
 			$this->htmlTag("div", array("class" => "seed-header"), 
 				$this->htmlTag("img", array("src" => "/images/element/message-collapse.png"))."".
-				$this->htmlTag("h3", array("class" => "inline-flow text-large"), $this->renderTitle())
+				$this->htmlTag("h3", array("class" => "inline-flow text-large"), $seed->renderTitle($record))
 			)."".
 			$this->htmlTag("div", array("class" => "seed-body"), 
-				$this->renderBody()
+				$this->renderBody()."".
+				$this->renderControls()
 			)
 		);
 	}
