@@ -113,6 +113,7 @@ class EpicDb_Mongo_Profile_User extends EpicDb_Mongo_Profile
 			$profile->username = strtolower($slug->filter($user->name));
 			$profile->name = $slug->filter($user->name);
 			$profile->display_email = strtolower($slug->filter($user->email));
+			$profile->grant($user);
 			$profile->save();
 		}
 		return $profile;
