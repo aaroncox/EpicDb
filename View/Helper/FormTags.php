@@ -33,11 +33,17 @@ class EpicDb_View_Helper_FormTags extends Zend_View_Helper_FormHidden {
 	public function formTags($name, $value = null, array $attribs = null)
 	{
 		MW_Script::load('autocomplete');
-		if (!isset($attribs['data-search-url'])) {
-			$attribs['data-search-url'] = $this->view->url(array(), 'tag-search', true);
-		}
 		$info = $this->_getInfo($name, $value, $attribs);
 		extract($info); // name, value, attribs, options, listsep, disable
+
+		if (!isset($attribs['data-search-url'])) {
+			$params = array();
+			if (!empty($attribs['recordType'])) {
+				$params['type'] = $attribs['recordType'];
+				unset($attribs['recordType']);
+			}
+			$attribs['data-search-url'] = $this->view->url($params, 'tag-search', true);
+		}
 		$hidden = parent::formHidden($name, $value, $attribs);
 		
 		

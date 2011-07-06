@@ -65,4 +65,18 @@ class EpicDb_Record_Controller_Abstract extends MW_Controller_Action
 	// Displays a Record
 	public function viewAction() {
 	}
+	
+	public function seedAction() {
+		if(!$id = $this->getRequest()->getParam('seed',0)) throw new MW_Controller_404Exception("Unknown seed");
+		$query = array(
+			'id' => (int) $id
+		);
+		$this->view->seed = $seed = EpicDb_Mongo::db('seed')->fetchOne($query);
+		$record = $this->view->record;
+		if(!$seed) throw new MW_Controller_404Exception("Unknown seed");
+		// var_dump($record->_type, $seed->types); exit;
+		if(!in_array($record->_type, $seed->types)) throw new Exception("This record type is unable to use this seed.");
+		$this->view->form = $form = new EpicDb_Form_Seed_Tag(array('seed' => $seed, 'record' => $record));
+		$this->_handleMWForm($form);
+	}
 } // END class EpicDb_Record_Controller_Abstract extends MW_Controller_Action

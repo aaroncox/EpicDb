@@ -35,10 +35,14 @@ class EpicDb_Mongo_Tags extends Shanty_Mongo_DocumentSet
 		$query = array();
 		if($ref) $query['ref'] = $ref->createReference();
 		if($reason) $query['reason'] = $reason;
-		foreach($this->export() as $idx => $tag) {
-			if($query == $tag || (!$reason && $query['ref'] == $tag->ref) || (!$ref && $query['reason'] == $tag->reason)) {
-				$this->setProperty($idx, null);
+		foreach ($this as $idx => $tag) {
+			if ($ref && $ref->createReference() != $tag->ref->createReference()) {
+				continue;
 			}
+			if ($reason && $tag->reason != $reason) {
+				continue;
+			}
+			$this->setProperty($idx, null);
 		}
 		return false;
 	}

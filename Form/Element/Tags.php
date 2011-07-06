@@ -29,13 +29,23 @@ class EpicDb_Form_Element_Tags extends Zend_Form_Element_Hidden {
 		}
 		if (isset($options['class'])) $options['class'].=' epic-tags';
 		else $options['class'] = 'epic-tags';
-		$filter = new EpicDb_Filter_TagJSON();
+		
+		if (!empty($options['recordType'])) {
+			$type = $options['recordType'];
+		} else {
+			$type = false;
+		}
+		$filter = new EpicDb_Filter_TagJSON(array('type' => $type));
 		if (isset($options['filters'])) {
 			$options['filters'][] = $filter;
 		} else {
 			$options['filters'] = array($filter);
 		}
 		$hidden = parent::__construct($spec, $options);
+	}
+	
+	public function getTags() {
+		
 	}
 
 }

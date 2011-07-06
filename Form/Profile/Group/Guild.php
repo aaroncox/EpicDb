@@ -138,7 +138,7 @@ class EpicDb_Form_Profile_Group_Guild extends EpicDb_Form_Profile
 			$profile->regions = $this->regions->getValue();
 			$profile->language = $this->language->getValue();
 			$profile->playstyle = $this->playstyle->getValue();
-			$profile->faction = R2Db_Mongo_Record_Faction::fetchOne(array("id" => (int)$this->faction->getValue()));
+			$profile->faction = EpicDb_Mongo::db('faction')->fetchOne(array("id" => (int)$this->faction->getValue()));
 			$profile->logo = $this->logo->getValue();
 			$profile->description = $this->description->getValue();
 			if($profile->isNewDocument()) {
