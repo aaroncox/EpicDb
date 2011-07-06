@@ -95,7 +95,9 @@ class EpicDb_Mongo_Tags extends Shanty_Mongo_DocumentSet
 			if ($tag->reason == $reason) {
 				$now[$idx] = $tag->ref->createReference();
 				$test = in_array($now[$idx], $refs);
-				if (!$test) $this->setProperty($idx, null);
+				if (!$test) {
+					$this->setProperty($idx, null);
+				}
 			}
 		}
 		foreach ($refs as $idx => $ref) {
