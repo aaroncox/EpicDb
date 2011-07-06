@@ -10,7 +10,7 @@
  **/
 class EpicDb_View_Helper_RecordLink extends MW_View_Helper_HtmlTag
 {
-	public function recordLink($record, $params = array()) {
+	public function recordLink($record, $params = array(), $urlParams = array()) {
 		if($record instanceOf EpicDb_Mongo_Profile) return $this->view->profileLink($record, $params); 
 		if($record instanceOf EpicDb_Mongo_Post) return $this->view->postLink($record, $params); 
 		// Quick fix... need better resolution
@@ -32,6 +32,11 @@ class EpicDb_View_Helper_RecordLink extends MW_View_Helper_HtmlTag
 		if(isset($params['rel'])) {
 			$rel = $params['rel'];
 		}
+		if(!empty($urlParams)) return $this->htmlTag("a", array(
+			"rel" => $rel,
+			"class" => $class,
+			"href" => $this->view->url($urlParams),
+		), $text);
 		return $this->htmlTag("a", array(
 			"rel" => $rel,
 			"class" => $class,
