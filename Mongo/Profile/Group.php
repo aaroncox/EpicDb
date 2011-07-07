@@ -11,6 +11,7 @@
 class EpicDb_Mongo_Profile_Group extends EpicDb_Mongo_Profile
 {
 	public $summaryHelper = 'groupSummary';
+	public $contextHelper = 'groupContext';
 	protected static $_documentType = 'group';
 	protected static $_editForm = 'EpicDb_Form_Profile_Group';
 	

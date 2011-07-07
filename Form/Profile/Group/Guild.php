@@ -8,7 +8,7 @@
  * @param undocumented class
  * @package undocumented class
  **/
-class EpicDb_Form_Profile_Group_Guild extends EpicDb_Form_Profile
+class EpicDb_Form_Profile_Group_Guild extends EpicDb_Form_Profile_Group
 {
 	protected $_profile = null;
 	protected $_isNew = false;

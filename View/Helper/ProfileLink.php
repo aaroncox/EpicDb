@@ -49,13 +49,18 @@ class EpicDb_View_Helper_ProfileLink extends MW_View_Helper_HtmlTag
 		if(isset($params['rel'])) {
 			$rel = $params['rel'];
 		}
+		$action = "view";
+		if(isset($params['action'])) {
+			$action = $params['action'];
+		}
+		
 		if(trim($text) == "") $text = "Unknown";
 		return $this->htmlTag("a", array(
 			"rel" => $rel,
 			"class" => $class,
 			"title" => $profile->name."'s Profile",
 			"href" => $this->view->url(array(
-				'action'=> 'view',
+				'action'=> $action,
 				'profile' => $profile,
 			), 'profile', true),
 		), (string) $text);

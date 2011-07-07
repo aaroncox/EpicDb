@@ -14,6 +14,7 @@ abstract class EpicDb_Profile_Controller_Abstract extends MW_Controller_Action
 	protected $_profile;
 
 	public function init() {
+		$this->getSection(); // Loads action, section and subsection to the view for navigation purposes.
 		$ajaxContext = $this->_helper->getHelper('AjaxContext');
 		$ajaxContext->addActionContext('feed', 'html')
 								->addActionContext('manage', 'html')
@@ -63,13 +64,21 @@ abstract class EpicDb_Profile_Controller_Abstract extends MW_Controller_Action
 		}
 		$generator->toRss()->send();
 	}
+
+	public function getSection($force = null) {
+		$this->view->section = array(
+			'action' => $this->getRequest()->getParam("action"),
+			'section' => $this->getRequest()->getParam("section"),
+			'subsection' => $this->getRequest()->getParam("subsection"),
+		);
+	}
 	
-	public function homepageAction()
+	
+	public function newsAction()
 	{
 		$this->view->layout()->setLayout('2-column');
 		$profile = $this->getProfile();
-		$query = array(
-		);
+		$query = array();
 		$query['$or'][] = array('tags' =>
 			array('$elemMatch' => array(
 				'reason' => 'author',
@@ -80,13 +89,6 @@ abstract class EpicDb_Profile_Controller_Abstract extends MW_Controller_Action
 		$query['$or'][] = array('tags' =>
 			array('$elemMatch' => array(
 				'reason' => 'source',
-				'ref' => $profile->createReference(),
-				)
-			)
-		);
-		$query['$or'][] = array('tags' =>
-			array('$elemMatch' => array(
-				'reason' => 'subject',
 				'ref' => $profile->createReference(),
 				)
 			)

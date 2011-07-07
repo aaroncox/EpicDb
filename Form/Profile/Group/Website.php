@@ -8,7 +8,7 @@
  * @param undocumented class
  * @package undocumented class
  **/
-class EpicDb_Form_Profile_Group_Website extends EpicDb_Form_Profile
+class EpicDb_Form_Profile_Group_Website extends EpicDb_Form_Profile_Group
 {
 	/**
 	 * getProfile - undocumented function
