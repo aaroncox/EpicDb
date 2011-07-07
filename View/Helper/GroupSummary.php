@@ -70,7 +70,6 @@ class EpicDb_View_Helper_GroupSummary extends MW_View_Helper_HtmlTag
 				)
 			);			
 		}
-		
 		if($totalMembers = $profile->members->count()) {
 			$placeholder->widget(
 				$this->htmlTag("h3", array(), $profile->name."'s Members")."".
