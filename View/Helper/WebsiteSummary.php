@@ -30,10 +30,17 @@ class EpicDb_View_Helper_WebsiteSummary extends MW_View_Helper_HtmlTag
 				'action' => 'edit',
 				'profile' => $profile
 			), 'profile', true, array(
-				'text' => 'Edit Website',
+				'text' => 'Edit',
 				'icon' => 'key',
 			));						
 		}
+		$buttons .= $this->view->button(array(
+			'action' => 'members',
+			'profile' => $profile
+		), 'profile', true, array(
+			'text' => 'Members',
+			'icon' => 'person',
+		));
 		if($profile->feed) {
 			$buttons .= $this->view->button(array(
 				'action' => 'crawl',

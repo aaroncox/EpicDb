@@ -25,14 +25,14 @@ class EpicDb_View_Helper_GroupSummary extends MW_View_Helper_HtmlTag
 				'icon' => 'key'
 			));
 		}
+		$buttons .= $this->view->button(array(
+			'action' => 'members',
+			'profile' => $profile
+		), 'profile', true, array(
+			'text' => 'Members',
+			'icon' => 'person',
+		));						
 		if(R2Db_Auth::getInstance()->hasPrivilege($profile, 'edit')) {
-			$buttons .= $this->view->button(array(
-				'action' => 'invite',
-				'profile' => $profile
-			), 'profile', true, array(
-				'text' => 'Invite',
-				'icon' => 'key',
-			));						
 			$buttons .= $this->view->button(array(
 				'action' => 'edit',
 				'profile' => $profile
