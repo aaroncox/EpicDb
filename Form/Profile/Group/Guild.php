@@ -108,11 +108,6 @@ class EpicDb_Form_Profile_Group_Guild extends EpicDb_Form_Profile_Group
 				'filters' => array(new MW_Filter_HttpAddress(), 'StringTrim'),
 				'label' => 'RSS/Atom Feed',
 			));			
-		$this->addElement("text", "logo", array(
-				'filters' => array(new MW_Filter_HttpAddress(), 'StringTrim'),
-				'label' => 'Emblem/Logo URL',
-				'description' => 'The system will resize the image down to a max-width of 100px, so please link to an image that will scale properly!',
-			));
 		$this->addElement("textarea", "description", array(
 				'filters' => array('StringTrim', 'StripTags'),
 				'label' => 'About this Group',
@@ -139,7 +134,6 @@ class EpicDb_Form_Profile_Group_Guild extends EpicDb_Form_Profile_Group
 			$profile->language = $this->language->getValue();
 			$profile->playstyle = $this->playstyle->getValue();
 			$profile->faction = EpicDb_Mongo::db('faction')->fetchOne(array("id" => (int)$this->faction->getValue()));
-			$profile->logo = $this->logo->getValue();
 			$profile->description = $this->description->getValue();
 			if($profile->isNewDocument()) {
 				$user = MW_Auth::getInstance()->getUser();
