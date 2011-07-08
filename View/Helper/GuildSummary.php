@@ -32,15 +32,15 @@ class EpicDb_View_Helper_GuildSummary extends MW_View_Helper_HtmlTag
 			), 'profile', true, array(
 				'text' => 'Edit',
 				'icon' => 'key',
-			));									
+			));						
+			$buttons .= $this->view->button(array(
+				'action' => 'logo',
+				'profile' => $profile
+			), 'profile', true, array(
+				'text' => 'Upload Icon/Logo',
+				'icon' => 'key',
+			));			
 		}
-		$buttons .= $this->view->button(array(
-			'action' => 'members',
-			'profile' => $profile
-		), 'profile', true, array(
-			'text' => 'Members',
-			'icon' => 'person',
-		));
 		if($profile->feed) {
 			$buttons .= $this->view->button(array(
 				'action' => 'manual-crawl',

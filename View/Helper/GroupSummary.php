@@ -24,20 +24,20 @@ class EpicDb_View_Helper_GroupSummary extends MW_View_Helper_HtmlTag
 				'text' => 'Sudo',
 				'icon' => 'key'
 			));
-		}
-		$buttons .= $this->view->button(array(
-			'action' => 'members',
-			'profile' => $profile
-		), 'profile', true, array(
-			'text' => 'Members',
-			'icon' => 'person',
-		));						
+		}					
 		if(R2Db_Auth::getInstance()->hasPrivilege($profile, 'edit')) {
 			$buttons .= $this->view->button(array(
 				'action' => 'edit',
 				'profile' => $profile
 			), 'profile', true, array(
 				'text' => 'Edit Group',
+				'icon' => 'key',
+			));						
+			$buttons .= $this->view->button(array(
+				'action' => 'logo',
+				'profile' => $profile
+			), 'profile', true, array(
+				'text' => 'Upload Icon/Logo',
 				'icon' => 'key',
 			));						
 			// $buttons .= $this->view->button(array(
