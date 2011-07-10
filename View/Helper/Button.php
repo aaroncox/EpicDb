@@ -28,12 +28,13 @@ class EpicDb_View_Helper_Button extends MW_View_Helper_HtmlTag
 		$tooltip = null;
 		if(isset($params['icon'])) $icon = $params['icon'];
 		if(isset($params['style'])) $style = $params['style'];
-		if (isset($params['class'])) $style .= " ".$params['class'];
+		if(isset($params['class'])) $style .= " ".$params['class'];
 		if(isset($params['url'])) $external = $params['url'];
 		$options = array(
 			'class' => 'no-tooltip epicdb-button epicdb-button-icon-left ui-state-default ui-corner-all '.$style,
 			'href' => $external?:$this->view->url($url, $route, $reset),
 			'rel' => 'no-tooltip',
+			'style' => $style,
 		);
 		if(isset($params['tooltip'])) $options['data-tooltip'] = $params['tooltip'];
 		return $this->htmlTag("a", $options, $this->htmlTag("span", array(
