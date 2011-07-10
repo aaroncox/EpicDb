@@ -65,8 +65,6 @@ class EpicDb_Form_Profile_Group_Website extends EpicDb_Form_Profile_Group
 			$profile->url = $this->url->getValue();
 			$profile->feed = $this->feed->getValue();
 			$profile->twitter = $this->twitter->getValue();
-			$profile->logo = $this->logo->getValue();
-			$profile->icon = $this->icon->getValue();
 			$profile->description = $this->description->getValue();
 			if($profile->isNewDocument()) {
 				// Do we need this still?
