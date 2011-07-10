@@ -40,6 +40,11 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 		} else {
 			$newComment = EpicDb_Mongo::db('comment');
 		}
+		foreach($parent->findComments() as $reply) {
+			$user = $reply->tags->getTag('author');
+			$usersInvolved[$user->id] = $user;
+		}
+		$newComment->tags->setTags($usersInvolved, 'involved');
 		$newComment->_parent = $parent;
 		$newComment->tags->tag($parent, 'parent');
 		$commentForm = $this->view->form = $newComment->getEditForm();
