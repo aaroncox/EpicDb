@@ -46,6 +46,20 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 		$this->_handleMWForm($commentForm, 'comment');
 	}
 	
+	public function replyAction() {
+		$parent = $this->view->parent = $this->getPost();
+		$newReply = EpicDb_Mongo::newDoc('message');
+		$newReply->_parent = $parent;
+		foreach($parent->findComments() as $reply) {
+			$user = $reply->tags->getTag('author');
+			$usersInvolved[$user->id] = $user;
+		}
+		$newReply->tags->setTags($usersInvolved, 'involved');
+		$newReply->tags->tag($parent, 'parent');
+		$replyForm = $this->view->form = $newReply->getEditForm();
+		$this->_handleMWForm($replyForm, 'comment');
+	}
+	
 	public function answerAction() {
 		$query = array(
 			'id' => (int) $this->getRequest()->getParam('id')
@@ -248,11 +262,24 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 					);
 				}
 
-				if($post instanceOf EpicDb_Mongo_Post) {
-					$target = $post;
-					while($target->_parent->id) {
-						$target = $target->_parent;
-					}
+				$target = $post;
+				while($target->_parent->id) {
+					$target = $target->_parent;
+				}
+				if($post instanceOf EpicDb_Mongo_Post_Message) {
+					$controls['replyLink'] = (string) $this->view->button(
+						array(
+							'post' => $target,
+							'action' => 'reply',
+						), 'post', true,
+						array(
+							'icon' => 'pencil',
+							'text' => 'Reply',
+							'tooltip' => 'Reply to this message.',
+							'style' => 'float: left'
+						)
+					);				
+				} else {
 					$controls['commentLink'] = (string) $this->view->button(
 						array(
 							'post' => $target,
