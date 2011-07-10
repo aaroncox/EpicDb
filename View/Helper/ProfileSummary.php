@@ -46,6 +46,13 @@ class EpicDb_View_Helper_ProfileSummary extends MW_View_Helper_HtmlTag
 		if($currentUser && $currentUser->createReference() != $profile->createReference()) {
 			$buttons .= $this->view->followButton($profile);
 			$buttons .= $this->view->followButton($profile, array("mode" => "block"));
+			$buttons .= $this->view->button(array(
+				'action' => 'message',
+				'profile' => $profile
+			), 'profile', true, array(
+				'text' => 'Message',
+				'icon' => 'pencil',
+			));						
 		}
 		if($buttons != "") "<h3>Available Actions</h3>".$placeholder->widget($buttons);
 		
