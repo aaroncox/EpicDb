@@ -221,7 +221,7 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 				)
 		)+$query;
 		$sort = array("_created" => 1);
-		return $results = EpicDb_Mongo::db('comment')->fetchAll($query, $sort, $limit);
+		return $results = EpicDb_Mongo::db('post')->fetchAll($query, $sort, $limit);
 	}
 
 	public function getRelatedPosts() {
