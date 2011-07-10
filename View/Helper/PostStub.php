@@ -35,10 +35,12 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 				break;
 			case 'comment':
 				$subject = $post->tags->getTag('subject');
-				$parent = $post->tags->getTag('parent')?:$post->_parent;
+				$parent = $post->_parent;
 				if($subject || $parent) {
 					if($parent instanceOf EpicDb_Mongo_Comment || $subject) {
 						$type = ' comment on '.$this->view->recordLink($subject?:$parent);						
+					} elseif($parent instanceOf EpicDb_Mongo_Post) {
+						$type = ' comment on '.$this->view->postLink($parent);
 					} else {
 						$type = ' comment';
 					}
