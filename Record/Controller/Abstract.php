@@ -61,6 +61,11 @@ class EpicDb_Record_Controller_Abstract extends MW_Controller_Action
 		);
 	}
 	
+	public function editAction() {
+		$record = $this->view->record;
+		$this->view->form = $form = $record->getEditForm();
+		$this->_handleMWForm($form, $record->_type);
+	}
 	
 	// Displays a Record
 	public function viewAction() {
