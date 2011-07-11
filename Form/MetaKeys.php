@@ -31,25 +31,32 @@ class EpicDb_Form_MetaKeys extends MW_Form {
 		parent::init();
 		$metaKey = $this->getMetaKey();
 		$this->addElement("text", "name", array(
-			'required' => false,
 			'placeholder' => 'Name',
 			'label' => 'Name',
 			'description' => 'The attribute name that this meta key applies to.',
 		));
 		$this->addElement("text", "title", array(
-			'required' => false,
 			'placeholder' => 'Title',
 			'label' => 'Title',
 			'description' => 'The plain text name for this attribute.',
 		));
+		$this->addElement("multiselect", "recordType", array(
+			'label' => 'Record Types', 
+			'description' => 'The record types that use this meta key.',
+			'multiOptions' => EpicDb_Mongo::db('record')->getTypesArray(),
+		));
+		$this->addElement("text", "formElementType", array(
+			'label' => 'Form Element Type',
+		));
+		$this->addElement("text", "formElementOptions", array(
+			'label' => 'Options for Element (in JSON)',
+		));
 		$this->addElement("text", "helper", array(
-			'required' => false,
 			'placeholder' => 'Helpers',
 			'label' => 'Helpers',
 			'description' => 'A list of all the View Helpers / Methods to call on this value before rendering.',
 		));
 		$this->addElement("text", "requirements", array(
-			'required' => false,
 			'placeholder' => 'Requirements',
 			'label' => 'Requirements',
 			'description' => 'The Shanty Requirements, Filters or Validators applied to this information. ie. "Filter:Int", "Document:EpicDb_Record_Item"',
@@ -67,11 +74,13 @@ class EpicDb_Form_MetaKeys extends MW_Form {
 			} else {
 				$requirements = '';
 			}
-			
 			$this->setDefaults(array(
 				'name' => $metaKey->name,
 				'title' => $metaKey->title,
 				'helper' => $metaKey->helper,
+				'recordType' => $metaKey->recordType,
+				'formElementType' => $metaKey->formElement->type,
+				'formElementOptions' => json_encode($metaKey->formElement->options),
 				'requirements' => $requirements,
 				'onTooltip' => $metaKey->onTooltip,
 			));
@@ -95,6 +104,9 @@ class EpicDb_Form_MetaKeys extends MW_Form {
 				$requirements = explode(",", str_replace(" ", "", $this->requirements->getValue()));				
 			}
 			// var_dump($this->requirements->getValue(), $requirements); exit;
+			$metaKey->recordType = $this->recordType->getValue();
+			$metaKey->formElement->type = $this->formElementType->getValue();
+			$metaKey->formElement->options = json_decode($this->formElementOptions->getValue(), true);
 			$metaKey->requirements = $requirements;
 			$metaKey->save();
 			return true;
