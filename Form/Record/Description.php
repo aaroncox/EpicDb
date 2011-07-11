@@ -8,7 +8,7 @@
  * @param undocumented class
  * @package undocumented class
  **/
-class EpicDb_Form_Record_Description extends EpicDb_Form_Record
+class EpicDb_Form_Record_Description extends EpicDb_Form
 {
 	protected $_record = null;
 
