@@ -16,7 +16,10 @@ class EpicDb_Mongo_MetaKeys extends MW_Mongo_Document
 	
 	protected $_requirements = array(
 		'name' => array('Validator:Alnum', 'Required'),
-		'requirements' => array("Validator:Array"),
+		'requirements' => array("Array"),
+		'formElement' => array("Document"),
+		'formElement.options' => array("Array"),
+		'recordType' => array("Array"),
 	);
 	
 	protected static $_metaKeys = false;
@@ -36,7 +39,6 @@ class EpicDb_Mongo_MetaKeys extends MW_Mongo_Document
 			static::$_requirementsArray = $requirements;
 			static::$_titlesArray = $titles;
 		}
-		
 	}
 	
 	public static function getMetaKey($key, $createFlag = false) {
@@ -51,6 +53,25 @@ class EpicDb_Mongo_MetaKeys extends MW_Mongo_Document
 			return $doc;			
 		}
 		return false;
+	}
+	
+	public static function getFormElementsArray($type = false) {
+		static::_getData();
+		$elements = array();
+		$orders = array();
+		foreach(static::$_metaKeys as $key => $data) {
+			if(!($data->formElement && $data->formElement->type)) continue;
+			if($type && !($data->recordType && in_array($type, $data->recordType))) continue;
+			if($data->formElement) $elements[$key] = $data->formElement->export();
+			if(empty($elements[$key]['options'])) $elements[$key]['options'] = array();
+			if(empty($elements[$key]['options']['label'])) $elements[$key]['options']['label'] = static::$_titlesArray[$key];
+			if(!empty($elements[$key]['options']['order'])) {
+				for ($order = (int)$elements[$key]['options']['order'];isset($orders[$order]);$order++);
+				$orders[$order] = true;
+				$elements[$key]['options']['order'] = $order;
+			}
+		}
+		return $elements;
 	}
 	
 	public static function getMetaKeys() {
