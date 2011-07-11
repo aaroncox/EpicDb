@@ -35,10 +35,12 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 				break;
 			case 'comment':
 				$subject = $post->tags->getTag('subject');
-				$parent = $post->tags->getTag('parent')?:$post->_parent;
+				$parent = $post->_parent;
 				if($subject || $parent) {
 					if($parent instanceOf EpicDb_Mongo_Comment || $subject) {
 						$type = ' comment on '.$this->view->recordLink($subject?:$parent);						
+					} elseif($parent instanceOf EpicDb_Mongo_Post) {
+						$type = ' comment on '.$this->view->postLink($parent);
 					} else {
 						$type = ' comment';
 					}
@@ -52,7 +54,13 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 			case "message":
 				$subject = $post->tags->getTag('subject');
 				if($subject) {
-					$type = ' message about '.$this->view->profileLink($subject);
+					$modifier = "about";
+					if($subject instanceOf EpicDb_Mongo_Profile) {
+						$modifier = "to";
+					}
+					$type = ' message '.$modifier.' '.$this->view->profileLink($subject);
+				} elseif($post->_parent->id) {
+					$type = ' response to '.$this->view->postLink($post->_parent);
 				} else {
 					$type = 'n announcement.';
 				}
@@ -177,7 +185,7 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 				// $this->htmlTag("div", array("class" => "stub-vote rounded inline-flow", "style" => "float: right"), $this->stubVote($post))."".
 				// $this->view->profileLink($post->tags->getTag('author')?:$post->tags->getTag('source'))." POSTS ".
 				$this->showIcon($post, $options)."".
-				$this->view->postLink($post, array("text" => $this->postHeader($parent?:$post, $options)))
+				$this->view->postLink($post, array("text" => $this->postHeader($post, $options)))
 			)."".
 			$this->htmlTag("div", array("class" => "stub-meta font-sans"), 
 				$this->htmlTag("span", array(), $this->view->timeAgo($post->_created)." ○ ")."".

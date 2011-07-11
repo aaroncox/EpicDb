@@ -7,6 +7,7 @@
 class EpicDb_Mongo_Post_Article extends EpicDb_Mongo_Post implements EpicDb_Vote_Interface_UpOnly
 {
 	protected static $_documentType = 'article';
+  protected static $_editForm = 'EpicDb_Form_Post_Article';
 
 	// Returns the string name of this
 	public function getName() {

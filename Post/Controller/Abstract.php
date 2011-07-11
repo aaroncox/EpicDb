@@ -40,10 +40,29 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 		} else {
 			$newComment = EpicDb_Mongo::db('comment');
 		}
+		foreach($parent->findComments() as $reply) {
+			$user = $reply->tags->getTag('author');
+			$usersInvolved[$user->id] = $user;
+		}
+		$newComment->tags->setTags($usersInvolved, 'involved');
 		$newComment->_parent = $parent;
 		$newComment->tags->tag($parent, 'parent');
 		$commentForm = $this->view->form = $newComment->getEditForm();
 		$this->_handleMWForm($commentForm, 'comment');
+	}
+	
+	public function replyAction() {
+		$parent = $this->view->parent = $this->getPost();
+		$newReply = EpicDb_Mongo::newDoc('message');
+		$newReply->_parent = $parent;
+		foreach($parent->findComments() as $reply) {
+			$user = $reply->tags->getTag('author');
+			$usersInvolved[$user->id] = $user;
+		}
+		$newReply->tags->setTags($usersInvolved, 'involved');
+		$newReply->tags->tag($parent, 'parent');
+		$replyForm = $this->view->form = $newReply->getEditForm();
+		$this->_handleMWForm($replyForm, 'comment');
 	}
 	
 	public function answerAction() {
@@ -248,14 +267,24 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 					);
 				}
 
-				if($post instanceOf EpicDb_Mongo_Post) {
-					$target = $post;
-					if($post instanceOf EpicDb_Mongo_Post_Question_Comment) {
-						$target = $post->_parent;
-					}
-					if($post instanceOf EpicDb_Mongo_Post_Comment && $post->_parent) {
-						$target = $post->_parent;
-					} 
+				$target = $post;
+				while($target->_parent->id) {
+					$target = $target->_parent;
+				}
+				if($post instanceOf EpicDb_Mongo_Post_Message) {
+					$controls['replyLink'] = (string) $this->view->button(
+						array(
+							'post' => $target,
+							'action' => 'reply',
+						), 'post', true,
+						array(
+							'icon' => 'pencil',
+							'text' => 'Reply',
+							'tooltip' => 'Reply to this message.',
+							'style' => 'float: left'
+						)
+					);				
+				} else {
 					$controls['commentLink'] = (string) $this->view->button(
 						array(
 							'post' => $target,

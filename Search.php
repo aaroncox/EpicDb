@@ -60,27 +60,22 @@ class EpicDb_Search {
 	public function parseQueryTerm($term, $type = 'string')
 	{
 		if ($type == 'string' || $type == "quoted") {
-			if ($type == "string" && $tag = $this->findTagByName( $term )) {
-				$type = 'tag';
-				$term = $tag;
-			} else {
-				$re = new MongoRegex("/\b".preg_quote($term)."/i");
-				$nameQuery = array('$or' => array(
-					array("name" => $re),
-				));
-				$postQuery = array('$or' => array(
-					array("title" => $re),
-					array("body" => $re),
-				));
-				return array(
-					"terms" => array("contains" => array($term)), 
-					"query" => array(
-						"records" => $nameQuery,
-						"profiles" => $nameQuery,
-						"posts" => $postQuery,
-					)
-				);
-			}
+			$re = new MongoRegex("/\b".preg_quote($term)."/i");
+			$nameQuery = array('$or' => array(
+				array("name" => $re),
+			));
+			$postQuery = array('$or' => array(
+				array("title" => $re),
+				array("body" => $re),
+			));
+			return array(
+				"terms" => array("contains" => array($term)), 
+				"query" => array(
+					"records" => $nameQuery,
+					"profiles" => $nameQuery,
+					"posts" => $postQuery,
+				)
+			);
 		}
 		if ($type == "tag") {
 			if (is_string($term)) {

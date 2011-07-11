@@ -23,16 +23,23 @@ class EpicDb_View_Helper_GuildSummary extends MW_View_Helper_HtmlTag
 			), 'default', true, array(
 				'text' => 'Sudo',
 				'icon' => 'key'
-			));
+			));						
 		}
 		if(R2Db_Auth::getInstance()->hasPrivilege($profile, 'edit')) {
 			$buttons .= $this->view->button(array(
 				'action' => 'edit',
 				'profile' => $profile
 			), 'profile', true, array(
-				'text' => 'Edit Guild',
+				'text' => 'Edit',
 				'icon' => 'key',
 			));						
+			$buttons .= $this->view->button(array(
+				'action' => 'logo',
+				'profile' => $profile
+			), 'profile', true, array(
+				'text' => 'Upload Icon/Logo',
+				'icon' => 'key',
+			));			
 		}
 		if($profile->feed) {
 			$buttons .= $this->view->button(array(

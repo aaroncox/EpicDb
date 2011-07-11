@@ -8,7 +8,7 @@
  * @param undocumented class
  * @package undocumented class
  **/
-class EpicDb_Form_Profile_Group_Website extends EpicDb_Form_Profile
+class EpicDb_Form_Profile_Group_Website extends EpicDb_Form_Profile_Group
 {
 	/**
 	 * getProfile - undocumented function
@@ -50,16 +50,6 @@ class EpicDb_Form_Profile_Group_Website extends EpicDb_Form_Profile
 				'filters' => array('StringTrim'),
 				'label' => 'Twitter Username',
 			));			
-		$this->addElement("text", "logo", array(
-				'filters' => array(new MW_Filter_HttpAddress(), 'StringTrim'),
-				'label' => 'Website Logo URL',
-				'description' => 'The system will resize the image down to a max-width of 100px, so please link to an image that will scale properly!',
-			));
-		$this->addElement("text", "icon", array(
-				'filters' => array(new MW_Filter_HttpAddress(), 'StringTrim'),
-				'label' => 'Website Icon URL',
-				'description' => 'For profile display purposes, we\'d like a 80x80 icon to represent your website.',
-			));
 		$this->addElement("textarea", "description", array(
 				'filters' => array('StringTrim', 'StripTags'),
 				'label' => 'About this Website',
@@ -75,8 +65,6 @@ class EpicDb_Form_Profile_Group_Website extends EpicDb_Form_Profile
 			$profile->url = $this->url->getValue();
 			$profile->feed = $this->feed->getValue();
 			$profile->twitter = $this->twitter->getValue();
-			$profile->logo = $this->logo->getValue();
-			$profile->icon = $this->icon->getValue();
 			$profile->description = $this->description->getValue();
 			if($profile->isNewDocument()) {
 				// Do we need this still?

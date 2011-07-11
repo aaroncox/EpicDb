@@ -11,6 +11,7 @@
 class EpicDb_Mongo_Profile_Group extends EpicDb_Mongo_Profile
 {
 	public $summaryHelper = 'groupSummary';
+	public $contextHelper = 'groupContext';
 	protected static $_documentType = 'group';
 	protected static $_editForm = 'EpicDb_Form_Profile_Group';
 	
@@ -41,15 +42,19 @@ class EpicDb_Mongo_Profile_Group extends EpicDb_Mongo_Profile
    * @return boolean
    * @author Corey Frang
    **/
-  public function isAdmin() {
-    $user = MW_Auth::getInstance()->getUser();
+  public function isAdmin($user = null) {
+		if( !$user ) {
+	    $user = MW_Auth::getInstance()->getUser();			
+		}
     if ( !$user ) {
       return false;
     }
     return $user->isMember( $this->getAdminRole() );
   }
-  public function isMember() {
-    $user = MW_Auth::getInstance()->getUser();
+  public function isMember($user = null) {
+		if( !$user ) {
+	    $user = MW_Auth::getInstance()->getUser();			
+		}
     if( !$user ) {
       return false;
     }
@@ -141,7 +146,6 @@ class EpicDb_Mongo_Profile_Group extends EpicDb_Mongo_Profile
     }
 
     $user = $profile->user;
-
     $updateQuery = array();
 
     foreach ($validTypes as $checkType) {

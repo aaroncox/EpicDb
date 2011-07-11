@@ -12,7 +12,7 @@ class EpicDb_View_Helper_GroupSummary extends MW_View_Helper_HtmlTag
 {
 	public function groupSummary(EpicDb_Mongo_Profile_Group $profile) {
 		$placeholder = $this->view->summary();
-		$placeholder->append($this->view->card($profile, array("class" => "wide", "tagType" => "h2"))."");
+		$placeholder->append($this->view->tooltip($profile)."");
 		
 		$buttons = '';
 		if ($profile->user && MW_Auth::getInstance()->hasPrivilege(new MW_Auth_Resource_Super(), 'sudo')) {
@@ -24,7 +24,7 @@ class EpicDb_View_Helper_GroupSummary extends MW_View_Helper_HtmlTag
 				'text' => 'Sudo',
 				'icon' => 'key'
 			));
-		}
+		}					
 		if(R2Db_Auth::getInstance()->hasPrivilege($profile, 'edit')) {
 			$buttons .= $this->view->button(array(
 				'action' => 'edit',
@@ -33,6 +33,20 @@ class EpicDb_View_Helper_GroupSummary extends MW_View_Helper_HtmlTag
 				'text' => 'Edit Group',
 				'icon' => 'key',
 			));						
+			$buttons .= $this->view->button(array(
+				'action' => 'logo',
+				'profile' => $profile
+			), 'profile', true, array(
+				'text' => 'Upload Icon/Logo',
+				'icon' => 'key',
+			));						
+			// $buttons .= $this->view->button(array(
+			// 	'action' => '',
+			// 	'profile' => $profile
+			// ), 'profile', true, array(
+			// 	'text' => 'Post',
+			// 	'icon' => 'pencil',
+			// ));						
 		}
 		if($profile->feed) {
 			$buttons .= $this->view->button(array(
@@ -63,7 +77,6 @@ class EpicDb_View_Helper_GroupSummary extends MW_View_Helper_HtmlTag
 				)
 			);			
 		}
-		
 		if($totalMembers = $profile->members->count()) {
 			$placeholder->widget(
 				$this->htmlTag("h3", array(), $profile->name."'s Members")."".

@@ -20,7 +20,7 @@ class EpicDb_Form_Profile_User extends EpicDb_Form_Profile
 	{
 		parent::init();
 		$profile = $this->getProfile();
-		$this->addElement("text", "display_email", array(
+		$this->addElement("text", "email", array(
 				'filters' => array('StripTags'),
 				'validators' => array(new Zend_Validate_EmailAddress()),
 				'label' => 'Email Address',
@@ -38,7 +38,7 @@ class EpicDb_Form_Profile_User extends EpicDb_Form_Profile
 	
 	public function save($data) {
 		$profile = $this->getProfile();
-		$profile->display_email = $this->display_email->getValue();
+		$profile->email = $this->email->getValue();
 		$profile->bio = $this->bio->getValue();		
 		return parent::save($data);
 	}

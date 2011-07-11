@@ -12,6 +12,6 @@ class EpicDb_View_Helper_ProfileContext extends MW_View_Helper_HtmlTag
 {
 	public function profileContext(EpicDb_Mongo_Profile $profile) {
 		$placeholder = $this->view->context();
-		$placeholder->widget("[Suggestion Tool under Construction]");
+		$placeholder->prepend($this->view->tooltip($profile));
 	}
 } // END class EpicDb_View_Helper_ProfileSummary

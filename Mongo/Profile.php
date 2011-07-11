@@ -117,7 +117,6 @@ class EpicDb_Mongo_Profile extends EpicDb_Auth_Mongo_Resource_Document implement
 		$query['$or'][] = array(
 			'tags' => array(
 				'$elemMatch' => array(
-					'reason' => 'tag',
 					'ref' => $this->createReference()
 				)
 			)

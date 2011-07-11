@@ -127,4 +127,11 @@ class EpicDb_Mongo_Profile_User extends EpicDb_Mongo_Profile
 		}
 		return "http://s3.r2-db.com/unknown.jpg";
 	}
+	
+	public function getMemberships($type = 'profile') {
+		$query = array();
+		$query['$or'][] = array('members' => $this->createReference());
+		$query['$or'][] = array('admins' => $this->createReference());
+		return EpicDb_Mongo::db($type)->fetchAll($query); 
+	}
 } // END class EpicDb_Mongo_Profile_User
