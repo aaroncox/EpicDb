@@ -16,6 +16,7 @@ class EpicDb_Mongo_Record extends EpicDb_Auth_Mongo_Resource_Document implements
 	protected static $_collectionName = 'records';
 	protected static $_documentType = null;
 	protected static $_documentSetClass = 'EpicDb_Mongo_Records';
+	protected static $_editForm = 'EpicDb_Form_Record';
 
 	/**
 	 * __construct - undocumented function
@@ -96,10 +97,15 @@ class EpicDb_Mongo_Record extends EpicDb_Auth_Mongo_Resource_Document implements
 		// echo "<pre>"; var_dump($return); exit;
 	}
 	
+	public function getEditForm() {
+		$className = static::$_editForm;
+		return new $className(array('record' => $this));
+	}
+	
 	public function getAdminForms() {
 		$forms = array();
 		$forms['changeIcon'] = new EpicDb_Form_Record_Icon(array("record" => $this, "title" => "Change Icon", "description" => "Change the Icon that this record uses, image should be an 80x80 jpg/png/gif."));
-		$forms['changeDescription'] = new EpicDb_Form_Record_Description(array("record" => $this, "title" => "Change Description", "description" => "Change the description that this record uses for it's tooltips."));
+		$forms['edit'] = new EpicDb_Form_Record(array("record" => $this, "title" => "Edit Record", "description" => "Edit the fields for this record."));
 		return $forms;
 	}
 	
@@ -116,5 +122,11 @@ class EpicDb_Mongo_Record extends EpicDb_Auth_Mongo_Resource_Document implements
 		return $results = EpicDb_Mongo::db('post')->fetchAll($query, $sort);
 	}
 	
-	
+	// TODO - This needs to be rewritten to array map the schema or something....
+	public static function getTypesArray() {
+		$db = self::getMongoDb();
+		$result = $db->command(array('distinct' => 'records', 'key' => '_type'));
+		$values = $result['values'];
+		return array_combine($values, $values);
+	}
 } // END class EpicDb_Mongo_Record
