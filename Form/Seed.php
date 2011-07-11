@@ -75,13 +75,9 @@ class EpicDb_Form_Seed extends EpicDb_Form
 			),
 			'label' => 'Tags Type',
 		));
-		$recordTypes = array();
-		foreach(EpicDb_Mongo::db('record')->getTypesArray() as $type) {
-			$recordTypes[$type] = $type;
-		}
 		$this->addElement("multiselect", "types", array(
 			'label' => 'Affected Record Types',
-			'multiOptions' => $recordTypes,
+			'multiOptions' => EpicDb_Mongo::db('record')->getTypesArray(),
 		));
 		if(!$this->_isNew) {
 			$this->setDefaults(array(
