@@ -17,8 +17,8 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 			), 
 			$this->view->htmlTag("div", array("class" => "tooltip-reset tooltip-inner ui-helper-clearfix"),
 				$content
-			).""
-		)."";
+			)." "
+		)." ";
 	}
 	protected $_doc = false;
 	public function counter() {
@@ -41,7 +41,7 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 			$this->view->htmlTag("div", array(
 				"class" => "tooltip-icon tooltip-rounded",
 				"style" => "background: url('".$this->_doc->getIcon()."') no-repeat top center",
-			), " ")."".
+			), " ")." ".
 			$this->counter()
 		)."";
 	}
