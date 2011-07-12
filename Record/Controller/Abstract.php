@@ -63,6 +63,7 @@ class EpicDb_Record_Controller_Abstract extends MW_Controller_Action
 	
 	public function editAction() {
 		$record = $this->view->record;
+		EpicDb_Auth::getInstance()->requirePrivilege(new EpicDb_Auth_Resource_Moderator());			
 		$this->view->form = $form = $record->getEditForm();
 		$this->_handleMWForm($form, $record->_type);
 	}
@@ -72,6 +73,7 @@ class EpicDb_Record_Controller_Abstract extends MW_Controller_Action
 	}
 	
 	public function seedAction() {
+		EpicDb_Auth::getInstance()->requirePrivilege(new EpicDb_Auth_Resource_Moderator());			
 		if(!$id = $this->getRequest()->getParam('seed',0)) throw new MW_Controller_404Exception("Unknown seed");
 		$query = array(
 			'id' => (int) $id
