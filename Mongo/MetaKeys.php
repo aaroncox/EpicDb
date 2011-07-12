@@ -18,6 +18,7 @@ class EpicDb_Mongo_MetaKeys extends MW_Mongo_Document
 		'name' => array('Validator:Alnum', 'Required'),
 		'requirements' => array("Array"),
 		'formElement' => array("Document"),
+		'order' => array("Float"),
 		'formElement.options' => array("Array"),
 		'recordType' => array("Array"),
 	);
@@ -28,7 +29,7 @@ class EpicDb_Mongo_MetaKeys extends MW_Mongo_Document
 	
 	protected static function _getData() {
 		if(static::$_requirementsArray === false) {
-			$result = static::fetchAll();
+			$result = static::fetchAll(array(), array("order" => 1, "name" => 1));
 			$requirements = array();
 			$titles = array();
 			foreach($result as $metaKey) {
@@ -65,18 +66,26 @@ class EpicDb_Mongo_MetaKeys extends MW_Mongo_Document
 			if($data->formElement) $elements[$key] = $data->formElement->export();
 			if(empty($elements[$key]['options'])) $elements[$key]['options'] = array();
 			if(empty($elements[$key]['options']['label'])) $elements[$key]['options']['label'] = static::$_titlesArray[$key];
-			if(!empty($elements[$key]['options']['order'])) {
-				for ($order = (int)$elements[$key]['options']['order'];isset($orders[$order]);$order++);
-				$orders[$order] = true;
-				$elements[$key]['options']['order'] = $order;
-			}
 		}
 		return $elements;
 	}
 	
-	public static function getMetaKeys() {
+	public static function getTooltipKeys($type = false) {
+		return array_filter(self::getMetaKeys($type), function($data) {
+			return $data->onTooltip;
+		});
+	}
+	
+	public static function getMetaKeys($type = false) {
 		static::_getData();
-		return static::$_metaKeys;
+		$keys = static::$_metaKeys;
+		if(!$type) return $keys;
+		$return = array();
+		foreach($keys as $key => $data) {
+			if($type && !($data->recordType && in_array($type, $data->recordType))) continue;
+			$return[$key] = $data;
+		}
+		return $return; 
 	}
 	
 	public static function getRequirementsArray() {
