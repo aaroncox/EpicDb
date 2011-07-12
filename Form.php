@@ -31,5 +31,7 @@ class EpicDb_Form extends MW_Form {
   {
     parent::init();
     $this->addPrefixPath("EpicDb_Form", dirname(__FILE__)."/Form");
+    $this->addElementPrefixPath("EpicDb_Validate", dirname(__FILE__)."/Validate", "validate");
+    $this->addElementPrefixPath("EpicDb_Filter", dirname(__FILE__)."/Filter", "filter");
   }
 }
