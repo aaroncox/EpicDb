@@ -40,6 +40,9 @@ class EpicDb_Form_MetaKeys extends MW_Form {
 			'label' => 'Title',
 			'description' => 'The plain text name for this attribute.',
 		));
+		$this->addElement("text", "order", array(
+			'label' => 'Order # for Element',
+		));
 		$this->addElement("multiselect", "recordType", array(
 			'label' => 'Record Types', 
 			'description' => 'The record types that use this meta key.',
@@ -70,13 +73,14 @@ class EpicDb_Form_MetaKeys extends MW_Form {
 			
 		} else {
 			if($metaKey->requirements) {
-				$requirements = implode($metaKey->requirements->export(), ",");
+				$requirements = implode($metaKey->requirements, ",");
 			} else {
 				$requirements = '';
 			}
 			$this->setDefaults(array(
 				'name' => $metaKey->name,
 				'title' => $metaKey->title,
+				'order' => $metaKey->order?:100,
 				'helper' => $metaKey->helper,
 				'recordType' => $metaKey->recordType,
 				'formElementType' => $metaKey->formElement->type,
@@ -96,6 +100,7 @@ class EpicDb_Form_MetaKeys extends MW_Form {
 			// var_dump($this->name->getValue()); exit;
 			$metaKey->name = $this->name->getValue();
 			$metaKey->title = $this->title->getValue();
+			$metaKey->order = $this->order->getValue();
 			$metaKey->helper = $this->helper->getValue();
 			$metaKey->onTooltip = (bool) $this->onTooltip->getValue();
 			if($this->requirements->getValue() == "") {
