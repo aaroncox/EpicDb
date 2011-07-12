@@ -56,18 +56,15 @@ class EpicDb_Form_Record extends EpicDb_Form {
 		$record->name = $this->name->getValue();
 		$record->descriptionSource = $this->descriptionSource->getValue();
 		$record->description = $this->descriptionSource->getRenderedValue();
-		var_dump($record->attribs->getRequirements()); 
 		foreach($this->_metaElements as $key => $element) {
 			$element = $this->$key;
 			$value = $element->getValue();
 			if($value) {
 				$record->attribs->$key = $value;
-				var_dump($record->attribs->$key); 
 			} else {
 				unset($record->attribs->$key);
 			}
 		}
-		exit;
 		$record->save();
 	}
 }
