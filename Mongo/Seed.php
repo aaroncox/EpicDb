@@ -20,4 +20,10 @@ class EpicDb_Mongo_Seed extends EpicDb_Auth_Mongo_Resource_Document
 		return str_replace(array("[[NAME]]", "[[TYPE]]"), array($record->name, $record->_type), $this->title);
 	}
 	
+	public function getSeedsForType($type) {
+		$query = array(
+			'types' => $type,
+		);
+		return static::fetchAll($query);
+	}	
 } // END class EpicDb_Mongo_Post_Question_System extends EpicDb_Mongo_Post_Question
