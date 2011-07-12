@@ -8,7 +8,7 @@
  * @param undocumented class
  * @package undocumented class
  **/
-class EpicDb_Mongo_Record extends EpicDb_Auth_Mongo_Resource_Document implements EpicDb_Interface_Cardable, EpicDb_Interface_Tooltiped
+class EpicDb_Mongo_Record extends EpicDb_Auth_Mongo_Resource_Document implements EpicDb_Interface_Revisionable, EpicDb_Interface_Cardable, EpicDb_Interface_Tooltiped
 {
 	public $summaryHelper = 'recordSummary';
 	public $contextHelper = 'recordContext';
@@ -17,6 +17,7 @@ class EpicDb_Mongo_Record extends EpicDb_Auth_Mongo_Resource_Document implements
 	protected static $_documentType = null;
 	protected static $_documentSetClass = 'EpicDb_Mongo_Records';
 	protected static $_editForm = 'EpicDb_Form_Record';
+	protected static $_revisionProperties = array('name', 'description', 'attribs', '_type', 'tags', '_lastEditedBy'); 
 
 	/**
 	 * __construct - undocumented function
@@ -34,6 +35,15 @@ class EpicDb_Mongo_Record extends EpicDb_Auth_Mongo_Resource_Document implements
 			'attribs' => array('Document:EpicDb_Mongo_Meta'),
 		));
 		return parent::__construct($data, $config);
+	}
+
+	public function newRevision()
+	{
+		$revision = $this->revisions->new();
+		foreach (static::$_revisionProperties as $key) {
+			$revision->$key = $this->$key;
+		}
+		$this->revisions->addDocument($revision);
 	}
 
 	public function getPropertyClass($property, $data) {

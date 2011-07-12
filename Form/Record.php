@@ -53,6 +53,7 @@ class EpicDb_Form_Record extends EpicDb_Form {
 
 	public function save() {
 		$record = $this->getRecord();
+		$record->newRevision();
 		$record->name = $this->name->getValue();
 		$record->descriptionSource = $this->descriptionSource->getValue();
 		$record->description = $this->descriptionSource->getRenderedValue();
