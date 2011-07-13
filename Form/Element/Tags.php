@@ -37,15 +37,18 @@ class EpicDb_Form_Element_Tags extends Zend_Form_Element_Hidden {
 		}
 		$filter = new EpicDb_Filter_TagJSON(array('type' => $type));
 		if (isset($options['filters'])) {
-			$options['filters'][] = $filter;
+			$options['filters']["TagJSON"] = array('type'=>$type);
 		} else {
-			$options['filters'] = array($filter);
+			$options['filters'] = array("TagJSON" => $filter);
 		}
 		$hidden = parent::__construct($spec, $options);
 	}
 	
 	public function getTags() {
-		
+		$value = $this->getValue();
+		var_dump($value);
+		$filter = $this->getFilter("TagJSON");
+		return $filter->toArray($this->getValue());
 	}
 
 }
