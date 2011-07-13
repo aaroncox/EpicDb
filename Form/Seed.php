@@ -73,7 +73,7 @@ class EpicDb_Form_Seed extends EpicDb_Form
 			'filters' => array(
 				'StringTrim',
 			),
-			'label' => 'Types of Records that seed affects',
+			'label' => 'Record Type of Answers',
 		));
 		$this->addElement("multiselect", "types", array(
 			'label' => 'Affected Record Types',
