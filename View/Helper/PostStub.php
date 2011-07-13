@@ -39,7 +39,7 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 				if($subject || $parent) {
 					if($parent instanceOf EpicDb_Mongo_Comment || $subject) {
 						$type = ' comment on '.$this->view->recordLink($subject?:$parent);						
-					} elseif($parent instanceOf EpicDb_Mongo_Post) {
+					} elseif($parent instanceOf EpicDb_Mongo_Post && $parent->_id) {
 						$type = ' comment on '.$this->view->postLink($parent);
 					} else {
 						$type = ' comment';
