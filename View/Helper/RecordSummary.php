@@ -14,8 +14,7 @@ class EpicDb_View_Helper_RecordSummary extends MW_View_Helper_HtmlTag
 		// $this->card($this->profile, array("class" => "wide"))
 		$placeholder = $this->view->summary();
 		$placeholder->append($this->view->tooltip($record)."");
-
-		$buttons = '<h3>Available Actions</h3>';
+		$buttons = "";
 		if(EpicDb_Auth::getInstance()->getUserProfile()) {
 			$buttons .= $this->view->followButton($record);
 		}
@@ -29,8 +28,8 @@ class EpicDb_View_Helper_RecordSummary extends MW_View_Helper_HtmlTag
 			));
 		}
 		
-		if($buttons) $placeholder->widget($buttons);
-		
+		if($buttons) $placeholder->widget('<h3>Available Actions</h3>'.$buttons);
+
 		// Get followers for the widget
 		$followers = $record->getMyFollowers();
 		if($followers->count()) {
