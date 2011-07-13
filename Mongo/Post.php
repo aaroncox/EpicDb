@@ -257,7 +257,7 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 		return $results;
 	}
 	
-	public function findRelated($record, $query = array()) {
+	public function findRelated($record, $query = array(), $sort = array()) {
 		$query['$or'][] = array(
 			'tags.ref' => $record->createReference(),
 			'tags.reason' => 'tag'
@@ -266,7 +266,9 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 			'tags.ref' => $record->createReference(),
 			'tags.reason' => 'subject'
 		);
-		$sort = array("_created" => -1);
+		if(empty($sort)) {
+			$sort = array("_created" => -1);			
+		}
 		return EpicDb_Mongo::db('post')->fetchAll($query, $sort);
 	}
 	// This is for watching queries as they execute on posts, perhaps we could enable it by a flag? or mode? I just used it for debugging queries.

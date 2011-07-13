@@ -32,6 +32,7 @@ class EpicDb_Mongo_Record extends EpicDb_Auth_Mongo_Resource_Document implements
 			'revisions' => array('DocumentSet'),
 			'revisions.$' => array('Document:EpicDb_Mongo_Revision'),
 			'tags' => array('DocumentSet:EpicDb_Mongo_Tags'),
+			'seeds' => array('Document:EpicDb_Mongo_Seeds'),
 			'attribs' => array('Document:EpicDb_Mongo_Meta'),
 		));
 		return parent::__construct($data, $config);

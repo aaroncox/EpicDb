@@ -11,7 +11,7 @@
 class EpicDb_View_Helper_WikiInline extends EpicDb_View_Helper_WikiWrapper
 {
 	public function wikiInline($record, $section) {
-		$wiki = EpicDb_Mongo::db('wiki')->get($record, $section);
+		$wiki = EpicDb_Mongo::db('wiki')->get($record, $section, false);
 		if($wiki) {
 			$header = $record->name." - ".$wiki->header;
 			return $this->wrap($header, $wiki->html, array('wiki' => $wiki));			

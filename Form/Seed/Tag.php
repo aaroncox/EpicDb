@@ -40,31 +40,10 @@ class EpicDb_Form_Seed_Tag extends EpicDb_Form
 	public function getTagged() {
 		$seed = $this->getSeed();
 		$record = $this->getRecord();
-		$tag = $seed->tag;
-		$tagDb = $seed->tagDb;
-		if($tagDb) {
-			$query = array(
-				'tags' => array(
-					'$elemMatch' => array(
-						'reason' => $tag,
-						'ref' => $record->createReference(),
-					)
-				)
-			);
-			$results = EpicDb_Mongo::db($tagDb)->fetchAll($query);
-			$tags = array();
-			foreach($results as $result) {
-				$tags[] = $result;
-			}
-		} elseif($tag) {
-			$tags = $record->tags->getTags($tag); 
-		} else {
-			$tags = array();
-		}
-		return $tags;
+		return $seed->tagged($record);
 	}
 	
-	public function setTagged() {
+	public function saveTagged() {
 		$seed = $this->getSeed();
 		$record = $this->getRecord();
 		$tag = $seed->tag;
@@ -108,6 +87,21 @@ class EpicDb_Form_Seed_Tag extends EpicDb_Form
 			// Some crazy shit here later
 		}
 	}
+	
+	public function getWiki() {
+		$record = $this->getRecord();
+		$seed = $this->getSeed();
+		return $return = EpicDb_Mongo::db('wiki')->get($record, $seed->tag);
+	}
+	
+	public function saveAnswer() { 
+		$wiki = $this->getWiki();
+		if($this->source) {
+			$wiki->source = $this->source->getValue();
+			$wiki->html = $this->source->getRenderedValue();			
+		}
+		$wiki->save();
+	}
 
 	public function init() {
 		parent::init();
@@ -115,18 +109,25 @@ class EpicDb_Form_Seed_Tag extends EpicDb_Form
 		$seed = $this->getSeed();
 		$this->addElement('tags', 'tags', array(
 			'required' => true,
-			'label' => 'Edit/Add tags as the answer.',
+			'label' => 'Change tags that apply to the seed.',
 			'recordType' => $seed->tagType
+		));
+		$this->addElement('markdown', 'source', array(
+			'required' => false,
+			'label' => 'Answer',
+			'filters' => array('StringTrim'), 
 		));
 		$this->setDefaults(array(
 			"tags" => $this->getTagged(),
+			"source" => $this->getWiki()->source,
 		));
 		$this->setButtons(array('save' => 'Save'));
 	}
 	
 	public function process($data) {
 		if($this->isValid($data)) {
-			$this->setTagged();
+			$this->saveTagged();
+			$this->saveAnswer();
 			return true;
 		}
 		return false;

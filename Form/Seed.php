@@ -56,24 +56,24 @@ class EpicDb_Form_Seed extends EpicDb_Form
 				'description' => '150 characters or less.',
 			));		
 		$this->addElement("text", "tag", array(
-			'required' => false, 
+			'required' => true, 
 			'filters' => array(
 				'StringTrim',
 			),
-			'label' => 'Tagged With',
+			'label' => 'Record is tagged with & named as...',
 		));
 		$this->addElement("text", "tagDb", array(
 			'filters' => array(
 				'StringTrim',
 			),
-			'label' => 'Tags Database',
+			'label' => 'Database to get Tags from...',
 			'description' => 'Leave empty if tags exist on this record type',
 		));
 		$this->addElement("text", "tagType", array(
 			'filters' => array(
 				'StringTrim',
 			),
-			'label' => 'Tags Type',
+			'label' => 'Types of Records that seed affects',
 		));
 		$this->addElement("multiselect", "types", array(
 			'label' => 'Affected Record Types',
@@ -105,5 +105,14 @@ class EpicDb_Form_Seed extends EpicDb_Form
 			return $seed->save();
 		}
 		return false;
+	}
+	public function render()
+	{
+		foreach($this->getElements() as $element) {
+			$element->setAttrib('class', 'ui-state-default');
+		}
+		$this->save->setAttrib('class','login r2-button ui-state-default ui-corner-all');
+		$this->getDecorator('HtmlTag')->setOption('class','r2-form transparent-bg rounded')->setOption('id', 'ad-edit');
+		return parent::render();
 	}
 } // END class R2Db_Form_Post_Comment

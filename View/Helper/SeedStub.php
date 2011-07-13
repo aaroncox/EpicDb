@@ -51,6 +51,7 @@ class EpicDb_View_Helper_SeedStub extends EpicDb_View_Helper_PostStub
 		foreach($answers as $answer) {
 			$html .= $this->view->card($answer, array('class' => 'medium-icon'));
 		}
+		$html .= $seed->wiki($record)->html;
 		return $html;
 	}
 	public function seedStub($seed, $record) {

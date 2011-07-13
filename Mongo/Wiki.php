@@ -13,12 +13,18 @@ class EpicDb_Mongo_Wiki extends EpicDb_Auth_Mongo_Resource_Document
 		'type' => array('Required'),
   );
 
-	public static function get($record, $type) {
+	public static function get($record, $type, $createFlag = true) {
 		$query = array(
 			'record' => $record->createReference(),
 			'type' => $type,
 		);
-		return static::fetchOne($query);
+		$return = static::fetchOne($query);
+		if(!$return && $createFlag) {
+			$return = new static();
+			$return->type = $type;
+			$return->record = $record;
+		}
+		return $return;
 	}
 	
 	public function getPropertyClass($property, $data)
