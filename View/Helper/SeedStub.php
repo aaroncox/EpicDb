@@ -22,6 +22,8 @@ class EpicDb_View_Helper_SeedStub extends EpicDb_View_Helper_PostStub
 				'text' => 'Answer',
 				'icon' => 'help'
 			));
+		} else {
+			$html .= $this->view->seedLink($seed, $record, array("text" => "View Original"));
 		}
 		return $this->htmlTag("div", array("class" => "seed-controls"), $html);
 	}
@@ -57,13 +59,14 @@ class EpicDb_View_Helper_SeedStub extends EpicDb_View_Helper_PostStub
 	public function seedStub($seed, $record) {
 		$this->_seed = $seed;
 		$this->_record = $record;
+		$body = $this->renderBody();
 		return $this->htmlTag("div", array("class" => "seed-stub padded-10a", "id" => "seed-".$seed->id), 
 			$this->htmlTag("div", array("class" => "seed-header"), 
 				$this->htmlTag("img", array("src" => "/images/element/message-collapse.png"))."".
 				$this->htmlTag("h3", array("class" => "inline-flow text-large"), $seed->renderTitle($record))
 			)."".
 			$this->htmlTag("div", array("class" => "seed-body"), 
-				$this->renderBody()."".
+				$body."".
 				$this->renderControls()
 			)
 		);
