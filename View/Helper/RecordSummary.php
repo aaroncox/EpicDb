@@ -18,7 +18,7 @@ class EpicDb_View_Helper_RecordSummary extends MW_View_Helper_HtmlTag
 		if(EpicDb_Auth::getInstance()->getUserProfile()) {
 			$buttons .= $this->view->followButton($record);
 		}
-		if (MW_Auth::getInstance()->hasPrivilege(new MW_Auth_Resource_Super(), 'edit')) {
+		if (EpicDb_Auth::getInstance()->hasPrivilege(new EpicDb_Auth_Resource_Moderator())) {
 			$buttons .= $this->view->button(array(
 				'action'=>'admin',
 				'record'=>$record,
