@@ -91,6 +91,13 @@ class EpicDb_Form_Post extends EpicDb_Form
 		return $values;
 	}
 
+    public function __construct($options = null)
+	{
+		parent::__construct( $options );
+		// postinit - post decorators
+		$this->setDefaults( $this->getDefaultValues() );
+	}
+
 	/**
 	 * init - undocumented function
 	 *
@@ -139,8 +146,6 @@ class EpicDb_Form_Post extends EpicDb_Form
 			$this->source->setLabel($this->_editSourceLabel);
 		}
 
-		$this->setDefaults($this->getDefaultValues());
-
 		if(!$profile) {
 			$recaptcha = new Zend_Service_ReCaptcha($this->_publickey, $this->_privatekey);
 			$captcha = new Zend_Form_Element_Captcha('challenge', array(
@@ -158,7 +163,7 @@ class EpicDb_Form_Post extends EpicDb_Form
 		$this->setButtons(array("save" => "Post"));
 
 	}
-
+	
 	public function save() {
 		$me = $this->getAuthorProfile();
 		$post = $this->getPost();
