@@ -12,7 +12,7 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 {
 	public function wrap($content) {
 		return $this->view->htmlTag("div", array(
-			"class" => "tooltip tooltip-rounded", 
+			"class" => "r2-tooltip tooltip-rounded", 
 			"id" => $this->_doc->_type."-".$this->_doc->id
 			), 
 			$this->view->htmlTag("div", array("class" => "tooltip-reset tooltip-inner ui-helper-clearfix"),
