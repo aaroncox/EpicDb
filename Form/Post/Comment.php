@@ -13,18 +13,20 @@ class EpicDb_Form_Post_Comment extends EpicDb_Form_Post
 	protected $_isNew = false;
 	protected $_record = null;
 	protected $_recordType = 'comment';
-		/**
-		 * init - undocumented function
-		 *
-		 * @return void
-		 * @author Aaron Cox <aaronc@fmanet.org>
-		 **/
-		public function init()
-		{
-			$post = $this->getPost();
-			parent::init();
-			$this->removeElement('tags');
-			$this->source->setLabel("Leave a Comment");
-			$this->setButtons(array("save" => "Post Comment"));
-		}
-	} // END class EpicDb_Form_Post_Comment
+	
+	protected $_sourceLabel = "Leave a Comment";
+	
+	/**
+	 * init - undocumented function
+	 *
+	 * @return void
+	 * @author Aaron Cox <aaronc@fmanet.org>
+	 **/
+	public function init()
+	{
+		$post = $this->getPost();
+		parent::init();
+		$this->removeElement('tags');
+		$this->setButtons(array("save" => "Post Comment"));
+	}
+} // END class EpicDb_Form_Post_Comment

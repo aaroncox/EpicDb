@@ -34,6 +34,7 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 			'touchedBy' => array('Document:EpicDb_Mongo_Profile', 'AsReference'),
 			'revisions' => array('DocumentSet'),
 			'revisions.$' => array('Document:EpicDb_Mongo_Revision'),
+			'revisions.$.tags' => array('DocumentSet:EpicDb_Mongo_Tags'),
 		));
 		return parent::__construct($data, $config);
 	}
@@ -177,10 +178,12 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 	{
 		$revision = $this->revisions->new();
 		$this->revisions->addDocument($revision);
-		$copy = array('source', 'body', '_lastEditedBy', '_lastEditedReason', '_lastEdited', 'title', 'tldr','tags');
+		$copy = array('source', 'body', '_lastEditedBy', '_lastEditedReason', '_lastEdited', 'title', 'tldr');
 		foreach ($copy as $key) {
 			$revision->$key = $this->$key;
 		}
+		// clone the tags to make sure updates past this point aren't saved in the revision
+		$revision->tags = clone $this->tags;
 	}
 	
 	public function bump($by = null) {

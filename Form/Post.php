@@ -10,9 +10,13 @@
  **/
 class EpicDb_Form_Post extends EpicDb_Form
 {
-	protected $_isNew = false;
 	protected $_post = null;
-	// These need to move into the config, just trying to get the protection online. 
+	protected $_revision = false;
+
+	protected $_sourceLabel = "Post Message";
+	protected $_editSourceLabel = "Edit Post";
+
+	// These need to move into the config, just trying to get the protection online.
 	private $_publickey = "6Lf4j8USAAAAAKDmcKGNlZSGLxWa-lm1hL3II3pu";
 	private $_privatekey = "6Lf4j8USAAAAAPi5c4-afd6QOhwuOdr0Yh0MDRb5";
 
@@ -24,8 +28,10 @@ class EpicDb_Form_Post extends EpicDb_Form
 	 **/
 	public function getPost()
 	{
+		if (!$this->_post instanceOf EpicDb_Mongo_Post) throw new Exception("Invalid Post");
 		return $this->_post;
 	}
+
 	/**
 	 * setPost($post) - undocumented function
 	 *
@@ -35,15 +41,56 @@ class EpicDb_Form_Post extends EpicDb_Form
 	public function setPost($post)
 	{
 		$this->_post = $post;
-		$this->_isNew = $post->isNewDocument();
 		return $this;
 	}
 
-	protected $_rev = false;
 	public function setRev($rev) {
-		$this->_rev = $rev;
+		$this->_revision = $rev;
 		return $this;
 	}
+
+	/**
+	 * Returns the logged in user's profile
+	 *
+	 * @return EpicDb_Mongo_Profile
+	 * @author Corey Frang
+	 **/
+	public function getAuthorProfile()
+	{
+		return EpicDb_Auth::getInstance()->getUserProfile();
+	}
+
+	/**
+	 * Checks if the document is new
+	 *
+	 * @return boolean
+	 * @author Corey Frang
+	 **/
+	public function isNewPost()
+	{
+		$post = $this->getPost();
+		return $this->_post->isNewDocument();
+	}
+
+	public function getInitialData()
+	{
+		$post = $this->getPost();
+		return ($this->_revision === false) ? $post : $post->revisions[ $this->_revision ];
+	}
+
+	public function getDefaultValues()
+	{
+		$values = array();
+		$data = $this->getInitialData();
+
+		$values['source'] = $data->source ?: $data->body;
+		$values['tags'] = $data->tags->getTags('tag');
+
+		if ($this->_revision !== false) $values['reason'] = "Rollback to Revision #".($this->_revision+1);
+
+		return $values;
+	}
+
 	/**
 	 * init - undocumented function
 	 *
@@ -54,11 +101,13 @@ class EpicDb_Form_Post extends EpicDb_Form
 	{
 		parent::init();
 		$post = $this->getPost();
+		$profile = $this->getAuthorProfile();
+
 		$this->addElement("markdown", "source", array(
 				'order' => 100,
 				'required' => true,
 				'class' => 'markDownEditor',
-				'label' => 'Post Message',
+				'label' => $this->_sourceLabel,
 				'description' => '',
 				'cols' => 90,
 				'rows' => 15,
@@ -69,21 +118,13 @@ class EpicDb_Form_Post extends EpicDb_Form
 			'label' => 'Tags',
 			'description' => 'Tagging questions helps categorize them, making it easier to find questions based on specific topics. To use the tagging engine, simply start typing what you are looking for in the search box, and click on the tag that matches the topics your question is related to.',
 		));
-		if($this->_isNew) {
-			// If we have a new post, lets establish a few things
-			$profile = MW_Auth::getInstance()->getUserProfile();
-			if($profile) {
-				// grant the default permissions to this post.
+
+		if ($post->isNewDocument()) {
+			if ($profile) {
+				// grant the posting user permissions to this post.
 				$post->grant($profile->user);
-				// $post->grant(MW_Auth_Group_Super::getInstance());
-				// $post->grant(MW_Auth_Group_User::getInstance(), "comment");
-				// $post->grant(MW_Auth_Group_User::getInstance(), "answer");
-				// Tag the author as the author
+				// tag the author
 				$post->tags->tag($profile, 'author');
-				$this->setDefaults(array(
-					"tags" => $post->tags->getTags('tag'),
-				));
-				
 			}
 		} else {
 			// Add a reason for your edit
@@ -95,50 +136,44 @@ class EpicDb_Form_Post extends EpicDb_Form
 
 			));
 			// Change the label to edit post
-			$this->source->setLabel("Edit Post");
-			$source = $post->source;
-			if($this->_rev !== false) {
-				$source = $post->revisions[$this->_rev]->source;
-				if (!$source) {
-					$source = $post->revisions[$this->_rev]->body;
-				}
-				$this->reason->setValue("Roll Back from Revision #".($this->_rev+1));
-			}
-			if (!$source) {
-				$source = $post->body;
-			}
-			$this->setDefaults(array(
-				"source" => $source,
-				"tags" => $post->tags->getTags('tag'),
-			));
+			$this->source->setLabel($this->_editSourceLabel);
 		}
-		if(!MW_Auth::getInstance()->getUser()) {
+
+		$this->setDefaults($this->getDefaultValues());
+
+		if(!$profile) {
 			$recaptcha = new Zend_Service_ReCaptcha($this->_publickey, $this->_privatekey);
-       $captcha = new Zend_Form_Element_Captcha('challenge',
-             array('order' => 2000, 'label' => 'Prove your a human','captcha'        => 'ReCaptcha',
-                   'captchaOptions' => array('captcha' => 'ReCaptcha', 'service' => $recaptcha)));
-       $this->addElement($captcha);			
+			$captcha = new Zend_Form_Element_Captcha('challenge', array(
+				'order' => 2000,
+				'label' => 'Prove your a human',
+				'captcha' => 'ReCaptcha',
+				'captchaOptions' => array(
+					'captcha' => 'ReCaptcha',
+					'service' => $recaptcha
+				)
+			));
+			$this->addElement($captcha);
 		}
+
 		$this->setButtons(array("save" => "Post"));
 
 	}
+
 	public function save() {
-		$me = EpicDb_Auth::getInstance()->getUserProfile();
+		$me = $this->getAuthorProfile();
 		$post = $this->getPost();
-		if(!$this->_isNew) {
-			$post->bump($me);
-			EpicDb_Mongo_Revision::makeEditFor($post, $this->reason->getValue());
-		} else {
-			$post->_created = time();
-		}
+
 		if($this->source) {
 			$post->source = $this->source->getValue();
 			$post->body = $this->source->getRenderedValue();
 		}
+
 		$filter = new EpicDb_Filter_TagJSON();
+
 		if ($this->tags) {
-			$post->tags->setTags($filter->toArray($this->tags->getValue()),'tag');
+			$post->tags->setTags($this->tags->getTags(),'tag');
 		}
+
 		if($this->requestType) {
 			$post->_requestType = $this->requestType->getValue();
 		}
@@ -152,15 +187,24 @@ class EpicDb_Form_Post extends EpicDb_Form
 		return $post->save();
 	}
 	public function process($data) {
+		$post = $this->getPost();
 		if($this->isValid($data)) {
 			if(!MW_Auth::getInstance()->getUser()) {
 				$recaptcha = new Zend_Service_ReCaptcha($this->_publickey, $this->_privatekey);
 				$result = $recaptcha->verify($this->_getParam('recaptcha_challenge_field'),
-				          $this->_getParam('recaptcha_response_field'));
+									$this->_getParam('recaptcha_response_field'));
 				if (!$result->isValid()) {
 					return false;
 				}
 			}
+
+			if($post->isNewDocument()) {
+				$post->_created = time();
+			} else {
+				$post->bump($me);
+				EpicDb_Mongo_Revision::makeEditFor($post, $this->reason->getValue());
+			}
+
 			$this->save();
 			return true;
 		}
