@@ -45,6 +45,13 @@ class EpicDb_Form_Post_Question extends EpicDb_Form_Post
 		}
 		// var_dump($this->_elements); exit;
 	}
+	public function getDefaultValues()
+	{
+		$values = parent::getDefaultValues();
+		$data = $this->getInitialData();
+		$values['title'] = $data->title;
+		return $values;
+	}
 	public function save() {
 		$question = $this->getPost();
 		$question->title = $this->title->getValue();

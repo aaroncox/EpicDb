@@ -13,6 +13,8 @@ class EpicDb_Form_Post_Article extends EpicDb_Form_Post
 	protected $_isNew = false;
 	protected $_profile = null;
 	protected $_recordType = 'article';
+	
+	protected $_sourceLabel = "News";
 	public function setProfile($profile) {
 		if(!$profile instanceOf EpicDb_Mongo_Profile) throw new Exception("This isn't a profile");
 		$this->_profile = $profile;
@@ -41,9 +43,15 @@ class EpicDb_Form_Post_Article extends EpicDb_Form_Post
 				'size' => 80,
 				'description' => '120 character or less title (required).'
 			));
-		$this->source->setLabel("News");
 		$this->tags->setDescription("You are allowed to tag your article with things contained on R2-Db.com to provide relevance to those topics.");
 		$this->setButtons(array("save" => "Post News"));
+	}
+	public function getDefaultValues()
+	{
+		$values = parent::getDefaultValues();
+		$data = $this->getInitialData();
+		$values['title'] = $data->title;
+		return $values;
 	}
 	public function save() {
 		parent::save();
