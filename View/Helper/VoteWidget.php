@@ -59,7 +59,7 @@ class EpicDb_View_Helper_VoteWidget extends MW_View_Helper_HtmlTag
 			if (isset($this->_flagTypes[$vote])) {
 				$content = "<span class='$iconClass' style='display: inline-block'> </span>";
 				$content .= $this->_flagTypes[$vote];
-				if ($vote == "moderator") $content .= "<br><input type='text' name='reason' placeholder='Reason for flagging'>";
+				if ($vote == "moderator") $content .= "<br><input type='text' name='reason' placeholder='Reason for flagging' value='".$this->view->escape($dbVote->reason)."'>";
 			} else {
 				$tagOpts['class'] .= $iconClass;
 			}
