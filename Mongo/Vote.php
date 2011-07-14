@@ -7,6 +7,7 @@
 class EpicDb_Mongo_Vote extends EpicDb_Mongo_Document
 {
 	protected static $_collectionName = 'votes';
+	protected static $_documentSetClass = "EpicDb_Mongo_Votes";
 
 	protected $_requirements = array(
 		'post' => array('Document:EpicDb_Mongo_Post', 'AsReference'),
@@ -61,6 +62,17 @@ class EpicDb_Mongo_Vote extends EpicDb_Mongo_Document
 				"vote" => array('$in' => array('up', 'down')),
 			);
 		return $current = static::fetchOne($query);
+	}
+
+	public static function getVotesByPost($post, $type = null) {
+		$query = array(
+				"post" => $post->createReference(),
+			);
+		if ($type) {
+			if ($type == 'score') $query['type'] = array('$in'=>array('up','down'));
+			else $query["type"] = $type;
+		}
+		return static::fetchAll($query);
 	}
 
 	public static function getVoteSummary($post, $type = null) {

@@ -66,6 +66,17 @@ class EpicDb_Vote {
 
 		throw new Exception('Unknown Vote Type');
 	}
+	
+	public static function fromMongo( $vote = null )
+	{
+		if (!$vote instanceOf EpicDb_Mongo_Vote ) return null;
+		$type = $vote->vote;
+		if (isset(self::$_types[$type])) {
+			$className = self::$_types[$type];
+			return new $className($vote->voter, $vote->post);
+		}
+		
+	}
 
 	/**
 	 * Gets an array containing the votes of each type, and a total score

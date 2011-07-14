@@ -129,6 +129,11 @@ abstract class EpicDb_Vote_Abstract {
 		return true;
 	}
 
+	public function save()
+	{
+		return $this->_data->save();
+	}
+
 	/**
 	 * undoes the vote
 	 *
