@@ -22,6 +22,16 @@ class EpicDb_View_Helper_VoteWidget extends MW_View_Helper_HtmlTag
 		'up' => 'ui-icon-plus',
 		'down' => 'ui-icon-minus',
 		'accept' => 'ui-icon-check',
+		'flag' => 'ui-icon-alert',
+		'spam' => 'ui-icon-alert',
+		'offensive' => 'ui-icon-alert',
+		'moderator' => 'ui-icon-alert',
+	);
+
+	protected $_flagTypes = array(
+		"spam" => "Spam",
+		"offensive" => "Offensive",
+		"moderator" => "Needs Moderator Attention",
 	);
 
 	public function makeVoteButton($vote)
@@ -30,11 +40,30 @@ class EpicDb_View_Helper_VoteWidget extends MW_View_Helper_HtmlTag
 		$dbVote = null;
 		$tagOpts = array(
 			"style" => "display: inline-block;",
-			"alt" => "Vote Up",
-			"class" => "vote-link vote-".$vote." ui-icon ".$this->_iconClass[$vote]." rounded ",
+			"alt" => "Vote",
+			"class" => "vote-link vote-".$vote." rounded",
 		);
+		$iconClass = " ui-icon ".$this->_iconClass[$vote];
 		$tag = "span";
-		if ($dbVote = EpicDb_Vote::factory( $post, $vote )) {
+		if ($vote == 'flag') {
+			if ($post instanceOf EpicDb_Vote_Interface_Flagable) {
+				$tagOpts['class'] .= $iconClass;
+				$content = $this->view->htmlTag( "a", $tagOpts, " " )."<ul class='vote-flag-popout ui-widget ui-state-default' style='display:none'>";
+				foreach(array_keys($this->_flagTypes) as $type) $content .= "<li>".$this->makeVoteButton( $type )."</li>";
+				$content .= "</ul>";
+				return $content;
+			}
+			return "";
+		} elseif ($dbVote = EpicDb_Vote::factory( $post, $vote )) {
+			$content = " ";
+			if (isset($this->_flagTypes[$vote])) {
+				$content = "<span class='$iconClass' style='display: inline-block'> </span>";
+				$content .= $this->_flagTypes[$vote];
+				if ($vote == "moderator") $content .= "<br><input type='text' name='reason' placeholder='Reason for flagging'>";
+			} else {
+				$tagOpts['class'] .= $iconClass;
+			}
+
 			if ($message = $dbVote->isDisabled()) {
 				if ($vote == "accept") return "";
 				$tagOpts["class"] .= " ui-state-disabled";
@@ -46,7 +75,7 @@ class EpicDb_View_Helper_VoteWidget extends MW_View_Helper_HtmlTag
 				$tagOpts["title"] = $dbVote->linkTitle;
 				$tag = "a";
 			}
-			return $this->view->htmlTag($tag, $tagOpts, " ");
+			return $this->view->htmlTag($tag, $tagOpts, $content);
 		} else {
 			return "";
 		}
@@ -85,6 +114,9 @@ class EpicDb_View_Helper_VoteWidget extends MW_View_Helper_HtmlTag
 				}
 				$content .= $this->view->htmlTag("p", array(), $this->makeVoteButton("accept")."");
 			}
+		}
+		if ($post instanceOf EpicDb_Vote_Interface_Flagable) {
+			$content .= $this->view->htmlTag("p", array(), $this->makeVoteButton("flag")."");
 		}
 		$this->htmlTag("div", array("class" => 'vote-widget ' . @$this->_opts['class'] ?: ''), $content);
 		return parent::render();

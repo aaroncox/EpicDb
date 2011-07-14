@@ -23,4 +23,14 @@ class EpicDb_Vote_Moderator extends EpicDb_Vote_Abstract {
 	{
 		if (!$this->_post instanceOf EpicDb_Vote_Interface_Flagable) return "This object can't be voted on";
 	}
+
+	public function cast()
+	{
+		if (!$this->reason) {
+			$this->_error = "Tell us why you want us to look at it!";
+			return false;
+		}
+		return parent::cast();
+	}
+
 }

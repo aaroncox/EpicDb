@@ -6,7 +6,7 @@
  *
  * @author Aaron Cox <aaronc@fmanet.org>
  **/
-class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements EpicDb_Interface_Revisionable, EpicDb_Interface_Tooltiped
+class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements EpicDb_Interface_Revisionable, EpicDb_Interface_Tooltiped, EpicDb_Vote_Interface_Flagable
 {
 	public $contextHelper = 'context';
 	

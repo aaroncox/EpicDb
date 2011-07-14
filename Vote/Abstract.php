@@ -216,7 +216,7 @@ abstract class EpicDb_Vote_Abstract {
 	 **/
 	public function __set($columnName, $value)
 	{
-		return $this->_data->$columName = $value;
+		return $this->_data->$columnName = $value;
 	}
 
 	/**
