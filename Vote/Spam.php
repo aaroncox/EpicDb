@@ -21,7 +21,7 @@ class EpicDb_Vote_Spam extends EpicDb_Vote_Abstract {
 	protected $_type = EpicDb_Vote::SPAM;
 	public function isDisabled()
 	{
-		if (!$this->_post instanceOf EpicDb_Vote_Interface_Votable) return "This object can't be voted on";
+		if (!$this->_post instanceOf EpicDb_Vote_Interface_Flagable) return "This object can't be voted on";
 	}
 
 }
