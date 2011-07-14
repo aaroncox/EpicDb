@@ -36,11 +36,11 @@ class EpicDb_Form_Post_Question extends EpicDb_Form_Post
 			));
 		$this->setButtons(array("save" => "Post"));
 		if(!$this->_isNew) {
-			$this->source->setLabel("The Answer")->setDescription("Do you have the answer to this question? Post your answer to earn achievements and reputation on EpicAdvice.com!");
+			$this->source->setLabel("The Question")->setDescription("Do you have the answer to this question? Post your answer to earn achievements and reputation on EpicAdvice.com!");
 			$this->setDefaults(array("title" => $question->title, "body" => $question->body, "parent" => $question->_parent->_id));
 			$this->setButtons(array("save" => "Post Update"));
 		} else {
-			$this->source->setLabel("Your Question")->setDescription("Please be as descriptive as possible when asking your question, include as many details as possible, and don't hit people in the face with a wall of text in one huge paragraph.");
+			$this->source->setLabel("The Question")->setDescription("Please be as descriptive as possible when asking your question, include as many details as possible, and don't hit people in the face with a wall of text in one huge paragraph.");
 			$this->setButtons(array("save" => "Post Question"));
 		}
 		// var_dump($this->_elements); exit;
