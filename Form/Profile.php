@@ -63,6 +63,8 @@ class EpicDb_Form_Profile extends MW_Form
 	public function save($data) {
 		$profile = $this->getProfile();
 		$profile->name = $this->name->getValue();
+		$profile->_lastEdited = time();
+		$profile->_lastEditedBy = EpicDb_Auth::getInstance()->getUserProfile();
 		$profile->save();
 		return $profile;
 	}
