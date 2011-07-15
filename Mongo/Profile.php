@@ -18,6 +18,16 @@ class EpicDb_Mongo_Profile extends EpicDb_Auth_Mongo_Resource_Document implement
 	protected static $_editForm = 'EpicDb_Form_Profile';
 	protected static $_documentSetClass = 'EpicDb_Mongo_Profiles';
 
+	public function __construct($data = array(), $config = array())
+	{
+	  // handled here in order to deal with subclassed resources...
+	  if (!is_array($this->_requirements)) $this->_requirements = array();
+	  $this->_requirements += array(
+			'_lastEditedBy' => array('Document:EpicDb_Mongo_Profile', 'AsReference'),
+	    );
+	  $return = parent::__construct($data, $config);
+	}
+
 	/**
 	 * The form the record uses
 	 *
