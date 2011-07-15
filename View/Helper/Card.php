@@ -74,7 +74,29 @@ class EpicDb_View_Helper_Card extends MW_View_Helper_HtmlTag
 		);
 	}
 
+	public function voteCard($record, $params) {
+		if(!$record->acknowledged) {
+			$extra = array("controls" => $this->view->button(array(
+				'controller' => 'moderate',
+				'action' => 'acknowledge',
+				'vote' => $record->_id."",
+			), 'default', true, array(
+				'icon' => 'close',
+				'text' => 'Acknowledge',
+			)));
+		} else {
+			$extra = array(
+				'acknowledged by ' => $this->view->profileLink($record->acknowledgedBy)." ".$this->view->timeAgo($record->acknowledged)
+			);
+		}
+		return $this->card($record->voter, $params+array("content" => array(
+			"reported this ".$this->view->timeAgo($record->date) => $record->reason, 
+		)+$extra));
+		
+	}
+
 	public function card($record, $params = array()) {
+		if($record instanceOf EpicDb_Vote_Abstract) return $this->voteCard($record, $params);
 		// Reset for other times
 		// var_dump($record);exit;
 		$this->_tagType = 'h4';
