@@ -10,6 +10,7 @@
  **/
 class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 {
+	static public $score = 'score'; // Changes what vote type is displayed on the score. 
 	public function toWhat($post) {
 		$tags = array();
 		foreach($post->tags->getTags('tag') as $tag) {
@@ -76,8 +77,8 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 	}
 	
 	public function scoring($post) {
-		if(isset($post->votes['score'])) {
-			return $post->votes['score'];
+		if(isset($post->votes[static::$score])) {
+			return $post->votes[static::$score];
 		}
 		return 0;
 	}
@@ -102,26 +103,11 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 				$buttons .= $this->htmlTag("span", array("class" => "vote-label"), "ACCEPT ANSWER");
 				$buttons .= $this->view->voteWidget($post)->makeVoteButton('accept');
 			}
+			if ($post instanceOf EpicDb_Vote_Interface_Flaggable) {
+				$buttons .= "<br/>".$this->view->voteWidget($post)->makeVoteButton('flag');				
+			}
 		}
 		return $buttons;
-		
-		$score = 0;
-		if(isset($post->votes['score'])) $score = $post->votes['score'];
-		$vote = null;
-		if($profile = EpicDb_Auth::getInstance()->getUserProfile()) {
-			$vote = EpicDb_Mongo::db('vote')->getVoteByProfile($post, $profile);			
-		} else {
-			return ' ';
-		}
-		// Return the widget
-		return 
-			$this->htmlTag("a", array(
-				"style" => "display: inline-block;",
-				"title" => "This content is a good, entertaining and helpful.",
-				"alt" => "Vote Up",
-				"class" => "vote-link vote-up ui-icon ui-icon-plusthick rounded ".(($vote && $vote->vote == "up")?" ui-state-active":" ui-state-default"),
-				"href" => ($profile)? $this->voteUrl($post, "up"): '#',
-			), " ");
 	}
 	
 	public function postHeader($post, $options) {
@@ -175,7 +161,7 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 		return $this->htmlTag("div", array("class" => "post-stub rounded center-shadow ui-helper-clearfix ".$wrapClass, "id" => $post->_type."-".$post->id), 
 			// $this->htmlTag("div", array("class" => "inline-flow"), ">")."". // Minimize / Maximize
 			$this->htmlTag("div", array("class" => "stub-score rounded text-verylarge".$voteClass.$this->color($this->scoring($post))), 
-				$this->htmlTag("span", array("class" => "vote-label"), 'SCORE')."".
+				$this->htmlTag("span", array("class" => "vote-label"), ucfirst(static::$score))."".
 				$this->htmlTag("p", array("class"=>"vote-count"), $this->scoring($post))."".
 				$this->htmlTag("span", array("class" => "vote-controls"),
 					$this->stubVote($post)
