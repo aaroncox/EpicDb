@@ -6,7 +6,7 @@
  *
  * @author Aaron Cox <aaronc@fmanet.org>
  **/
-class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements EpicDb_Interface_Revisionable, EpicDb_Interface_Tooltiped, EpicDb_Vote_Interface_Flagable
+class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements EpicDb_Interface_Revisionable, EpicDb_Interface_Tooltiped, EpicDb_Vote_Interface_Flaggable
 {
 	public $contextHelper = 'context';
 	
@@ -273,6 +273,14 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 			$sort = array("_created" => -1);			
 		}
 		return EpicDb_Mongo::db('post')->fetchAll($query, $sort);
+	}
+	
+	public function getVotes($type = false) {
+		$query = array(
+			'post' => $this->createReference()
+		);
+		if($type) $query['vote'] = $type;
+		return EpicDb_Mongo::db('vote')->fetchAll($query)->makeDocumentSet();
 	}
 	// This is for watching queries as they execute on posts, perhaps we could enable it by a flag? or mode? I just used it for debugging queries.
 	// public static function fetchAll($query = array(), $sort = array(), $limit = false, $skip = false) {
