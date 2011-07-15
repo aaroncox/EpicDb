@@ -46,7 +46,7 @@ class EpicDb_View_Helper_VoteWidget extends MW_View_Helper_HtmlTag
 		$iconClass = " ui-icon ".$this->_iconClass[$vote];
 		$tag = "span";
 		if ($vote == 'flag') {
-			if ($post instanceOf EpicDb_Vote_Interface_Flagable) {
+			if ($post instanceOf EpicDb_Vote_Interface_Flaggable) {
 				$tagOpts['class'] .= $iconClass;
 				$content = $this->view->htmlTag( "a", $tagOpts, " " )."<ul class='vote-flag-popout ui-widget ui-state-default' style='display:none'>";
 				foreach(array_keys($this->_flagTypes) as $type) $content .= "<li>".$this->makeVoteButton( $type )."</li>";
@@ -115,7 +115,7 @@ class EpicDb_View_Helper_VoteWidget extends MW_View_Helper_HtmlTag
 				$content .= $this->view->htmlTag("p", array(), $this->makeVoteButton("accept")."");
 			}
 		}
-		if ($post instanceOf EpicDb_Vote_Interface_Flagable) {
+		if ($post instanceOf EpicDb_Vote_Interface_Flaggable) {
 			$content .= $this->view->htmlTag("p", array(), $this->makeVoteButton("flag")."");
 		}
 		$this->htmlTag("div", array("class" => 'vote-widget ' . @$this->_opts['class'] ?: ''), $content);
