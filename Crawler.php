@@ -41,8 +41,7 @@ class EpicDb_Crawler
 			$purifier = new MW_Filter_HtmlPurifier(array(array("HTML.Nofollow", 1)));
 
 			$article->title = $entry->getTitle();
-			$article->body = $purifier->filter($entry->getDescription());
-
+			$article->body = $purifier->filter($entry->getContent()?:$entry->getDescription());
 			// If the body is empty, fuck it, skip it.
 			if(trim($article->body) == "") static::$errors[] = "Skipping Article because body is empty [".$article->title."]<br/>";
 			// same with the title
@@ -56,10 +55,12 @@ class EpicDb_Crawler
 					$article->_created = $article->_modified;
 				}
 				$article->link = $entry->getPermaLink();
+				$article->save();
 				// exit;
 			} catch(Exception $exception) {
 				echo "\n\rUnable to crawl!";
 				var_dump($entry);
+				exit;
 			}
 		}
 		$profile->crawledFeed = time();
