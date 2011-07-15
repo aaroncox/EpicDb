@@ -22,7 +22,7 @@ class EpicDb_Vote_Offensive extends EpicDb_Vote_Abstract {
 	// you could do something here like if the user is a moderator, it would flag it as offensive and result in a -100 rep like SE does....
 	public function isDisabled()
 	{
-		if (!$this->_post instanceOf EpicDb_Vote_Interface_Flagable) return "This object can't be voted on";
+		if (!$this->_post instanceOf EpicDb_Vote_Interface_Flaggable) return "This object can't be voted on";
 	}
 	
 }

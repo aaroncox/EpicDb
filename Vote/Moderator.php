@@ -21,7 +21,7 @@ class EpicDb_Vote_Moderator extends EpicDb_Vote_Abstract {
 	protected $_type = EpicDb_Vote::MODERATOR;
 	public function isDisabled()
 	{
-		if (!$this->_post instanceOf EpicDb_Vote_Interface_Flagable) return "This object can't be voted on";
+		if (!$this->_post instanceOf EpicDb_Vote_Interface_Flaggable) return "This object can't be voted on";
 	}
 
 	public function cast()
@@ -31,6 +31,10 @@ class EpicDb_Vote_Moderator extends EpicDb_Vote_Abstract {
 			return false;
 		}
 		return parent::cast();
+	}
+	
+	public function init() {
+		$this->_data->addRequirements(array('acknowledgedBy' => array('Document:EpicDb_Mongo_Profile_User', 'AsReference')));
 	}
 
 }

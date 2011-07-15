@@ -9,7 +9,7 @@
  */
 
 /**
- *  EpicDb_Vote_Interface_Flagable
+ *  EpicDb_Vote_Interface_Flaggable
  *
  * undocumented
  *
@@ -19,6 +19,6 @@
  * @copyright Copyright (c) 2011 Momentum Workshop, Inc
  * @version $Id:$
  */
-interface EpicDb_Vote_Interface_Flagable {
+interface EpicDb_Vote_Interface_Flaggable {
   
 }
