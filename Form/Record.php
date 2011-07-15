@@ -66,6 +66,7 @@ class EpicDb_Form_Record extends EpicDb_Form {
 				unset($record->attribs->$key);
 			}
 		}
+		if(!$record->_created) $record->_created = time();
 		$record->save();
 	}
 }
