@@ -10,6 +10,7 @@
  **/
 class EpicDb_Crawler
 {
+	public static $errors = array();
 	public static function crawl($profile, $throwErrors = true) {
 		// echo "Starting on ".$profile->feed;
 		$config = array(
@@ -41,8 +42,9 @@ class EpicDb_Crawler
 
 			$article->title = $entry->getTitle();
 			$article->body = $purifier->filter($entry->getDescription());
+
 			// If the body is empty, fuck it, skip it.
-			if(trim($article->body) == "") continue;
+			if(trim($article->body) == "") static::$errors[] = "Skipping Article because body is empty [".$article->title."]<br/>";
 			// same with the title
 			if(trim($article->title) == "") continue;
 			// var_dump($entry->getImage()); exit;
@@ -54,7 +56,6 @@ class EpicDb_Crawler
 					$article->_created = $article->_modified;
 				}
 				$article->link = $entry->getPermaLink();
-				$article->save();
 				// exit;
 			} catch(Exception $exception) {
 				echo "\n\rUnable to crawl!";
