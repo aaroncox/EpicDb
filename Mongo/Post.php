@@ -28,6 +28,7 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 			'_viewers.$' => array('Document:MW_Auth_Mongo_Role', 'AsReference'),
 			// '_record' => array('Document:R2Db_Mongo', 'AsReference'),
 			'_parent' => array('Document:EpicDb_Mongo_Post', 'AsReference'),
+			'_touchedBy' => array('Document:EpicDb_Mongo_Profile', 'AsReference'),
 			'_lastEditedBy' => array('Document:EpicDb_Mongo_Profile', 'AsReference'),
 			// '_profile' => array('Document:EpicDb_Mongo_Profile', 'AsReference', 'Required'),
 			'tags' => array('DocumentSet:EpicDb_Mongo_Tags', 'Required'),
@@ -212,10 +213,11 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 		for(;$i<count($this->_viewers); $i++) {
 			$this->_viewers->setProperty($i, null);
 		}
+		// var_dump($this); exit;
 		return parent::save();
 	}
 	
-	public function findComments($limit = 10, $query = array(), $sort = array()) {
+	public function findComments($limit = 1000, $query = array(), $sort = array()) {
 		// var_dump($this->createReference());
 		$query = array(
 			'_parent' => $this->createReference(),

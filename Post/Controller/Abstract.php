@@ -56,11 +56,14 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 		$parent = $this->view->parent = $this->getPost();
 		$newReply = EpicDb_Mongo::newDoc('message');
 		$newReply->_parent = $parent;
+		$usersInvolved = array();
 		foreach($parent->findComments() as $reply) {
 			$user = $reply->tags->getTag('author');
 			$usersInvolved[$user->id] = $user;
 		}
-		$newReply->tags->setTags($usersInvolved, 'involved');
+		if(!empty($usersInvolved)) {
+			$newReply->tags->setTags($usersInvolved, 'involved');
+		}
 		$newReply->tags->tag($parent, 'parent');
 		$replyForm = $this->view->form = $newReply->getEditForm();
 		$this->_handleMWForm($replyForm, 'comment');
