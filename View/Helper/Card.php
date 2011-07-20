@@ -106,9 +106,10 @@ class EpicDb_View_Helper_Card extends MW_View_Helper_HtmlTag
 		if(!isset($params['class'])) $params['class'] = '';
 		if(!isset($params['iconClass'])) $params['iconClass'] = '';
 
-		if($record instanceOf EpicDb_Mongo_Profile_User && $record->characters && $character = $record->characters->getPrimary()) {
-			$params['class'] .= " faction-".$character->faction;
-		}
+		// Reimplement
+		// if($record instanceOf EpicDb_Mongo_Profile_User && $record->characters && $character = $record->characters->getPrimary()) {
+		// 	$params['class'] .= " faction-".$character->faction;
+		// }
 		if(!$record instanceOf EpicDb_Interface_Cardable) return '';
 		return $this->htmlTag("div", array('class' => 'inline-flow ui-state-default db-card rounded font-sans '.$params['class']), 
 			$this->htmlTag("div", array('class' => 'record-icon inline-flow rounded '.$params['iconClass']), 

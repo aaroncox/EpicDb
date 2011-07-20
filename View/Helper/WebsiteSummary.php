@@ -25,7 +25,7 @@ class EpicDb_View_Helper_WebsiteSummary extends MW_View_Helper_HtmlTag
 				'icon' => 'key'
 			));
 		}
-		if(R2Db_Auth::getInstance()->hasPrivilege($profile, 'edit')) {
+		if(EpicDb_Auth::getInstance()->hasPrivilege($profile, 'edit')) {
 			$buttons .= $this->view->button(array(
 				'action' => 'edit',
 				'profile' => $profile
