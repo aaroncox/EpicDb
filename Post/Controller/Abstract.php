@@ -333,5 +333,47 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 	public function revisionsAction() {
 	  $this->getPost();
 	}
+	
+	/**
+	 * viewAction - undocumented function
+	 *
+	 * @return void
+	 * @author Aaron Cox <aaronc@fmanet.org>
+	 **/
+	public function viewAction() {
+		// we should probably just call this "post" in the view too...
+		$this->view->post = $post = $this->getPost();
+		$params = $this->getRequest()->getParams();
+		$this->postJson();
+
+		while($post->_parent->id) {
+			$this->view->post = $post = $post->_parent;
+		}
+		
+		// var_dump($post->tags->getTag('author')->export()); exit;
+		if ( $post instanceOf EpicDb_Mongo_Post_Question ) {
+			$slug = new MW_Filter_Slug();
+			$this->view->headLink()->append((object)array(
+				'rel' => 'canonical',
+				'href' => $this->view->url(array(
+					'post' => $post,
+					),"questions", true)
+			));
+		} else {
+			$this->view->headLink()->append((object)array(
+				'rel' => 'canonical',
+				'href' => $this->view->url(array(
+						'post' => $post,
+					),"post", true)
+			));
+		}
+		if($post instanceOf EpicDb_Mongo_Post_Question ) {
+			$newAnswer = EpicDb_Mongo::db('answer');
+			$newAnswer->_parent = $post;
+			$answerForm = $this->view->answerForm = $newAnswer->getEditForm();
+			$this->_handleMWForm($answerForm, 'answer');
+		}
+	}
+	
 
 } // END class EpicDb_Post_Controller_Abstract
