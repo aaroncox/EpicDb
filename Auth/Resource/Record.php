@@ -28,10 +28,10 @@ class EpicDb_Auth_Resource_Record implements MW_Auth_Resource_Interface {
  public function getDefaultPrivileges()
  {
 	 return array(
-			 array(
+			array(
 				 'mode' => true,
-				 'role' => array(MW_Auth_Group_Super::getInstance()),
-			 ),
+				 'role' => array(MW_Auth_Group_Super::getInstance(), EpicDb_Auth_Group_Moderators::getInstance()),
+			),
 			array(
 					'mode' => true,
 					'role' => array(MW_Auth_Group_Guest::getInstance(), MW_Auth_Group_User::getInstance()),
