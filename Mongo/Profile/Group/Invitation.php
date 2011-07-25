@@ -15,6 +15,12 @@ class EpicDb_Mongo_Profile_Group_Invitation extends MW_Auth_Mongo_Resource_Docum
 		'group' => array('Document:EpicDb_Mongo_Profile_Group', 'AsReference'),	
 	);
 	
+	public function getPropertyClass($property, $data) {
+		if ($property == "group" && isset($data['_type'])) {
+			return EpicDb_Mongo::dbClass($data['_type']);
+		}
+	}
+	
 	public function process($response) {
 		$group = $this->group;
 		$invitee = $this->invitee;
