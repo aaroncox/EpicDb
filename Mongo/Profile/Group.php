@@ -181,5 +181,17 @@ class EpicDb_Mongo_Profile_Group extends EpicDb_Mongo_Profile
 		if ($type == 'member') return $this->getMemberRole();
 		throw new Exception('Unknown Role Type');
 	}
+	
+	public function getApplicationForm() {
+		return new EpicDb_Form_Profile_Group_Application(array("group" => $this));
+	}
+	
+	public function hasApplied($profile) {
+		$query = array(
+			'group' => $this->createReference(),
+			'candidate' => $profile->createReference(),
+		);
+		return (EpicDb_Mongo::db('application')->fetchOne($query))?true:false;
+	}
 
 } // END class EpicDb_Mongo_Profile_Group

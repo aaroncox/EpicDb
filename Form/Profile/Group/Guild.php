@@ -127,6 +127,7 @@ class EpicDb_Form_Profile_Group_Guild extends EpicDb_Form_Profile_Group
 		$profile = $this->getProfile();
 		if($this->isValid($data)) {
 			$profile->name = $this->name->getValue();
+			$profile->_groupType = $this->_groupType->getValue();
 			$profile->url = $this->url->getValue();
 			$profile->feed = $this->feed->getValue();
 			$profile->ages = $this->ages->getValue();

@@ -51,6 +51,25 @@ class EpicDb_View_Helper_WebsiteSummary extends MW_View_Helper_HtmlTag
 			));			
 		}
 		if(EpicDb_Auth::getInstance()->getUserProfile()) {
+			if(!$profile->isMember()) {
+				if($profile->_groupType == "open" || $profile->_groupType == "closed") {
+					$buttons .= $this->view->button(array(
+						'action' => 'join',
+						'profile' => $profile
+					), 'profile', true, array(
+						'text' => 'Join this '.ucfirst($profile->_type),
+						'icon' => 'key',
+					));				
+				}
+			} else {
+				$buttons .= $this->view->button(array(
+					'action' => 'leave',
+					'profile' => $profile
+				), 'profile', true, array(
+					'text' => 'Leave this '.ucfirst($profile->_type),
+					'icon' => 'key',
+				));								
+			}
 			$buttons .= $this->view->followButton($profile);
 			$buttons .= $this->view->followButton($profile, array("mode" => "block"));
 		}

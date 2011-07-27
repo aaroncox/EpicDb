@@ -57,8 +57,37 @@ class EpicDb_View_Helper_GroupSummary extends MW_View_Helper_HtmlTag
 				'icon' => 'key',
 			));			
 		}
-		if(EpicDb_Auth::getInstance()->getUserProfile()) {
-			$buttons .= $this->view->followButton($profile);
+		if($curUser = EpicDb_Auth::getInstance()->getUserProfile()) {
+			if($profile->hasApplied($curUser)) {
+				if($profile->_groupType == "open" || $profile->_groupType == "closed") {
+					$buttons .= $this->view->button(array(
+						'action' => 'leave',
+						'profile' => $profile
+					), 'profile', true, array(
+						'text' => 'Remove Application',
+						'icon' => 'key',
+						'data-tooltip' => 'Your application is currently under review by the leaders of this '.$profile->_type.', if you\'d like to delete your application, click here.',
+					));				
+				}				
+			} elseif(!$profile->isMember()) {
+				if($profile->_groupType == "open" || $profile->_groupType == "closed") {
+					$buttons .= $this->view->button(array(
+						'action' => 'join',
+						'profile' => $profile
+					), 'profile', true, array(
+						'text' => 'Join this '.ucfirst($profile->_type),
+						'icon' => 'key',
+					));				
+				}
+			} else {
+				$buttons .= $this->view->button(array(
+					'action' => 'leave',
+					'profile' => $profile
+				), 'profile', true, array(
+					'text' => 'Leave this '.ucfirst($profile->_type),
+					'icon' => 'key',
+				));								
+			}			$buttons .= $this->view->followButton($profile);
 			$buttons .= $this->view->followButton($profile, array("mode" => "block"));
 		}
 		if($buttons != "") "<h3>Available Actions</h3>".$placeholder->widget($buttons);

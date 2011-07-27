@@ -18,6 +18,21 @@ class EpicDb_Form_Profile_Group extends EpicDb_Form_Profile {
 				'cols' => 75,
 				
 			));
+		$this->addElement("select", "_groupType", array(
+				'label' => 'Type of Group',
+				'multiOptions' => array(
+					'open' => 'Open Group (Anyone can join)',
+					'closed' => 'Closed Group (Applications Accepted)',
+					'invite-only' => 'Closed Group (Invites Only)',
+				),
+			));
 		$this->setDefaults($profile->export());
+	}
+	
+	public function save($data) {
+		$profile = $this->getProfile();
+		$profile->_groupType = $this->groupType->getValue();
+		$profile->save();
+		return $profile;
 	}
 }
