@@ -38,7 +38,7 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 		if(!$icon = $this->_doc->getIcon()) return '';
 		if(isset($this->_params['icon']) && $this->_params['icon'] == false) return '';
 		$class = "";
-		if($this->_doc instanceOf EpicDb_Mongo_Record) $class = "tooltip-record-icon";
+		if($this->_doc instanceOf EpicDb_Mongo_Record && !$this->_doc instanceOf R2Db_Mongo_Record_Class) $class = "tooltip-record-icon";
 		return $this->view->htmlTag("div", array("class" => "tooltip-icon-box ".$class), 
 			$this->view->htmlTag("div", array(
 				"class" => "tooltip-icon tooltip-rounded",
@@ -104,6 +104,9 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 	}
 	public function follow() {
 		return $this->view->followButton($this->_doc);
+	}
+	public function classRelation($class) {
+		return $this->view->htmlTag("p", array("style" => "font-size: 10px"), $this->view->recordLink($class)." Adv. Class");
 	}
 	public function body() {
 		$doc = $this->_doc;
