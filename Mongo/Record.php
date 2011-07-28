@@ -116,7 +116,8 @@ class EpicDb_Mongo_Record extends EpicDb_Auth_Mongo_Resource_Document implements
 	public function getAdminForms() {
 		$forms = array();
 		$forms['changeIcon'] = new EpicDb_Form_Record_Icon(array("record" => $this, "title" => "Change Icon", "description" => "Change the Icon that this record uses, image should be an 80x80 jpg/png/gif."));
-		$forms['edit'] = new EpicDb_Form_Record(array("record" => $this, "title" => "Edit Record", "description" => "Edit the fields for this record."));
+		$className = static::$_editForm;
+		$forms['edit'] = new $className(array("record" => $this, "title" => "Edit Record", "description" => "Edit the fields for this record."));
 		foreach(EpicDb_Mongo::db('seed')->getSeedsForType($this->_type) as $seed) {
 			$forms["seed-".$seed->_id] = new EpicDb_Form_Seed_Tag(array('seed' => $seed, 'record' => $this, 'title' => $seed->title, 'description' => $seed->title));
 		}
