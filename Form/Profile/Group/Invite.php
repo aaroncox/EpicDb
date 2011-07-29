@@ -32,22 +32,7 @@ class EpicDb_Form_Profile_Group_Invite extends EpicDb_Form
 		$users = $filter->toArray($data['users']);
 		$group = $this->getGroup();
 		foreach($users as $user) {
-			$query = array(
-				'profile' => $user->createReference(),
-				'group' => $group->createReference(),
-			);
-			// Check to see if they are a member...
-			if(in_array($user->createReference(), $group->members->export())) throw new Exception("User is already a member, aborting.");
-			if(in_array($user->createReference(), $group->admins->export())) throw new Exception("User is already an admin, aborting.");
-			// Check for an existing invite...
-			$invite = EpicDb_Mongo::db('invitation')->fetchOne($query);
-			if($invite) throw new Exception("User already has an outstanding invite.");
-			// Create new invitation
-			$invite = EpicDb_Mongo::newDoc('invitation');
-			$invite->group = $group;
-			$invite->invitee = $user;
-			$invite->inviter = EpicDb_Auth::getInstance()->getUserProfile();
-			$invite->save();
+			$group->invite($user);
 		}
 		return true;
 	}

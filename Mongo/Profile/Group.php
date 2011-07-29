@@ -194,4 +194,24 @@ class EpicDb_Mongo_Profile_Group extends EpicDb_Mongo_Profile
 		return (EpicDb_Mongo::db('application')->fetchOne($query))?true:false;
 	}
 
+	public function invite(EpicDb_Mongo_Profile_User $user) {
+		$query = array(
+			'profile' => $user->createReference(),
+			'group' => $this->createReference(),
+		);
+		// Check to see if they are a member...
+		if(in_array($user->createReference(), $this->members->export())) throw new Exception("User is already a member, aborting.");
+		if(in_array($user->createReference(), $this->admins->export())) throw new Exception("User is already an admin, aborting.");
+		// Check for an existing invite...
+		$invite = EpicDb_Mongo::db('invitation')->fetchOne($query);
+		if($invite) throw new Exception("User already has an outstanding invite.");
+		// Create new invitation
+		$invite = EpicDb_Mongo::newDoc('invitation');
+		$invite->group = $this;
+		$invite->invitee = $user;
+		$invite->inviter = EpicDb_Auth::getInstance()->getUserProfile();
+		$invite->save();
+		return $invite;
+	}
+
 } // END class EpicDb_Mongo_Profile_Group
