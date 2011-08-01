@@ -58,13 +58,15 @@ class EpicDb_View_Helper_GroupSummary extends MW_View_Helper_HtmlTag
 			));			
 		}
 		if($curUser = EpicDb_Auth::getInstance()->getUserProfile()) {
-			if($profile->hasApplied($curUser)) {
+			if($application = $profile->application($curUser)) {
 				if($profile->_groupType == "open" || $profile->_groupType == "closed") {
 					$buttons .= $this->view->button(array(
-						'action' => 'leave',
-						'profile' => $profile
-					), 'profile', true, array(
-						'text' => 'Remove Application',
+						'user' => $application->candidate->id,
+						'group' => $application->group->id,
+						'gtype' => $application->group->_type,
+						'action' => 'view',
+					), 'group_application', true, array(
+						'text' => 'Review Application',
 						'icon' => 'key',
 						'data-tooltip' => 'Your application is currently under review by the leaders of this '.$profile->_type.', if you\'d like to delete your application, click here.',
 					));				
@@ -87,7 +89,8 @@ class EpicDb_View_Helper_GroupSummary extends MW_View_Helper_HtmlTag
 					'text' => 'Leave this '.ucfirst($profile->_type),
 					'icon' => 'key',
 				));								
-			}			$buttons .= $this->view->followButton($profile);
+			}
+			$buttons .= $this->view->followButton($profile);
 			$buttons .= $this->view->followButton($profile, array("mode" => "block"));
 		}
 		if($buttons != "") "<h3>Available Actions</h3>".$placeholder->widget($buttons);
