@@ -30,11 +30,17 @@ class EpicDb_Form_Profile_Group extends EpicDb_Form_Profile {
 	}
 	
 	public function save($data) {
-		$profile = $this->getProfile();
-		$profile->_owner = EpicDb_Auth::getInstance()->getUser();
+		$profile = $this->getProfile();		
 		$profile->name = $this->name->getValue();
+		$profile->_groupType = $this->groupType->getValue();
 		$profile->description = $this->description->getValue();
-		$profile->_groupType = $this->_groupType->getValue();
+		if($profile->isNewDocument()) {
+			// Do we need this still?
+			$user = EpicDb_Auth::getInstance()->getUser();
+			$profile->_owner = $user;
+			$profile->grant($user);
+			$profile->admins->addDocument(EpicDb_Auth::getInstance()->getUserProfile());				
+		}
 		$profile->save();
 		return $profile;
 	}
