@@ -31,7 +31,7 @@ class EpicDb_Form_Profile_Group extends EpicDb_Form_Profile {
 	
 	public function save($data) {
 		$profile = $this->getProfile();
-		$profile->_groupType = $this->groupType->getValue();
+		$profile->_groupType = $this->_groupType->getValue();
 		$profile->save();
 		return $profile;
 	}
