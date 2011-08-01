@@ -186,17 +186,17 @@ class EpicDb_Mongo_Profile_Group extends EpicDb_Mongo_Profile
 		return new EpicDb_Form_Profile_Group_Application(array("group" => $this));
 	}
 	
-	public function hasApplied($profile) {
+	public function application($profile) {
 		$query = array(
 			'group' => $this->createReference(),
 			'candidate' => $profile->createReference(),
 		);
-		return (EpicDb_Mongo::db('application')->fetchOne($query))?true:false;
+		return EpicDb_Mongo::db('application')->fetchOne($query);
 	}
 
 	public function invite(EpicDb_Mongo_Profile_User $user) {
 		$query = array(
-			'profile' => $user->createReference(),
+			'invitee' => $user->createReference(),
 			'group' => $this->createReference(),
 		);
 		// Check to see if they are a member...
@@ -208,6 +208,7 @@ class EpicDb_Mongo_Profile_Group extends EpicDb_Mongo_Profile
 		// Create new invitation
 		$invite = EpicDb_Mongo::newDoc('invitation');
 		$invite->group = $this;
+		$invite->status = "open";
 		$invite->invitee = $user;
 		$invite->inviter = EpicDb_Auth::getInstance()->getUserProfile();
 		$invite->save();
