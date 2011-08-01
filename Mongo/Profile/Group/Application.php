@@ -26,6 +26,14 @@ class EpicDb_Mongo_Profile_Group_Application extends MW_Auth_Mongo_Resource_Docu
 	}
 
 	public function reject() {
+		// Find any outstanding invitations
+		$query = array(
+			'group' => $this->group->createReference(),
+			'invitee' => $this->candidate->createReference(),
+		);
+		$invite = EpicDb_Mongo::db('invitation')->fetchOne($query);
+		if($invite) $invite->delete();
+		// Reject this application
 		$this->status = "rejected";
 		$this->save();
 	}
