@@ -38,7 +38,15 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 		if(!$icon = $this->_doc->getIcon()) return '';
 		if(isset($this->_params['icon']) && $this->_params['icon'] == false) return '';
 		$class = "";
-		if($this->_doc instanceOf EpicDb_Mongo_Record && !$this->_doc instanceOf R2Db_Mongo_Record_Class) $class = "tooltip-record-icon";
+		$type = $this->_doc->_type;
+		switch($this->_doc->_type) {
+			case "item":
+			case "skill":
+	 			$class = "tooltip-record-icon";
+				break;
+			default: 
+				break;
+		}
 		return $this->view->htmlTag("div", array("class" => "tooltip-icon-box ".$class), 
 			$this->view->htmlTag("div", array(
 				"class" => "tooltip-icon tooltip-rounded",
