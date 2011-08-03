@@ -40,12 +40,6 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 		} else {
 			$newComment = EpicDb_Mongo::db('comment');
 		}
-		$usersInvolved = array();
-		foreach($parent->findComments() as $reply) {
-			$user = $reply->tags->getTag('author');
-			$usersInvolved[$user->id] = $user;
-		}
-		if(!empty($usersInvolved)) $newComment->tags->setTags($usersInvolved, 'involved');
 		$newComment->_parent = $parent;
 		$newComment->tags->tag($parent, 'parent');
 		$commentForm = $this->view->form = $newComment->getEditForm();
@@ -56,14 +50,6 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 		$parent = $this->view->parent = $this->getPost();
 		$newReply = EpicDb_Mongo::newDoc('message');
 		$newReply->_parent = $parent;
-		$usersInvolved = array();
-		foreach($parent->findComments() as $reply) {
-			$user = $reply->tags->getTag('author');
-			$usersInvolved[$user->id] = $user;
-		}
-		if(!empty($usersInvolved)) {
-			$newReply->tags->setTags($usersInvolved, 'involved');
-		}
 		$newReply->tags->tag($parent, 'parent');
 		$replyForm = $this->view->form = $newReply->getEditForm();
 		$this->_handleMWForm($replyForm, 'comment');
@@ -272,7 +258,7 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 				}
 
 				$target = $post;
-				while($target->_parent->id) {
+				while($target->_parent->id && $target->_type != "answer") {
 					$target = $target->_parent;
 				}
 				if($post instanceOf EpicDb_Mongo_Post_Message) {

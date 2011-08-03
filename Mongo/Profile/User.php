@@ -19,6 +19,8 @@ class EpicDb_Mongo_Profile_User extends EpicDb_Mongo_Profile
 	  if (!is_array($this->_requirements)) $this->_requirements = array();
 	  $this->_requirements += array(
 			'user' => array('Document:MW_Auth_Mongo_User', 'AsReference', 'Required'),
+			'watching' => array('DocumentSet:EpicDb_Mongo_DocumentSet_Dynamic'),
+			'watching.$' => array('Document:MW_Mongo_Document', 'AsReference', 'Required'),
 			'following' => array('DocumentSet:EpicDb_Mongo_DocumentSet_Dynamic'),
 			'following.$' => array('Document:MW_Mongo_Document', 'AsReference', 'Required'),
 			'blocking' => array('DocumentSet:EpicDb_Mongo_DocumentSet_Dynamic'),
@@ -31,6 +33,35 @@ class EpicDb_Mongo_Profile_User extends EpicDb_Mongo_Profile
 		if($this->bio) return $this->bio; 
 		return '';
 	}
+	
+	public function isWatching(MW_Mongo_Document $record)  
+  {
+    $id = (string) $record->_id;
+    foreach ($this->watching as $key => $target) {
+      if ( (string) $target->_id == $id) {
+        return true;
+      } 
+    }    
+    return false;
+  }
+
+	public function watch($record)
+  {
+    if (!$this->isWatching($record))
+      $this->watching->addDocument($record);
+		return $this;
+  }
+
+  public function unwatch($record)
+  {
+    $id = (string)$record->_id;
+    foreach ($this->watching as $key => $target) {
+      if ((string)$target->_id == $id) {
+        $this->watching->setProperty($key, null);
+      }
+    }
+		return $this;
+  }
 	
   public function isFollowing(MW_Mongo_Document $record)  
   {

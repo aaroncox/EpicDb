@@ -182,7 +182,13 @@ class EpicDb_Form_Post extends EpicDb_Form
 		if($this->requestType) {
 			$post->_requestType = $this->requestType->getValue();
 		}
-		return $post->save();
+		if($post->_parent) {
+			$me->watch($post->_parent);
+		}
+		$save = $post->save();
+		$me->watch($post);
+		$me->save();
+		return $save;
 	}
 	public function process($data) {
 		$post = $this->getPost();
