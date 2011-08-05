@@ -15,4 +15,11 @@ class EpicDb_Mongo_Meta_Damage extends MW_Mongo_Document
 		'max' => array("Filter:Int"),
 	);
 	
+	public static function damage($min, $max = false) {
+		if($max === false) $max = $min;
+		$doc = new static();
+		$doc->min = $min;
+		$doc->max = $max;
+		return $doc;
+	}
 } // END class EpicDb_Mongo_Meta_Damage

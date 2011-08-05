@@ -56,7 +56,9 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 		)."";
 	}
 	public function name() {
-		return $this->_doc ? $this->view->htmlTag("h3", array(), $this->view->recordLink($this->_doc, array("rel" => "no-tooltip"))).'' : '';
+		$color = array();
+		if($this->_doc->quality) $color += array('class' => 'quality-'.$this->_doc->quality);
+		return $this->_doc ? $this->view->htmlTag("h3", array()+$color, $this->view->recordLink($this->_doc, array("rel" => "no-tooltip"))).'' : '';
 	}
 	
 	public function parentTitle() {
@@ -143,6 +145,29 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 	public function label($text, $escape = true) {
 		return $this->view->htmlTag("h4", array("class" => "label"), $text, $escape);
 	}
+	public function mods($documentSet, $label = "") {
+		$modsHtml = "";
+		foreach($documentSet as $mod) {
+			$color = array();
+			$stats = $this->view->stats($this->_doc, $mod->ref->attribs, "mods");
+			if($mod->ref->quality) $color += array('class' => 'quality-'.$mod->ref->quality);
+			$newName = $mod->ref->name." (".$mod->ref->attribs->requireLevel.")";
+			$modsHtml .= $this->view->htmlTag("span", array()+$color, $this->view->recordLink($mod->ref, array("text" => $newName)));
+			$modsHtml .= $this->view->htmlTag("div", array("class" => "stats-group", "id" => "mod-".$mod->ref->id), $stats);
+		}
+		$html = $this->view->htmlTag("div", array("class" => "mod-container"), 
+			$this->view->htmlTag("h4", array("class" => "label header"), "Item Modifications:")."".
+			$this->view->htmlTag("div", array("class" => "stats-group"), $modsHtml)
+		);
+		return $html;
+	}
+	public function statsgroup($attribs, $title) {
+		return $this->view->htmlTag("h4", array("class" => "label header"), $title.":")."".
+			$this->view->htmlTag("div", array("class" => "stats-group"), 
+				$this->view->stats($this->_doc, $attribs, "totals")
+			);
+	}
+	
 	public function cloud($documentSet, $label = "") {
 		return ''; // Disabled until we're sticky.
 		return $this->view->htmlTag("div", array("class" => "tooltip-cloud", "style" => "display: inline-block"), 
