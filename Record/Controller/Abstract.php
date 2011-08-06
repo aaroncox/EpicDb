@@ -88,4 +88,8 @@ class EpicDb_Record_Controller_Abstract extends MW_Controller_Action
 			$this->_handleMWForm($form);
 		}			
 	}
+	
+	public function historyAction() {
+		$record = $this->view->record; 
+	}
 } // END class EpicDb_Record_Controller_Abstract extends MW_Controller_Action

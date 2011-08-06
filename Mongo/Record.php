@@ -29,20 +29,36 @@ class EpicDb_Mongo_Record extends EpicDb_Auth_Mongo_Resource_Document implements
 	{
 		$this->addRequirements(array(
 			'_lastEditedBy' => array('Document:EpicDb_Mongo_Profile', 'AsReference'),
-			'revisions' => array('DocumentSet'),
-			'revisions.$' => array('Document:EpicDb_Mongo_Revision'),
 			'tags' => array('DocumentSet:EpicDb_Mongo_Tags'),
 			'seeds' => array('Document:EpicDb_Mongo_Seeds'),
 			'attribs' => array('Document:EpicDb_Mongo_Meta'),
+			'revisions' => array('DocumentSet'),
+			'revisions.$' => array('Document:EpicDb_Mongo_Revision'),
+			'revisions.$.attribs' => array('Document:EpicDb_Mongo_Meta'),
+			'revisions.$.tags' => array('DocumentSet:EpicDb_Mongo_Tags'),
 		));
 		return parent::__construct($data, $config);
 	}
 
 	public function newRevision()
 	{
-		$revision = $this->revisions->new();
+		$revision = new EpicDb_Mongo_Revision();
 		foreach (static::$_revisionProperties as $key) {
-			$revision->$key = $this->$key;
+			if(is_object($this->$key)) {
+				switch(get_class($this->$key)) {
+					case "EpicDb_Mongo_Meta":
+						$revision->$key = new EpicDb_Mongo_Meta();
+						foreach($this->$key as $k => $v) {
+							$revision->$key->$k = $v;
+						}
+						break;
+					default:
+						$revision->$key = $this->$key;
+						break;
+				}				
+			} else {
+				$revision->$key = $this->$key;
+			}
 		}
 		$this->revisions->addDocument($revision);
 	}
