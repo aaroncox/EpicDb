@@ -61,12 +61,16 @@ class EpicDb_Form_Record extends EpicDb_Form {
 			$element = $this->$key;
 			$value = $element->getValue();
 			if($value) {
+				if($key == 'damage') {
+					// var_dump($element, $value); exit;
+				}
 				$record->attribs->$key = $value;
 			} else {
 				unset($record->attribs->$key);
 			}
 		}
 		if(!$record->_created) $record->_created = time();
+		// var_dump($record->export(), $record->revisions->export()); exit;
 		$record->save();
 	}
 }
