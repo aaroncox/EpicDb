@@ -143,7 +143,7 @@ class EpicDb_Mongo_Profile_Group extends EpicDb_Mongo_Profile
 
 	public function setMembership(EpicDb_Mongo_Profile $profile, $type)
 	{
-		$validTypes = array('member', 'admin', '');
+		$validTypes = array('admin', 'member', '');
 		if (!in_array($type, $validTypes)) {
 			throw new Exception('Unknown User Type, must be "member", "admin", or "" to remove');
 		}
