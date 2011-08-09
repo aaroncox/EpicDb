@@ -29,15 +29,18 @@ class EpicDb_Feed_Generator extends MW_Feed_Generator {
 			$subject = $post->tags->getTag('subject');
 			$parent = $post->_parent;
 			$on = '';
+			$x = 0;
 			if ($subject) {
 				$on = ' on '.$subject->name;
 			}
-			else while ($parent) {
+			else while ($parent && $parent->id) {
+				if ($x++ > 5) exit;
 				if ($parent->title) {
 					$on .= ' on '.$parent->title;
 					break;
 				}
 				$on .= ' on '.ucfirst($parent->_type);
+				
 				$parent = $parent->_parent;
 			}
 			$author = $post->tags->getTag('author');
