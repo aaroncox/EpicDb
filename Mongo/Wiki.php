@@ -4,13 +4,17 @@
  *
  * @author Aaron Cox <aaronc@fmanet.org>
  **/
-class EpicDb_Mongo_Wiki extends EpicDb_Auth_Mongo_Resource_Document
+class EpicDb_Mongo_Wiki extends EpicDb_Auth_Mongo_Resource_Document implements EpicDb_Interface_Revisionable
 {
   protected static $_collectionName = 'wiki';
 	
 	protected $_requirements = array(
 		'record' => array('AsReference'),
 		'type' => array('Required'),
+		'_lastEditedBy' => array('Document:EpicDb_Mongo_Profile', 'AsReference'),
+		'revisions' => array('DocumentSet'),
+		'revisions.$' => array('Document:EpicDb_Mongo_Revision'),
+		'revisions.$.tags' => array('DocumentSet:EpicDb_Mongo_Tags'),
   );
 
 	public static function get($record, $type, $createFlag = true) {
@@ -32,5 +36,15 @@ class EpicDb_Mongo_Wiki extends EpicDb_Auth_Mongo_Resource_Document
 	  if ($property == 'record') {
 	    return EpicDb_Mongo::dbClass($data['_type']);
 	  }
+	}
+	
+	public function newRevision()
+	{
+		$revision = $this->revisions->new();
+		$this->revisions->addDocument($revision);
+		$copy = array('source', 'header', '_lastEditedBy', '_lastEditedReason', '_lastEdited');
+		foreach ($copy as $key) {
+			$revision->$key = $this->$key;
+		}
 	}
 }

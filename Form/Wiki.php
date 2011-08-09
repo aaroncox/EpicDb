@@ -106,6 +106,14 @@ class EpicDb_Form_Wiki extends EpicDb_Form
 				'label' => 'Edit Wiki',
 			));
 		if(!$this->_isNew) {
+			// Add a reason for your edit
+			$this->addElement("text", "reason", array(
+				'order' => 1000,
+				'required' => false,
+				'placeholder' => 'Reason for Edit',
+				'label' => 'Reason for Edit',
+
+			));
 			$this->setDefaults(array("source" => $wiki->source, "type" => $wiki->type, "title" => $wiki->header));			
 		} 
 		$this->setButtons(array("save" => "Save"));
@@ -126,6 +134,7 @@ class EpicDb_Form_Wiki extends EpicDb_Form
 		if($this->_isNew) {
 			$wiki->record = $this->_record;
 		}
+		EpicDb_Mongo_Revision::makeEditFor($wiki, $this->reason->getValue());
 		return $wiki->save();
 		// $post = $this->getPost();
 		// if($this->source) {
