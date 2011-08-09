@@ -284,6 +284,11 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 		if($type) $query['vote'] = $type;
 		return EpicDb_Mongo::db('vote')->fetchAll($query)->makeDocumentSet();
 	}
+	
+	public function delete() {
+		$this->_deleted = true;
+		$this->save();
+	}
 	// This is for watching queries as they execute on posts, perhaps we could enable it by a flag? or mode? I just used it for debugging queries.
 	// public static function fetchAll($query = array(), $sort = array(), $limit = false, $skip = false) {
 	// 	$writer = new Zend_Log_Writer_Firebug();
