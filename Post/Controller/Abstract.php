@@ -10,6 +10,58 @@
  **/
 class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 {
+
+	public function init()
+	{
+		parent::init();
+		$contextSwitch = $this->_helper->getHelper('ContextSwitch');
+		if (!$contextSwitch->hasContext('rss')) {
+			$contextSwitch->addContext('rss', array(
+				'callbacks' => array(
+						'init' => array($this, 'initRssContext'),
+						'post' => array($this, 'postRssContext'),
+				)
+			));
+		}
+		$contextSwitch->addActionContext('questions', 'rss');
+		$contextSwitch->addActionContext('view', 'rss');
+		try {
+			$contextSwitch->initContext();
+		} catch (Exception $e) {
+			// Unknown Context Exception?
+		}
+	}
+
+	public function initRssContext()
+	{
+		$viewRenderer = Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer');
+		$view = $viewRenderer->view;
+		if ($view instanceof Zend_View_Interface) {
+				$viewRenderer->setNoRender(true);
+		}
+	}
+
+	protected function _rssTitle()
+	{
+		return strip_tags($this->view->title) . " :: EpicDb RSS";
+	}
+
+	public function postRssContext()
+	{
+		$view = $this->view;
+		$generator = new EpicDb_Feed_Generator(array('view'=>$view));
+		$generator->setLink($view->url());
+		$generator->setTitle( $this->_rssTitle() );
+		if ( $post = $this->view->question ?: $this->view->post ) {
+			$answers = $post->findAnswers();
+			$addPost($post);
+			foreach ($answers as $post) $generator->addPost($post);
+		} else {
+			foreach ($this->view->questions as $post) $generator->addPost($post);
+		}
+		$generator->toRss()->send();
+	}
+	
 	/**
 	 * getPost - undocumented function
 	 *
