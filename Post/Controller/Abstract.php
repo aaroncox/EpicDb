@@ -201,6 +201,9 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 				$parent = $parent->_parent;
 			}
 			
+			
+			
+			
 			// Default Controls for every post...
 			$controls = array(
 				'permaLink' => (string) $this->view->button(
@@ -288,6 +291,17 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 					);				
 				}				
 			}
+			
+			if(EpicDb_Auth::getInstance()->hasPrivilege(new EpicDb_Auth_Resource_Moderator)) {
+				$controls['_delete'] = $this->view->button(array(
+					'action'=>'delete',
+					'post'=>$target,
+				), 'post', true, array(
+					'icon' => 'trash',
+					'tooltip' => 'Delete this Post',
+				));				
+			}
+			
 			
 			ksort($controls);
 			// var_dump($controls); exit;

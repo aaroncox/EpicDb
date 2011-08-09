@@ -16,9 +16,6 @@ class EpicDb_Mongo_Profile_Group_Guild extends EpicDb_Mongo_Profile_Group
 	}
 	
 	public function getIcon() {
-		if($this->logo) {
-			return $this->logo;
-		}
 		if($this->icon) {
 			return $this->icon;
 		}
