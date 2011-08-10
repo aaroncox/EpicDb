@@ -52,10 +52,11 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 		$generator = new EpicDb_Feed_Generator(array('view'=>$view));
 		$generator->setLink($view->url());
 		$generator->setTitle( $this->_rssTitle() );
-		if ( $post = $this->view->question ?: $this->view->post ) {
-			$answers = $post->findAnswers();
-			$addPost($post);
+		if ( $parent = $this->view->question ?: $this->view->post ) {
+			$generator->addPost($parent);
+			$answers = $parent->findResponses( false );
 			foreach ($answers as $post) $generator->addPost($post);
+
 		} else {
 			foreach ($this->view->questions as $post) $generator->addPost($post);
 		}
@@ -198,21 +199,8 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 					}
 				}
 				$this->view->title = "Recent Questions Tagged ".implode(", ", $tagLinks);
-
-				$this->view->headLink()->appendAlternate(
-					$this->view->url(array(
-						'tagged' => $request->getParam('tagged')
-					),'se_feeds_tag',true),
-					"application/rss+xml",
-					$this->view->title
-				);
 			} else {
 				$this->view->title = "Recent Questions";
-				$this->view->headLink()->appendAlternate(
-					$this->view->url(array(),'se_feeds',true),
-					"application/rss+xml",
-					$this->view->title
-				);
 			}
 			switch($this->getRequest()->getParam("sort")) {
 				case "highest-voted":
