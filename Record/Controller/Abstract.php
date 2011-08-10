@@ -9,9 +9,9 @@ class EpicDb_Record_Controller_Abstract extends MW_Controller_Action
 {
 	public function init() {
 		$record = $this->getRecord();
-		
+
 		$ajaxContext = $this->_helper->getHelper('AjaxContext');
-    $ajaxContext->addActionContext('feed', 'html');
+		$ajaxContext->addActionContext('feed', 'html');
 		// Tooltip Context! Booyah
 		$contextSwitch = $this->_helper->getHelper('contextSwitch');
 		if (!$contextSwitch->hasContext('tooltip')) {
@@ -28,15 +28,15 @@ class EpicDb_Record_Controller_Abstract extends MW_Controller_Action
 		} catch (Exception $e) {
 			// Unknown Context Exception?
 		}
-		
-		$this->view->headLink(array('rel' => 'canonical', 'href'=>$this->view->url(array('record'=>$record), 'record', true)));	
-	
-	  // Generate Section information
+
+		$this->view->headLink(array('rel' => 'canonical', 'href'=>$this->view->url(array('record'=>$record), 'record', true)));
+
+		// Generate Section information
 		$this->getSection();
-	
+
 		parent::init();
 	}
-	
+
 	/**
 	 * getPost - undocumented function
 	 *
@@ -51,7 +51,7 @@ class EpicDb_Record_Controller_Abstract extends MW_Controller_Action
 		}
 		return $record;
 	}
-	
+
 	// Sets the section variables on the view for navigation purposes.
 	public function getSection($force = null) {
 		$this->view->section = array(
@@ -61,18 +61,18 @@ class EpicDb_Record_Controller_Abstract extends MW_Controller_Action
 			'sortBy' => $this->getRequest()->getParam("sortBy"),
 		);
 	}
-	
+
 	public function editAction() {
 		$record = $this->view->record;
-		EpicDb_Auth::getInstance()->requirePrivilege(new EpicDb_Auth_Resource_Moderator());			
+		EpicDb_Auth::getInstance()->requirePrivilege(new EpicDb_Auth_Resource_Moderator());
 		$this->view->form = $form = $record->getEditForm();
 		$this->_handleMWForm($form, $record->_type);
 	}
-	
+
 	// Displays a Record
 	public function viewAction() {
 	}
-	
+
 	public function seedAction() {
 		if(!$id = $this->getRequest()->getParam('seed',0)) throw new MW_Controller_404Exception("Unknown seed");
 		$query = array(
@@ -83,13 +83,13 @@ class EpicDb_Record_Controller_Abstract extends MW_Controller_Action
 		if(!$seed) throw new MW_Controller_404Exception("Unknown seed");
 		// var_dump($record->_type, $seed->types); exit;
 		if(!in_array($record->_type, $seed->types)) throw new Exception("This record type is unable to use this seed.");
-		if(EpicDb_Auth::getInstance()->hasPrivilege(new EpicDb_Auth_Resource_Moderator())) {			
+		if(EpicDb_Auth::getInstance()->hasPrivilege(new EpicDb_Auth_Resource_Moderator())) {
 			$this->view->form = $form = new EpicDb_Form_Seed_Tag(array('seed' => $seed, 'record' => $record));
 			$this->_handleMWForm($form);
-		}			
+		}
 	}
-	
+
 	public function historyAction() {
-		$record = $this->view->record; 
+		$record = $this->view->record;
 	}
 } // END class EpicDb_Record_Controller_Abstract extends MW_Controller_Action
