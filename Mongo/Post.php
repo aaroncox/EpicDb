@@ -96,9 +96,13 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 			'_deleted' => array(
 					'$exists' => false
 				)
-		);
+		) + $query;
 		$sort = array("_created" => 1);
 		return $results = EpicDb_Mongo::db('post')->fetchAll($query, $sort, $limit);
+	}
+
+	public function findComments($limit = 1000, $query = array(), $sort = array()) {
+		return $this->findResponses( $limit, array( "_type" => "comment" ) + $query, $sort );
 	}
 
 	public static function getTagsByUsage($limit = 99) {
@@ -215,18 +219,6 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 		}
 		// var_dump($this); exit;
 		return parent::save();
-	}
-	
-	public function findComments($limit = 1000, $query = array(), $sort = array()) {
-		// var_dump($this->createReference());
-		$query = array(
-			'_parent' => $this->createReference(),
-			'_deleted' => array(
-					'$exists' => false
-				)
-		)+$query;
-		$sort = array("_created" => 1);
-		return $results = EpicDb_Mongo::db('post')->fetchAll($query, $sort, $limit);
 	}
 
 	public function getRelatedPosts() {
