@@ -121,6 +121,7 @@ class EpicDb_Form_Wiki extends EpicDb_Form
 
 	public function save() {
 		$wiki = $this->getWiki();
+		EpicDb_Mongo_Revision::makeEditFor($wiki, $this->reason->getValue());
 		if($this->source) {
 			$wiki->source = $this->source->getValue();
 			$wiki->html = $this->source->getRenderedValue();			
@@ -134,7 +135,6 @@ class EpicDb_Form_Wiki extends EpicDb_Form
 		if($this->_isNew) {
 			$wiki->record = $this->_record;
 		}
-		EpicDb_Mongo_Revision::makeEditFor($wiki, $this->reason->getValue());
 		return $wiki->save();
 		// $post = $this->getPost();
 		// if($this->source) {
