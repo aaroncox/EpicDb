@@ -16,11 +16,14 @@ class EpicDb_Mongo_Tags extends Shanty_Mongo_DocumentSet
 		);
 		
 	
-	public function tag(MW_Mongo_Document $ref, $reason = 'tag') {
+	public function tag(MW_Mongo_Document $ref, $reason = 'tag', $meta = array()) {
 		$tag = $this->new();
 		$tag->set($ref);
 		$tag->reason = $reason;
 		$tag->refType = $ref->_type;
+		foreach($meta as $key => $value) {
+			$tag->$key = $value;
+		}
 		$this->addDocument($tag);
 	}
 
