@@ -10,6 +10,7 @@
  **/
 class EpicDb_View_Helper_IconLink extends Zend_View_Helper_Abstract
 {	
+	protected $_params = array();
 	protected $_record = null;
 	public function icon() {
 		$record = $this->_record;
@@ -36,18 +37,19 @@ class EpicDb_View_Helper_IconLink extends Zend_View_Helper_Abstract
 	 * @return void
 	 * @author Aaron Cox <aaronc@fmanet.org>
 	 **/
-	public function iconLink($record, $attribs = array())
+	public function iconLink($record, $params = array())
 	{
     $this->_record = false;
 		if(!$record) return $this;
 		$this->_record = $record;	
+		$this->_params = $params;
 		return $this;
 	}
 	
 	public function render() {
 		$record = $this->_record;
 		if (!$record) return '';
-		$html = "<div class='record-icon small'>";
+		$html = "<div class='record-icon ".$this->_params['class']."'>";
 		if($record instanceOf EpicDb_Mongo_Profile) {
 			$html .= $this->view->profileLink($record, array("text" => $this->icon()));
 		} elseif($record instanceOf EpicDb_Mongo_Record) {
