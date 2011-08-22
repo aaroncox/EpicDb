@@ -42,6 +42,7 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 		switch($this->_doc->_type) {
 			case "item":
 			case "skill":
+			case "profession":
 	 			$class = "tooltip-record-icon";
 				break;
 			default: 
