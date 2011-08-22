@@ -49,6 +49,13 @@ class EpicDb_Mongo_Tags extends Shanty_Mongo_DocumentSet
 		}
 		return false;
 	}
+	public function clearTags($reason) {
+		foreach($this as $idx => $tag) {
+			if ($tag->reason == $reason) {
+				$this->setProperty($idx, null);				
+			}
+		}
+	}
 	public function hasTag($ref = null, $reason = null) {
 		if(is_string($ref)) {
 			$reason = $ref;
