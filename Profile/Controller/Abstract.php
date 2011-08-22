@@ -29,6 +29,15 @@ abstract class EpicDb_Profile_Controller_Abstract extends MW_Controller_Action
 				)
 			));
 		}
+		if (!$contextSwitch->hasContext('tooltip')) {
+			$contextSwitch->addContext('tooltip', array(
+				// 'headers' => array('Content-Type' => 'application/jsonp'),
+				'callbacks' => array(
+						'init' => array($this, 'initTooltipContext'),
+				)
+			));
+		}
+		$contextSwitch->addActionContext('view', 'tooltip');
 		$contextSwitch->addActionContext('feed', 'rss');
 		try {
 			$ajaxContext->initContext();
