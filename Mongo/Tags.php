@@ -77,7 +77,9 @@ class EpicDb_Mongo_Tags extends Shanty_Mongo_DocumentSet
 	
 	public function getTag($reason) {
 		foreach($this as $tag) {
-			if($tag->reason == $reason) return $tag->ref;
+			$ref = $tag->ref;
+			if($ref instanceOf EpicDb_Interface_TagMeta) $ref = $ref->setTagMeta($tag);
+			if($tag->reason == $reason) return $ref;
 		}		
 		return null;
 	}
@@ -101,8 +103,10 @@ class EpicDb_Mongo_Tags extends Shanty_Mongo_DocumentSet
 			// trigger_error("Switch argument order....", E_USER_NOTICE);
 		}
 		$refs = array();
+		$tagsArray = array();
 		foreach ($tags as $idx => $tag) { 
 			$refs[$idx] = $tag->createReference();
+			$tagsArray[$idx] = $tag;
 		}
 		$now = array();
 		foreach($this as $idx => $tag) {
@@ -117,8 +121,8 @@ class EpicDb_Mongo_Tags extends Shanty_Mongo_DocumentSet
 		foreach ($refs as $idx => $ref) {
 			if (!in_array($ref, $now)) {
 				$tag = $this->new();
-				$tag->ref = $tags[$idx];
-				$tag->refType = $tags[$idx]->_type;
+				$tag->ref = $tagsArray[$idx];
+				$tag->refType = $tagsArray[$idx]->_type;
 				$tag->reason = $reason;
 				$this->addDocument($tag);
 			}

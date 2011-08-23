@@ -255,14 +255,20 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 	}
 	
 	public function findRelated($record, $query = array(), $sort = array()) {
+		$metaArray = array();
+		if($record instanceOf EpicDb_Interface_TagMeta) {
+			foreach($record->getTagMeta() as $key => $value) {
+				$metaArray['tags.'.$key] = $value;
+			}			
+		}
 		$query['$or'][] = array(
 			'tags.ref' => $record->createReference(),
 			'tags.reason' => 'tag'
-		);
+		)+$metaArray;
 		$query['$or'][] = array(
 			'tags.ref' => $record->createReference(),
 			'tags.reason' => 'subject'
-		);
+		)+$metaArray;
 		if(empty($sort)) {
 			$sort = array("_created" => -1);			
 		}
