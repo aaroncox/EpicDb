@@ -14,7 +14,7 @@ class EpicDb_View_Helper_RecordLink extends MW_View_Helper_HtmlTag
 		if($record instanceOf EpicDb_Mongo_Profile) return $this->view->profileLink($record, $params); 
 		if($record instanceOf EpicDb_Mongo_Post) return $this->view->postLink($record, $params); 
 		// Quick fix... need better resolution
-		$record = EpicDb_Mongo::db('record')->find($record->_id);
+		// $record = EpicDb_Mongo::db('record')->find($record->_id);
 		if(!$record) return null;
 		$tooltip = true;
 		if(isset($params['tooltip']) && $params['tooltip'] == false) {
@@ -32,18 +32,18 @@ class EpicDb_View_Helper_RecordLink extends MW_View_Helper_HtmlTag
 		if(isset($params['rel'])) {
 			$rel = $params['rel'];
 		}
+
 		if(!empty($urlParams)) return $this->htmlTag("a", array(
 			"rel" => $rel,
 			"class" => $class,
-			"href" => $this->view->url($urlParams),
+			"href" => $this->view->url($urlParams+$record->getRouteParams(), $record->routeName, true),
 		), $text);
 		return $this->htmlTag("a", array(
 			"rel" => $rel,
 			"class" => $class,
 			"href" => $this->view->url(array(
 				'action'=> 'view',
-				'record' => $record,
-			), 'record', true),
+			)+$record->getRouteParams(), $record->routeName, true),
 		), $text);
 	}
 }
