@@ -21,6 +21,10 @@ class EpicDb_View_Helper_RecordLink extends MW_View_Helper_HtmlTag
 			$tooltip = false;
 		}
 		$text = $record->name;
+		$routeParams = $record->getRouteParams();
+		if(isset($routeParams['part'])) {
+			$text .= " [Part ".$routeParams['part']."]";
+		}
 		if(isset($params['text'])) {
 			$text = $params['text'];
 		}
