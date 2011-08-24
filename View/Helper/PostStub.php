@@ -134,7 +134,7 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 				while($parent->_parent->_id) {
 					$parent = $parent->_parent;
 				}
-				if($parent->export() == array()) return null;
+				if($parent instanceOf EpicDb_Mongo_Post && $parent->export() == array()) return null;
 				// $post = $parent;
 				break;
 		}
