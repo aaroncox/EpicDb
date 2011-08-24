@@ -12,33 +12,17 @@ class EpicDb_Mongo_Post_Question extends EpicDb_Mongo_Post implements EpicDb_Vot
 	protected static $_editForm = 'EpicDb_Form_Post_Question';
 
 	public function findAnswers($limit = 10, $query = array(), $sort = array()) {
-		$query = array(
-			"_parent" => $this->createReference(),
-			'_deleted' => array(
-					'$exists' => false
-				)
-		)+$query;
-		$sort = array("votes.score" => -1, "_created" => -1);
-		return $results = EpicDb_Mongo::db('answer')->fetchAll($query, $sort, $limit);
-		// var_dump($query, $results->export()); exit;
+		return $this->findResponses( $limit, array( "_type" => "answer" ) + $query, $sort );
 	}
 
 	public function findComments($limit = 10, $query = array(), $sort = array()) {
-		// var_dump($this->createReference());
-		$query = array(
-			"_parent" => $this->createReference(),
-			'_deleted' => array(
-					'$exists' => false
-				)
-		)+$query;
-		$sort = array("_created" => 1);
-		return $results = EpicDb_Mongo::db('question-comment')->fetchAll($query, $sort, $limit);
+		return $this->findResponses( $limit, array( "_type" => "question-comment" ) + $query, $sort );
 	}
 
 	public function countAnswers() {
 		// TODO - XHProf Improvement Here: This count repeatedly fires, could be improved and reduce pageload by approx 1/2 second
 		// Return a max of 9999
-		return $this->findAnswers(9999)->count();
+		return $this->findAnswers( false )->count();
 	}
 
 } // END class EpicDb_Mongo_Post

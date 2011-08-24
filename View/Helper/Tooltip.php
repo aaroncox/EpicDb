@@ -42,6 +42,7 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 		switch($this->_doc->_type) {
 			case "item":
 			case "skill":
+			case "profession":
 	 			$class = "tooltip-record-icon";
 				break;
 			default: 
@@ -169,9 +170,9 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 	}
 	
 	public function cloud($documentSet, $label = "") {
-		return ''; // Disabled until we're sticky.
+		// return ''; // Disabled until we're sticky.
 		return $this->view->htmlTag("div", array("class" => "tooltip-cloud", "style" => "display: inline-block"), 
-			$this->view->htmlTag("h4", array("class" => "label transparent-bg-blue inline-flow"), $label)."".
+			(empty($label)?"":$this->view->htmlTag("h4", array("class" => "label transparent-bg-blue inline-flow"), $label))."".
 			$this->view->iconCloud($documentSet)
 		);
 	}

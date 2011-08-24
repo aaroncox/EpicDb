@@ -42,7 +42,7 @@ class EpicDb_Route_Post extends Zend_Controller_Router_Route {
 		$route = $config->route;
 		$reqs = ($config->reqs instanceof Zend_Config) ? array_merge($config->reqs->toArray(),$reqs) : $reqs;
 		$defs = ($config->defaults instanceof Zend_Config) ? $config->defaults->toArray() + $defaults : $defaults;
-		return new self($route, $defs, $reqs);
+		return new static($route, $defs, $reqs);
 	}
 
 	public function assemble($data = array(), $reset = false, $encode = false, $partial = false)

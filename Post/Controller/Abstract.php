@@ -10,6 +10,59 @@
  **/
 class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 {
+
+	public function init()
+	{
+		parent::init();
+		$contextSwitch = $this->_helper->getHelper('ContextSwitch');
+		if (!$contextSwitch->hasContext('rss')) {
+			$contextSwitch->addContext('rss', array(
+				'callbacks' => array(
+						'init' => array($this, 'initRssContext'),
+						'post' => array($this, 'postRssContext'),
+				)
+			));
+		}
+		$contextSwitch->addActionContext('questions', 'rss');
+		$contextSwitch->addActionContext('view', 'rss');
+		try {
+			$contextSwitch->initContext();
+		} catch (Exception $e) {
+			// Unknown Context Exception?
+		}
+	}
+
+	public function initRssContext()
+	{
+		$viewRenderer = Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer');
+		$view = $viewRenderer->view;
+		if ($view instanceof Zend_View_Interface) {
+				$viewRenderer->setNoRender(true);
+		}
+	}
+
+	protected function _rssTitle()
+	{
+		return strip_tags($this->view->title) . " :: EpicDb RSS";
+	}
+
+	public function postRssContext()
+	{
+		$view = $this->view;
+		$generator = new EpicDb_Feed_Generator(array('view'=>$view));
+		$generator->setLink($view->url());
+		$generator->setTitle( $this->_rssTitle() );
+		if ( $parent = $this->view->question ?: $this->view->post ) {
+			$generator->addPost($parent);
+			$answers = $parent->findResponses( false );
+			foreach ($answers as $post) $generator->addPost($post);
+
+		} else {
+			foreach ($this->view->questions as $post) $generator->addPost($post);
+		}
+		$generator->toRss()->send();
+	}
+	
 	/**
 	 * getPost - undocumented function
 	 *
@@ -146,21 +199,8 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 					}
 				}
 				$this->view->title = "Recent Questions Tagged ".implode(", ", $tagLinks);
-
-				$this->view->headLink()->appendAlternate(
-					$this->view->url(array(
-						'tagged' => $request->getParam('tagged')
-					),'se_feeds_tag',true),
-					"application/rss+xml",
-					$this->view->title
-				);
 			} else {
 				$this->view->title = "Recent Questions";
-				$this->view->headLink()->appendAlternate(
-					$this->view->url(array(),'se_feeds',true),
-					"application/rss+xml",
-					$this->view->title
-				);
 			}
 			switch($this->getRequest()->getParam("sort")) {
 				case "highest-voted":

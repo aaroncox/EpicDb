@@ -96,9 +96,13 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 			'_deleted' => array(
 					'$exists' => false
 				)
-		);
+		) + $query;
 		$sort = array("_created" => 1);
 		return $results = EpicDb_Mongo::db('post')->fetchAll($query, $sort, $limit);
+	}
+
+	public function findComments($limit = 1000, $query = array(), $sort = array()) {
+		return $this->findResponses( $limit, array( "_type" => "comment" ) + $query, $sort );
 	}
 
 	public static function getTagsByUsage($limit = 99) {
@@ -216,18 +220,6 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 		// var_dump($this); exit;
 		return parent::save();
 	}
-	
-	public function findComments($limit = 1000, $query = array(), $sort = array()) {
-		// var_dump($this->createReference());
-		$query = array(
-			'_parent' => $this->createReference(),
-			'_deleted' => array(
-					'$exists' => false
-				)
-		)+$query;
-		$sort = array("_created" => 1);
-		return $results = EpicDb_Mongo::db('post')->fetchAll($query, $sort, $limit);
-	}
 
 	public function getRelatedPosts() {
 		$tags = $this->tags->getTags('tag'); 
@@ -263,14 +255,20 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 	}
 	
 	public function findRelated($record, $query = array(), $sort = array()) {
+		$metaArray = array();
+		if($record instanceOf EpicDb_Interface_TagMeta) {
+			foreach($record->getTagMeta() as $key => $value) {
+				$metaArray['tags.'.$key] = $value;
+			}			
+		}
 		$query['$or'][] = array(
 			'tags.ref' => $record->createReference(),
 			'tags.reason' => 'tag'
-		);
+		)+$metaArray;
 		$query['$or'][] = array(
 			'tags.ref' => $record->createReference(),
 			'tags.reason' => 'subject'
-		);
+		)+$metaArray;
 		if(empty($sort)) {
 			$sort = array("_created" => -1);			
 		}

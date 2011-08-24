@@ -2,7 +2,7 @@
 
 class EpicDb_View_Helper_IconCloud extends MW_View_Helper_HtmlTag {
 
-  public function iconCloud($records, $limit = null)
+  public function iconCloud($records, $limit = null, $params = array('class' => 'small'))
   {
 		$html = "";
 		$count = 1;
@@ -14,7 +14,7 @@ class EpicDb_View_Helper_IconCloud extends MW_View_Helper_HtmlTag {
 					}
 					$count++;					
 				}
-				$html .= $this->htmlTag("div", array("class" => "inline-flow icon-cloud icon"), $this->view->iconLink($record->ref));
+				$html .= $this->htmlTag("div", array("class" => "inline-flow icon-cloud icon"), $this->view->iconLink($record->ref, $params));
 			}			
 		} else {
 			foreach($records as $idx => $record) {
@@ -24,7 +24,7 @@ class EpicDb_View_Helper_IconCloud extends MW_View_Helper_HtmlTag {
 					}
 					$count++;					
 				}
-				$html .= $this->htmlTag("div", array("class" => "inline-flow icon-cloud icon"), $this->view->iconLink($record));
+				$html .= $this->htmlTag("div", array("class" => "inline-flow icon-cloud icon"), $this->view->iconLink($record, $params));
 			}			
 		}
 		return $html;
