@@ -26,6 +26,10 @@ class EpicDb_Form_Profile_User extends EpicDb_Form_Profile
 				'label' => 'Email Address',
 				'description' => 'Used to generate your Gravatar image',
 			));
+		$this->addElement("select", "faction", array(
+				'label' => 'Faction',
+				'multiOptions' => R2Db_Mongo::db('faction')->getSelectOptions(),
+			));
 		$this->addElement("textarea", "bio", array(
 				'filters' => array('StringTrim', 'StripTags'),
 				'label' => 'About Me',
@@ -39,7 +43,8 @@ class EpicDb_Form_Profile_User extends EpicDb_Form_Profile
 	public function save($data) {
 		$profile = $this->getProfile();
 		$profile->email = $this->email->getValue();
-		$profile->bio = $this->bio->getValue();		
+		$profile->bio = $this->bio->getValue();	
+		$profile->faction = EpicDb_Mongo::db('faction')->fetchOne(array("id" => (int)$this->faction->getValue()));	
 		return parent::save($data);
 	}
 } // END class EpicDb_Form_Profile
