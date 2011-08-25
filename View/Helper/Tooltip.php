@@ -103,7 +103,7 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 	public function description() {
 		$doc = $this->_doc;
 		if (!$doc) return '';
-		return $this->view->htmlTag("div", array("class" => "description"), $doc->getDescription()?:" ");
+		return $this->view->htmlTag("div", array("class" => "description"), $doc->getDescription()?:" ")." ";
 	}
 	public function limitDescription() {
 		$doc = $this->_doc;
@@ -147,25 +147,29 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 		return $this->view->htmlTag("h4", array("class" => "label"), $text, $escape);
 	}
 	public function mods($documentSet, $label = "") {
-		$modsHtml = "";
+		$modsHtml = " ";
 		foreach($documentSet as $mod) {
 			$color = array();
+			if(!$mod->id) {
+				$modsHtml .= "Error: Unknown Mod<br/>";
+				continue;
+			}
 			$stats = $this->view->stats($this->_doc, $mod->ref->attribs, "mods");
 			if($mod->ref->quality) $color += array('class' => 'quality-'.$mod->ref->quality);
 			$newName = $mod->ref->name." (".$mod->ref->attribs->requireLevel.")";
 			$modsHtml .= $this->view->htmlTag("span", array()+$color, $this->view->recordLink($mod->ref, array("text" => $newName)));
 			$modsHtml .= $this->view->htmlTag("div", array("class" => "stats-group", "id" => "mod-".$mod->ref->id), $stats);
 		}
-		$html = $this->view->htmlTag("div", array("class" => "mod-container"), 
+		return $this->view->htmlTag("div", array("class" => "mod-container"), 
 			$this->view->htmlTag("h4", array("class" => "label header"), "Item Modifications:")."".
 			$this->view->htmlTag("div", array("class" => "stats-group"), $modsHtml)
 		);
-		return $html;
 	}
 	public function statsgroup($attribs, $title) {
+		if(empty($attribs)) return " ";
 		return $this->view->htmlTag("h4", array("class" => "label header"), $title.":")."".
 			$this->view->htmlTag("div", array("class" => "stats-group"), 
-				$this->view->stats($this->_doc, $attribs, "totals")
+				$this->view->stats($this->_doc, $attribs, "totals")." "
 			);
 	}
 	
@@ -206,6 +210,7 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 		try {
 			$content = $this->render();
 		} catch( Exception $e ) {
+			var_dump($this->_doc, $e); exit;
 			$content = $e->getMessage();
 		}
 		return $content;
