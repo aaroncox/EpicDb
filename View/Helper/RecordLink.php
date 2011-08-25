@@ -36,6 +36,10 @@ class EpicDb_View_Helper_RecordLink extends MW_View_Helper_HtmlTag
 		if(isset($params['rel'])) {
 			$rel = $params['rel'];
 		}
+		
+		if($record->quality) {
+			$class .= " quality-".$record->quality;
+		}
 
 		if(!empty($urlParams)) return $this->htmlTag("a", array(
 			"rel" => $rel,
