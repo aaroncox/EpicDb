@@ -150,10 +150,6 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 		$modsHtml = " ";
 		foreach($documentSet as $mod) {
 			$color = array();
-			if(!$mod->id) {
-				$modsHtml .= "Error: Unknown Mod<br/>";
-				continue;
-			}
 			$stats = $this->view->stats($this->_doc, $mod->ref->attribs, "mods");
 			if($mod->ref->quality) $color += array('class' => 'quality-'.$mod->ref->quality);
 			$newName = $mod->ref->name." (".$mod->ref->attribs->requireLevel.")";
