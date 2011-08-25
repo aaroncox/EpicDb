@@ -28,7 +28,7 @@ class EpicDb_Form_Profile_User extends EpicDb_Form_Profile
 			));
 		$this->addElement("select", "faction", array(
 				'label' => 'Faction',
-				'multiOptions' => R2Db_Mongo::db('faction')->getSelectOptions(),
+				'multiOptions' => array(null => "Not specified")+R2Db_Mongo::db('faction')->getSelectOptions(),
 			));
 		$this->addElement("textarea", "bio", array(
 				'filters' => array('StringTrim', 'StripTags'),
