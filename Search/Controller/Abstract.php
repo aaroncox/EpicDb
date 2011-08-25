@@ -59,6 +59,10 @@ class EpicDb_Search_Controller_Abstract extends MW_Controller_Action
 		$paginator->setCurrentPageNumber($this->getRequest()->getParam('page', 1));
 		$this->view->posts = $paginator;
 		
+		if(!empty($posts) || !empty($profiles) || !empty($records)) {
+			EpicDb_Mongo::db('searchlog')->log($q);
+		}
+		
 		if($format == "json") {
 			$results = array();
 			foreach($this->view->records as $record) {

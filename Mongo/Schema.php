@@ -9,7 +9,7 @@
  * @package undocumented class
  **/
 class EpicDb_Mongo_Schema extends MW_Mongo_Schema {
-	protected $_version = 4;
+	protected $_version = 5;
   protected $_tag = 'epicdb';
 	protected $_classMap = array(
 		// Profile Types
@@ -24,6 +24,8 @@ class EpicDb_Mongo_Schema extends MW_Mongo_Schema {
 		'tag' => 'EpicDb_Mongo_Record_Tag',
 		'record' => 'EpicDb_Mongo_Record',
 		'resource' => 'EpicDb_Mongo_Record_Resource',
+		'searchlog' => 'EpicDb_Mongo_SearchLog',
+		'searchlog-cache' => 'EpicDb_Mongo_Cache_SearchLog',
 		// Post Types
 		'post' => 'EpicDb_Mongo_Post',
 		'question' => 'EpicDb_Mongo_Post_Question',
@@ -77,7 +79,8 @@ class EpicDb_Mongo_Schema extends MW_Mongo_Schema {
 				$db->execute("db.posts.ensureIndex({_parent:1, 'score.accepted':1})");
 			case 3:
 				$db->execute("db.posts.ensureIndex({touched:1, _created:1})");
-				
+			case 4:
+				$db->execute("db.createCollection('searchlogs', {capped:true, size:1000000, max:10000});");
     }
 	}
 }
