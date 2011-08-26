@@ -141,17 +141,8 @@ class EpicDb_Mongo_Record extends EpicDb_Auth_Mongo_Resource_Document implements
 		return $forms;
 	}
 	
-	public function getRelatedPosts() {
-		$sort = array("_created" => -1);
-		$query = array(
-			'tags' =>
-				array('$elemMatch' => array(
-					'reason' => 'tag',
-					'ref' => $this->createReference(),
-					)
-				)				
-			);
-		return $results = EpicDb_Mongo::db('post')->fetchAll($query, $sort);
+	public function getRelatedPosts($query = array(), $sort = array("_created" => -1)) {
+		return EpicDb_Mongo::db('post')->findRelated($this, $query, $sort);
 	}
 	
 	// TODO - This needs to be rewritten to array map the schema or something....
