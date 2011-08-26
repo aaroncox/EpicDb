@@ -106,7 +106,6 @@ class EpicDb_View_Helper_Card extends MW_View_Helper_HtmlTag
 		if(!isset($params['extra'])) $params['extra'] = '';
 		if(!isset($params['class'])) $params['class'] = '';
 		if(!isset($params['iconClass'])) $params['iconClass'] = '';
-
 		// Reimplement
 		// if($record instanceOf EpicDb_Mongo_Profile_User && $record->characters && $character = $record->characters->getPrimary()) {
 		// 	$params['class'] .= " faction-".$character->faction;
@@ -115,7 +114,7 @@ class EpicDb_View_Helper_Card extends MW_View_Helper_HtmlTag
 		return $this->htmlTag("div", array('class' => 'inline-flow db-card rounded font-sans '.$params['class']), 
 			$this->htmlTag("div", array('class' => 'record-icon inline-flow rounded '.$params['iconClass']), 
 				$this->cardScore($record)."".
-				$this->link($record, array("text" => $this->htmlTag("img", array('src' => $this->getIcon($record), 'alt' => $record->name))))
+				$this->link($record, array("text" => $this->htmlTag("img", array('src' => $this->getIcon($record), 'alt' => $record->name, 'class' => 'icon'))))
 			)."".
 			$this->htmlTag("div", array('class' => 'record-info inline-flow'), $this->cardDetails($record, $params))
 		);
