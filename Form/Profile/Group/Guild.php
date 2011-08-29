@@ -12,6 +12,7 @@ class EpicDb_Form_Profile_Group_Guild extends EpicDb_Form_Profile_Group
 {
 	protected $_profile = null;
 	protected $_isNew = false;
+	
 	/**
 	 * getProfile - undocumented function
 	 *

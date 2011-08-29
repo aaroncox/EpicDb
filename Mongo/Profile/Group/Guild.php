@@ -11,6 +11,10 @@ class EpicDb_Mongo_Profile_Group_Guild extends EpicDb_Mongo_Profile_Group
 	protected static $_documentType = "guild";
 	protected static $_editForm = 'EpicDb_Form_Profile_Group_Guild';
 	
+	protected $_requirements = array(
+		'faction' => array('Document:R2Db_Mongo_Record_Faction', 'AsReference'),
+	);
+	
 	public function getParentResource() {
 		return new EpicDb_Auth_Resource_Profile();
 	}
