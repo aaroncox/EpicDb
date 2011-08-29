@@ -43,6 +43,7 @@ class EpicDb_View_Helper_IconLink extends Zend_View_Helper_Abstract
 		if(!$record) return $this;
 		$this->_record = $record;	
 		$this->_params = $params;
+		if(!isset($this->_params['class'])) $this->_params['class'] = "";
 		return $this;
 	}
 	
