@@ -33,6 +33,7 @@ class EpicDb_Form_Profile_Group extends EpicDb_Form_Profile {
 		$profile = $this->getProfile();		
 		$profile->name = $this->name->getValue();
 		$profile->_groupType = $this->_groupType->getValue();
+		$profile->_created = time();
 		$profile->description = $this->description->getValue();
 		if($profile->isNewDocument()) {
 			// Do we need this still?

@@ -69,6 +69,7 @@ class EpicDb_Form_Profile_Group_Website extends EpicDb_Form_Profile_Group
 			$profile->description = $this->description->getValue();
 			if($profile->isNewDocument()) {
 				// Do we need this still?
+				$profile->_created = time();
 				$user = MW_Auth::getInstance()->getUser();
 				$profile->_owner = $user;
 				$profile->grant($user);

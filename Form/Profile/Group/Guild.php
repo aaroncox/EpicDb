@@ -138,6 +138,7 @@ class EpicDb_Form_Profile_Group_Guild extends EpicDb_Form_Profile_Group
 			$profile->description = $this->description->getValue();
 			if($profile->isNewDocument()) {
 				$user = MW_Auth::getInstance()->getUser();
+				$profile->_created = time();
 				$profile->_owner = $user;
 				$user->addGroup($profile->getAdminRole());
 				$user->save();

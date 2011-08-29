@@ -30,6 +30,7 @@ class EpicDb_Form_Profile_Group_Application extends EpicDb_Form
 	public function save($data) {
 		$app = EpicDb_Mongo::newDoc('application');
 		$app->status = "open";
+		$app->_created = time();
 		$app->reason = $this->reason->getValue();
 		$app->candidate = EpicDb_Auth::getInstance()->getUserProfile();
 		$app->group = $this->getGroup();
