@@ -191,6 +191,7 @@ class EpicDb_Form_Post extends EpicDb_Form
 		return $save;
 	}
 	public function process($data) {
+		$me = $this->getAuthorProfile();
 		$post = $this->getPost();
 		if($this->isValid($data)) {
 			if(!MW_Auth::getInstance()->getUser()) {
