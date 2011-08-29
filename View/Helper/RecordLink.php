@@ -15,7 +15,7 @@ class EpicDb_View_Helper_RecordLink extends MW_View_Helper_HtmlTag
 		if($record instanceOf EpicDb_Mongo_Post) return $this->view->postLink($record, $params); 
 		// Quick fix... need better resolution
 		// $record = EpicDb_Mongo::db('record')->find($record->_id);
-		if(!$record) return null;
+		if(!$record || !$record->id) return null;
 		$tooltip = true;
 		if(isset($params['tooltip']) && $params['tooltip'] == false) {
 			$tooltip = false;
