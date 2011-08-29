@@ -274,7 +274,7 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 		}
 		return EpicDb_Mongo::db('post')->fetchAll($query, $sort);
 	}
-	
+		
 	public function getVotes($type = false) {
 		$query = array(
 			'post' => $this->createReference()

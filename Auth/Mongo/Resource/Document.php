@@ -18,6 +18,7 @@ class EpicDb_Auth_Mongo_Resource_Document extends MW_Auth_Mongo_Resource_Documen
 		return $result;
 	}
 	public static function fetchAll($query = array(), $sort = array(), $limit = false, $skip = false) {
+		if(!isset($query['_deleted'])) $query += array('_deleted' => array('$exists' => false));
 		$result = parent::fetchAll($query, $sort, $limit, $skip);
 		if(APPLICATION_ENV == 'development') {
 			// $explain = $result->getInnerIterator()->explain();
