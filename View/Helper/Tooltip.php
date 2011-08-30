@@ -105,8 +105,42 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 	public function description() {
 		$doc = $this->_doc;
 		if (!$doc) return '';
-		return $this->view->htmlTag("div", array("class" => "description"), $doc->getDescription()?:" ")." ";
+		$desc = $doc->getDescription();
+		if($desc instanceOf Shanty_Mongo_Document) $desc = $desc[0];
+		if(is_array($desc)) return $this->rankedDescription();
+		return $this->view->htmlTag("div", array("class" => "description"), $desc?:" ")." ";
 	}
+	public function rankedDescription() {
+		$doc = $this->_doc;
+		$descs = $doc->getDescription();
+		$html = "";
+		$spent = $this->_doc->getRank();
+		$avail = $this->_doc->getMaxRank();
+		$html .= $this->view->htmlTag("p", array('class' => 'points'), 
+			$this->view->htmlTag("span", array('class' => 'rank-label'), "Rank: ")." ".
+			$this->view->htmlTag("span", array('class' => 'spent'), $spent)." / ".
+			$this->view->htmlTag("span", array('class' => 'avail'), $avail)
+		);
+		if(isset($descs['current'])) {
+			$html .= $this->view->htmlTag("p", array('class' => 'currentEffect'), 
+				$this->view->htmlTag("span", array('class' => 'rank-label'), "Current Rank:<br/>").$descs['current']
+			);
+		}
+		if(isset($descs['next'])) {
+			$html .= $this->view->htmlTag("p", array('class' => 'nextEffect'), 
+				$this->view->htmlTag("span", array('class' => 'rank-label'), "Next Rank:<br/>").$descs['next']
+			);
+		}
+		return $html;
+	}
+	// 		<p class="points">
+	// 			<span class="spent">0</span> / <span class="avail">3</span>
+	// 		</p>
+	// 		<p class="currentEffect"></p>
+	// 		<p class="nextEffect">
+	// 			Next Rank:</br>
+	// 			<span class="next-text">Progressively slows the target from 90% to 10% movement speed over <span class="change">3 seconds</span> and deals <span class="change">43 kinetic damage</span> each second. At the end of the duration the target is crushed, and takes an additional <span class="change">250 kinetic damage</span>.</span>
+	// 		</p>
 	public function limitDescription() {
 		$doc = $this->_doc;
 		if (!$doc) return '';
@@ -231,6 +265,7 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 		$this->_doc = false;
 		$this->_params = $params;
 		if($document instanceOf EpicDb_Interface_Tooltiped) $this->_doc = $document;
+		if(isset($params['rank'])) $this->_doc->setRank((int)$params['rank']);
 		return $this;
 	}
 } // END class R2Db_View_Helper_
