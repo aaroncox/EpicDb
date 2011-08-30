@@ -54,6 +54,8 @@ class EpicDb_View_Helper_ProfileLink extends MW_View_Helper_HtmlTag
 			$action = $params['action'];
 		}
 		
+		$this->view->tooltip($profile)->addToCache();
+		
 		if(trim($text) == "") $text = "Unknown";
 		return $this->htmlTag("a", array(
 			"rel" => $rel,

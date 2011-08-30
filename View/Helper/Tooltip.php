@@ -10,6 +10,9 @@
  **/
 class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract 
 {
+	protected $_doc = false;
+	protected $_pageCache = array();
+
 	public function wrap($content) {
 		return $this->view->htmlTag("div", array(
 			"class" => "r2-tooltip tooltip-rounded", 
@@ -20,7 +23,6 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 			)." "
 		)." ";
 	}
-	protected $_doc = false;
 	public function counter() {
 		return '';
 		// This is the code to add the counter to the page and make it look purdy.
@@ -211,7 +213,21 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 		}
 		return $content;
 	}
-	public function tooltip($document, $params = array()) {
+	public function addToCache() {
+		if($this->_doc == false) return $this;
+		$doc = $this->_doc;
+		$url = $this->view->url($doc->getRouteParams(), $doc->routeName, true);
+		if(isset($this->_pageCache[$url])) return $this;
+		$this->_pageCache[$url] = true;
+		$this->_pageCache[$url] = $this->render();
+		return $this;
+	}
+	public function renderCache() {
+		return $this->view->htmlTag("script", array(), 
+			'r2tip.pageCache = '.json_encode($this->_pageCache).";"
+		);
+	}
+	public function tooltip($document = false, $params = array()) {
 		$this->_doc = false;
 		$this->_params = $params;
 		if($document instanceOf EpicDb_Interface_Tooltiped) $this->_doc = $document;

@@ -9,6 +9,7 @@
 class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements EpicDb_Interface_Revisionable, EpicDb_Interface_Tooltiped, EpicDb_Vote_Interface_Flaggable
 {
 	public $contextHelper = 'context';
+	public $routeName = "post";
 	
 	protected static $_collectionName = 'posts';
 	protected static $_documentType = null;
@@ -287,6 +288,11 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 		$this->_deleted = true;
 		$this->save();
 	}
+	
+	public function getRouteParams() {
+		return array('post' => $this);
+	}
+	
 	// This is for watching queries as they execute on posts, perhaps we could enable it by a flag? or mode? I just used it for debugging queries.
 	// public static function fetchAll($query = array(), $sort = array(), $limit = false, $skip = false) {
 	// 	$writer = new Zend_Log_Writer_Firebug();

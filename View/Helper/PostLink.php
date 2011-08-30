@@ -26,6 +26,9 @@ class EpicDb_View_Helper_PostLink extends MW_View_Helper_HtmlTag
 		if(isset($params['rel'])) {
 			$rel = $params['rel'];
 		}
+		
+		$this->view->tooltip($post)->addToCache();
+		
 		// var_dump($text);
 		if($text == null) {
 			$text = '[Read More]';

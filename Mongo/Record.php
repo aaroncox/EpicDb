@@ -164,5 +164,5 @@ class EpicDb_Mongo_Record extends EpicDb_Auth_Mongo_Resource_Document implements
 	public function getRouteParams() {
 		return array('record' => $this);
 	}
-	
+		
 } // END class EpicDb_Mongo_Record

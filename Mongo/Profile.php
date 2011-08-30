@@ -8,10 +8,11 @@
  * @param undocumented class
  * @package undocumented class
  **/
-class EpicDb_Mongo_Profile extends EpicDb_Auth_Mongo_Resource_Document implements EpicDb_Interface_Cardable, EpicDb_Interface_Tooltiped
+class EpicDb_Mongo_Profile extends EpicDb_Auth_Mongo_Resource_Document implements EpicDb_Interface_Cardable, EpicDb_Interface_Tooltiped, EpicDb_Interface_Routable
 {
 	public $summaryHelper = 'profileSummary';
 	public $contextHelper = 'profileContext';
+	public $routeName = "profile";
 	
 	protected static $_collectionName = 'profiles';
 	protected static $_documentType = null;
@@ -151,5 +152,8 @@ class EpicDb_Mongo_Profile extends EpicDb_Auth_Mongo_Resource_Document implement
 		return $results;
 	}
 	
+	public function getRouteParams() {
+		return array('profile' => $this);
+	}
 
 } // END class EpicDb_Mongo_Profile
