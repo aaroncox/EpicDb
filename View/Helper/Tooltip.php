@@ -11,7 +11,7 @@
 class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract 
 {
 	protected $_doc = false;
-	protected $_pageCache = array();
+	protected static $_pageCache = array();
 
 	public function wrap($content) {
 		return $this->view->htmlTag("div", array(
@@ -217,14 +217,14 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 		if($this->_doc == false) return $this;
 		$doc = $this->_doc;
 		$url = $this->view->url($doc->getRouteParams(), $doc->routeName, true);
-		if(isset($this->_pageCache[$url])) return $this;
-		$this->_pageCache[$url] = true;
-		$this->_pageCache[$url] = $this->render();
+		if(isset(self::$_pageCache[$url])) return $this;
+		self::$_pageCache[$url] = true;
+		self::$_pageCache[$url] = $this->render();
 		return $this;
 	}
 	public function renderCache() {
 		return $this->view->htmlTag("script", array(), 
-			'r2tip.pageCache = '.json_encode($this->_pageCache).";"
+			'r2tip.pageCache = '.json_encode(self::$_pageCache).";"
 		);
 	}
 	public function tooltip($document = false, $params = array()) {
