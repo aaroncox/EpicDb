@@ -15,7 +15,7 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 		$tags = array();
 		foreach($post->tags->getTags('tag') as $tag) {
 			if($tag['reason'] != 'tag' && $tag['reason'] != 'subject') continue;	
-			$tags[] = (string)$this->view->recordLink($tag);
+			$tags[] = (string) $this->view->recordLink($tag);
 		}
 		// var_dump($tags); exit;
 		if(empty($tags)) return '';
