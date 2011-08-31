@@ -22,6 +22,9 @@ class EpicDb_Search_Controller_Abstract extends MW_Controller_Action
 	{
 		$request = $this->getRequest();
 		$format = $request->getParam('format');
+		if($format == "html") {
+			Zend_Paginator::setDefaultItemCountPerPage( 10 );
+		}
 		$search = EpicDb_Search::getInstance();
 		$this->view->layout()->searchQuery = $q = trim($request->getParam('q'));
 
