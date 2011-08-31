@@ -9,27 +9,28 @@ class EpicDb_Record_Controller_Abstract extends MW_Controller_Action
 {
 	public function init() {
 		$record = $this->getRecord();
+		if($record) {
+			$this->view->headLink(array('rel' => 'canonical', 'href'=>$this->view->url(array('record'=>$record), 'record', true)));			
+			// Tooltip Context! Booyah
+			$contextSwitch = $this->_helper->getHelper('contextSwitch');
+			if (!$contextSwitch->hasContext('tooltip')) {
+				$contextSwitch->addContext('tooltip', array(
+					// 'headers' => array('Content-Type' => 'application/jsonp'),
+					'callbacks' => array(
+							'init' => array($this, 'initTooltipContext'),
+					)
+				));
+			}
+			$contextSwitch->addActionContext('view', 'tooltip');
+			try {
+				$contextSwitch->initContext();
+			} catch (Exception $e) {
+				// Unknown Context Exception?
+			}
+		}
 
 		$ajaxContext = $this->_helper->getHelper('AjaxContext');
 		$ajaxContext->addActionContext('feed', 'html');
-		// Tooltip Context! Booyah
-		$contextSwitch = $this->_helper->getHelper('contextSwitch');
-		if (!$contextSwitch->hasContext('tooltip')) {
-			$contextSwitch->addContext('tooltip', array(
-				// 'headers' => array('Content-Type' => 'application/jsonp'),
-				'callbacks' => array(
-						'init' => array($this, 'initTooltipContext'),
-				)
-			));
-		}
-		$contextSwitch->addActionContext('view', 'tooltip');
-		try {
-			$contextSwitch->initContext();
-		} catch (Exception $e) {
-			// Unknown Context Exception?
-		}
-
-		$this->view->headLink(array('rel' => 'canonical', 'href'=>$this->view->url(array('record'=>$record), 'record', true)));
 
 		// Generate Section information
 		$this->getSection();
@@ -46,9 +47,6 @@ class EpicDb_Record_Controller_Abstract extends MW_Controller_Action
 	public function getRecord()
 	{
 		$this->view->record = $record = $this->_request->getParam('record');
-		if(!$record) {
-			throw new Exception("Unable to load record...");
-		}
 		return $record;
 	}
 
@@ -71,6 +69,17 @@ class EpicDb_Record_Controller_Abstract extends MW_Controller_Action
 
 	// Displays a Record
 	public function viewAction() {
+	}
+	
+	public function listAction() {
+		$query = array();
+		$sort = array("name" => 1);
+		$this->view->recordType = $recordType = $this->getRequest()->getParam('recordType');
+		$this->view->recordTypeName = $this->getRequest()->getParam('recordTypeName');
+		$records = EpicDb_Mongo::db($recordType)->fetchAll($query, $sort);
+		$paginator = Zend_Paginator::factory($records);
+		$paginator->setCurrentPageNumber($this->getRequest()->getParam('page', 1));
+		$this->view->records = $paginator;
 	}
 
 	public function seedAction() {

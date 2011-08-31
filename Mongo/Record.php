@@ -14,6 +14,7 @@ class EpicDb_Mongo_Record extends EpicDb_Auth_Mongo_Resource_Document implements
 	public $contextHelper = 'recordContext';
 	public $routeName = 'record';
 	
+	protected $_layout = "3-column";
 	protected static $_collectionName = 'records';
 	protected static $_documentType = null;
 	protected static $_documentSetClass = 'EpicDb_Mongo_Records';
@@ -164,5 +165,8 @@ class EpicDb_Mongo_Record extends EpicDb_Auth_Mongo_Resource_Document implements
 	public function getRouteParams() {
 		return array('record' => $this);
 	}
-		
+	
+	public function getLayout() {
+		return $this->_layout;
+	}
 } // END class EpicDb_Mongo_Record
