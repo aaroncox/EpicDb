@@ -91,7 +91,7 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 		), 'vote-cast', true);
 	}
 	
-	public function stubVote($post) {
+	public function stubVote($post) {		
 		$buttons = " ";
 		if ($post instanceOf EpicDb_Vote_Interface_Votable) {
 			$buttons .= $this->htmlTag("span", array("class" => "vote-label"), "YOUR VOTE!");
@@ -163,7 +163,7 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 			$this->htmlTag("div", array("class" => "stub-score rounded text-verylarge".$voteClass.$this->color($this->scoring($post))), 
 				$this->htmlTag("span", array("class" => "vote-label"), ucfirst(static::$score))."".
 				$this->htmlTag("p", array("class"=>"vote-count"), $this->scoring($post))."".
-				$this->htmlTag("span", array("class" => "vote-controls"),
+				$this->htmlTag("span", array("class" => "vote-controls vote-widget"),
 					$this->stubVote($post)
 				)
 			)."".
