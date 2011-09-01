@@ -8,7 +8,7 @@
  * @param undocumented class
  * @package undocumented class
  **/
-class EpicDb_Mongo_Reference extends EpicDb_Mongo_Document
+class EpicDb_Mongo_Reference extends MW_Mongo_Document_Reference
 {
 	protected $_requirements = array(
 	    'ref' => array('Document:MW_Mongo_Document', 'AsReference', 'Required'), 
