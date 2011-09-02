@@ -142,12 +142,6 @@ class EpicDb_Mongo_Profile extends EpicDb_Auth_Mongo_Resource_Document implement
 				)
 			)
 		);
-		// Make sure I have the permissions to view this post
-		foreach(EpicDb_Auth::getInstance()->getUserRoles() as $role) {
-			$roles[] = $role->createReference();
-		}
-		$query['_viewers'] = array('$in' => $roles);
-
 		$results = EpicDb_Mongo::db('post')->fetchAll($query, $sort);
 		return $results;
 	}

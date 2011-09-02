@@ -74,7 +74,7 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 	}
 	
 	public function getParentResource() {
-		return new EpicDb_Auth_Resource_Post();
+		return new EpicDb_Auth_Resource_Post(!$this->_private);
 	}
 	
 	public static function getDocumentClass($data = array()) {
@@ -89,6 +89,28 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 		if (isset($data['_type'])) {
 			return EpicDb_Mongo::dbClass($data['_type']);
 		}
+	}
+
+	public function destroy() {
+		return parent::delete();
+	}
+
+	public static function fetchOne($query = array()) {
+		$roles = array();
+		foreach(EpicDb_Auth::getInstance()->getUserRoles() as $role) {
+			$roles[] = $role->createReference();
+		}
+		$query['_viewers'] = array('$in' => $roles);
+		return parent::fetchOne($query);
+	}
+	
+	public static function fetchAll($query = array(), $sort = array(), $limit = false, $skip = false) {
+		$roles = array();
+		foreach(EpicDb_Auth::getInstance()->getUserRoles() as $role) {
+			$roles[] = $role->createReference();
+		}
+		$query['_viewers'] = array('$in' => $roles);
+		return parent::fetchAll($query, $sort, $limit, $skip);
 	}
 
 	public function findResponses($limit = 10, $query = array(), $sort = array()) {

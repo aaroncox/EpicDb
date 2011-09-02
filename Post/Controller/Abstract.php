@@ -383,6 +383,7 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 	public function viewAction() {
 		// we should probably just call this "post" in the view too...
 		$this->view->post = $post = $this->getPost();
+		$this->_helper->auth->requirePrivilege($post, 'view');
 		$params = $this->getRequest()->getParams();
 		$this->postJson();
 
