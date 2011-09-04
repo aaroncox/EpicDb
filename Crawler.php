@@ -24,6 +24,8 @@ class EpicDb_Crawler
 			'encoding'      => 'UTF-8'
 
 		);
+		$profile->crawledFeed = time();
+		$profile->save();
 		try {
 			$reader = new Zend_Feed_Reader();
 			$client = new Zend_Http_Client($profile->feed, $config);
