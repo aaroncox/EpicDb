@@ -72,6 +72,27 @@ abstract class EpicDb_Controller_Cli extends Zend_Controller_Action {
 		$this->resave('wiki');
 	}
 	
+	public function stressTestAction() {
+		$start = microtime(true);
+		$i = 0;
+		
+		$users = EpicDb_Mongo::db('user')->fetchAll(array("id" => 2));
+		$adapter = new Zend_ProgressBar_Adapter_Console();
+		$bar = new Zend_ProgressBar($adapter, 0, count($users));
+		foreach($users as $user) {
+			$temp = $user->getFollowedPosts()->limit(50);
+			foreach($temp as $post) {
+				$this->view->postStub($post);
+			}
+			$i++;
+			$bar->update($i);		
+		}
+		$end = microtime(true);
+		$diff = $end - $start;
+		var_dump($start, $end, $diff." sec"); 
+	}
+	
+	
 	public function resave($collection) {
 		$docs = EpicDb_Mongo::db($collection)->fetchAll(array(), array("id" => 1));
 		echo "Resaving ".count($docs)." documents in ".$collection."...\n";
