@@ -125,6 +125,12 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 	}
 	
 	public function postStub($post, $options = array()) {
+
+		// If we find a cache for this postStub, just return it.
+		if($postStub = EpicDb_Cache::load($post, 'postStub')) {
+			return $postStub;
+		}
+		
 		$author = $post->tags->getTag("author")?:$post->tags->getTag("source");
 		
 		$parent = $post->_parent;
@@ -158,7 +164,7 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 			$parent = $post;
 		}
 		
-		return $this->htmlTag("div", array("class" => "post-stub rounded center-shadow ui-helper-clearfix ".$wrapClass, "id" => $post->_type."-".$post->id), 
+		$html = $this->htmlTag("div", array("class" => "post-stub rounded center-shadow ui-helper-clearfix ".$wrapClass, "id" => $post->_type."-".$post->id), 
 			// $this->htmlTag("div", array("class" => "inline-flow"), ">")."". // Minimize / Maximize
 			$this->htmlTag("div", array("class" => "stub-score rounded ".$voteClass.$this->color($this->scoring($post))), 
 				$this->htmlTag("span", array("class" => "vote-label"), ucfirst(static::$score))."".
@@ -181,6 +187,9 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 			)."".
 			$this->htmlTag("div", array("class" => "stub-loadin"), ' ')	
 		);
+		EpicDb_Cache::save($post, 'postStub', $html);
+		return $html;
+		
 	}
 	
 	public function color($value) {

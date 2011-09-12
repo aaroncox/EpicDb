@@ -164,6 +164,10 @@ abstract class EpicDb_Vote_Abstract {
 	protected function _postCast()
 	{
 		if (!$this->_importMode) {
+			// Clear all caches when a vote is cast...
+			if($cache = EpicDb_Cache::load($this->_post, 'postStub')) {
+				EpicDb_Cache::clean($this->_post, 'postStub');
+			}
 			$this->_post->votes = EpicDb_Vote::countVotes($this->_post);
 			$this->_post->save();
 			EpicDb_Vote::publish('vote', array('target' => $this->_post, 'voter' => $this->_userProfile, 'value' => $this->_type, 'vote' => $this->_data));
