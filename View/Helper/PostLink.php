@@ -17,10 +17,17 @@ class EpicDb_View_Helper_PostLink extends MW_View_Helper_HtmlTag
 		if($post->_type == 'question') {
 			return $this->view->questionLink($post, $params);
 		}
+		$textLimit = 80;
+		if(isset($params['text-limit'])) {
+			$textLimit = $params['text-limit'];
+		}
 		$hash = '';
 		$text = $post->title;
 		if(isset($params['text'])) {
 			$text = $params['text'];
+		}
+		if(!$text) {
+			$text = $this->view->htmlFragment($post->body, $textLimit);
 		}
 		$rel = "";
 		if(isset($params['rel'])) {
@@ -31,12 +38,7 @@ class EpicDb_View_Helper_PostLink extends MW_View_Helper_HtmlTag
 		
 		// var_dump($text);
 		if($text == null) {
-			$text = '[Read More]';
-			$preview = $this->view->htmlFragment($post->body, 80);
 			return 
-				$this->htmlTag("span", array(
-					'class' => 'post-preview',
-				), $preview)." ".
 				$this->htmlTag("a", array(
 				"rel" => $rel,
 				"href" => $this->view->url(array(
