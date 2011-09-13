@@ -185,8 +185,11 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 		return $this->view->htmlTag("h4", array("class" => "label"), $text, $escape);
 	}
 	public function mods($documentSet, $label = "") {
+		$modsFound = false;
 		$modsHtml = " ";
 		foreach($documentSet as $mod) {
+			if(!$mod->ref->id) continue; // We haven't resolved the mods yet...
+			$modsFound = true;
 			$color = array();
 			$stats = $this->view->stats($this->_doc, $mod->ref->attribs, "mods");
 			if($mod->ref->quality) $color += array('class' => 'quality-'.$mod->ref->quality);
@@ -194,6 +197,7 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 			$modsHtml .= $this->view->htmlTag("span", array()+$color, $this->view->recordLink($mod->ref, array("text" => $newName)));
 			$modsHtml .= $this->view->htmlTag("div", array("class" => "stats-group", "id" => "mod-".$mod->ref->id), $stats);
 		}
+		if(!$modsFound) return ''; // No mods found, don't render otherwise we break layout.
 		return $this->view->htmlTag("div", array("class" => "mod-container"), 
 			$this->view->htmlTag("h4", array("class" => "label header"), "Item Modifications:")."".
 			$this->view->htmlTag("div", array("class" => "stats-group"), $modsHtml)
@@ -206,7 +210,21 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 				$this->view->stats($this->_doc, $attribs, "totals")." "
 			);
 	}
-	
+	public function linkTo($document, $label = "") {
+		return $this->view->htmlTag("h4", array("class" => "label"), $label.": ".$this->view->recordLink($document));
+	}
+	public function ulli($documentSet, $label) {
+		$html = "";
+		foreach($documentSet as $document) {
+			$li = $this->view->recordLink($document->ref);
+			if($document->qty) {
+				$li = $document->qty."x ".$li;
+			}
+			$html .= $this->view->htmlTag("li", array(), $li)."";
+		}
+		$label = $this->view->htmlTag("h4", array("class" => "label"), $label)."";
+		return $label.$this->view->htmlTag("ul", array(), $html);
+	}
 	public function cloud($documentSet, $label = "") {
 		// return ''; // Disabled until we're sticky.
 		return $this->view->htmlTag("div", array("class" => "tooltip-cloud", "style" => "display: inline-block"), 
