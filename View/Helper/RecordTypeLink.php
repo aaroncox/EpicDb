@@ -11,6 +11,13 @@
 class EpicDb_View_Helper_RecordTypeLink extends MW_View_Helper_HtmlTag
 {
 	public function recordTypeLink($record) {
-		return $this->htmlTag("a", array("rel" => "nofollow", "href" => $record->_type."s"), ucfirst($record->_type));
+		$cleaned = ucwords(str_replace("-", " ", $record->_type));
+		return $this->htmlTag("a", array(
+			"rel" => "nofollow", 
+			"href" => $this->view->url(
+				array(
+				), $record->_type."_list", true
+			)
+		), $cleaned);
 	}
 }
