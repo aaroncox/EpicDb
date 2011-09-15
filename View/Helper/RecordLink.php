@@ -41,6 +41,18 @@ class EpicDb_View_Helper_RecordLink extends MW_View_Helper_HtmlTag
 			$class .= " quality-".$record->quality;
 		}
 		
+		$routeName = $record->routeName;
+		if(isset($params['routeName'])) {
+			$routeName = $params['routeName'];
+		}
+		
+		$sectionParams = array();
+		if(isset($params['section'])) {
+			$sectionParams = $params['section'];
+		}
+		
+
+		
 		$this->view->tooltip($record)->addToCache();
 
 		if(!empty($urlParams)) return $this->htmlTag("a", array(
@@ -51,9 +63,9 @@ class EpicDb_View_Helper_RecordLink extends MW_View_Helper_HtmlTag
 		return $this->htmlTag("a", array(
 			"rel" => $rel,
 			"class" => $class,
-			"href" => $this->view->url(array(
+			"href" => $this->view->url($sectionParams+array(
 				'action'=> 'view',
-			)+$record->getRouteParams(), $record->routeName, true),
+			)+$record->getRouteParams(), $routeName, true),
 		), $text);
 	}
 }
