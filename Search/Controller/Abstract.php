@@ -68,7 +68,6 @@ class EpicDb_Search_Controller_Abstract extends MW_Controller_Action
 		}
 		
 		if($format == "json") {
-			var_dump( $format, $format == "json" ); exit;
 			$results = array();
 			foreach($this->view->records as $record) {
 				$results[] = array(
