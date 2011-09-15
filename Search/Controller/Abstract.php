@@ -21,8 +21,8 @@ class EpicDb_Search_Controller_Abstract extends MW_Controller_Action
 	public function indexAction() 
 	{
 		$request = $this->getRequest();
-		$format = $request->getParam('format', 'html');
-		if($format == "html" || $format = "json") {
+		$format = $request->getParam('format');
+		if($format === "html" || $format === "json") {
 			$resultLimit = 15;
 			Zend_Paginator::setDefaultItemCountPerPage( $resultLimit );
 		}
@@ -68,6 +68,7 @@ class EpicDb_Search_Controller_Abstract extends MW_Controller_Action
 		}
 		
 		if($format == "json") {
+			var_dump( $format, $format == "json" ); exit;
 			$results = array();
 			foreach($this->view->records as $record) {
 				$results[] = array(
