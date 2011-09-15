@@ -22,8 +22,9 @@ class EpicDb_Search_Controller_Abstract extends MW_Controller_Action
 	{
 		$request = $this->getRequest();
 		$format = $request->getParam('format');
-		if($format == "html") {
-			Zend_Paginator::setDefaultItemCountPerPage( 10 );
+		if($format == "html" || $format = "json") {
+			$resultLimit = 15;
+			Zend_Paginator::setDefaultItemCountPerPage( $resultLimit );
 		}
 		$search = EpicDb_Search::getInstance();
 		$this->view->layout()->searchQuery = $q = trim($request->getParam('q'));
@@ -79,7 +80,7 @@ class EpicDb_Search_Controller_Abstract extends MW_Controller_Action
 				);
 			}
 			foreach($this->view->profiles as $record) {
-				if(count($results) > 20) continue;
+				if(count($results) > $resultLimit) continue;
 				$results[] = array(
 					'id' => $record->id,
 					'_type' => $record->_type,
@@ -90,7 +91,7 @@ class EpicDb_Search_Controller_Abstract extends MW_Controller_Action
 				);
 			}
 			foreach($this->view->posts as $record) {
-				if(count($results) > 20) continue;
+				if(count($results) > $resultLimit) continue;
 				$results[] = array(
 					'id' => $record->id,
 					'_type' => $record->_type,
@@ -103,6 +104,14 @@ class EpicDb_Search_Controller_Abstract extends MW_Controller_Action
 			$this->view->results = $results;
 			echo json_encode(array('results' => $this->view->results)); exit;
 		} 
+		
+		if($param = $this->getRequest()->getParam("view")) {
+			switch($param) {
+				case "compact":
+					$this->_helper->viewRenderer('compact');  
+					break;
+			}
+		}
 		// if ($posts->count() == 1 && !$format) {
 		// 	$posts->next();
 		// 	return $this->_redirect($this->view->url(array('post'=>$posts->current()),'post',true));
