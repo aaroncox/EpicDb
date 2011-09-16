@@ -14,6 +14,7 @@ class EpicDb_Mongo_Profile extends EpicDb_Auth_Mongo_Resource_Document implement
 	public $contextHelper = 'profileContext';
 	public $routeName = "profile";
 	
+	protected $_layout = "2-column";
 	protected static $_collectionName = 'profiles';
 	protected static $_documentType = null;
 	protected static $_editForm = 'EpicDb_Form_Profile';
@@ -149,5 +150,10 @@ class EpicDb_Mongo_Profile extends EpicDb_Auth_Mongo_Resource_Document implement
 	public function getRouteParams() {
 		return array('profile' => $this);
 	}
+	
+	public function getLayout() {
+		return $this->_layout;
+	}
+	
 
 } // END class EpicDb_Mongo_Profile
