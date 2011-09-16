@@ -63,7 +63,7 @@ class EpicDb_View_Helper_Card extends MW_View_Helper_HtmlTag
 	public function cardScore($record) {
 		if(!$record->reputation) return '';
 		return $this->htmlTag("div", array("class" => "record-score"),
-			$record->reputation
+			$this->view->levelBar($record)->getLevel()
 		);
 	}
 	public function unknownCard($params) {

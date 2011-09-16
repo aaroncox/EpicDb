@@ -29,6 +29,16 @@ class EpicDb_Mongo_Profile_User extends EpicDb_Mongo_Profile
 	  $return = parent::__construct($data, $config);
 	}
 	
+	public function getTooltipHelpers() {
+		$return = array("icon", "name");
+		if($this->reputation) {
+			$return[] = 'level';
+		}
+		$return[] = "link";
+		$return[] = "limitDescription";
+		return $return;
+	}
+	
 	public function getDescription() {
 		if($this->bio) return $this->bio; 
 		return '';

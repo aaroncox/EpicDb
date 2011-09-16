@@ -64,6 +64,10 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 		return $this->_doc ? $this->view->htmlTag("h3", array()+$color, $this->view->recordLink($this->_doc, array("rel" => "no-tooltip"))).'' : '';
 	}
 	
+	public function level() {
+		return $this->view->htmlTag("p", array(), $this->_doc->reputation." Reputation");
+	}
+	
 	public function parentTitle() {
 		$doc = $this->_doc;
 		if(!$doc->getName()) return '';
