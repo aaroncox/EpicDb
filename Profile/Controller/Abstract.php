@@ -85,7 +85,6 @@ abstract class EpicDb_Profile_Controller_Abstract extends MW_Controller_Action
 	
 	public function newsAction()
 	{
-		$this->view->layout()->setLayout('2-column');
 		$profile = $this->getProfile();
 		$query = array();
 		$query['$or'][] = array('tags' =>
@@ -174,7 +173,7 @@ abstract class EpicDb_Profile_Controller_Abstract extends MW_Controller_Action
 	public function followersAction() {
 		$profile = $this->getProfile();
 		$paginator = Zend_Paginator::factory($profile->getMyFollowers());
-		$paginator->setCurrentPageNumber($this->getRequest()->getParam('page', 1))->setItemCountPerPage(30);
+		$paginator->setCurrentPageNumber($this->getRequest()->getParam('page', 1))->setItemCountPerPage(15);
 		$this->view->followers = $paginator;
 	}
 	public function followingAction() {
