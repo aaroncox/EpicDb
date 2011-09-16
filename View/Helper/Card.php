@@ -90,9 +90,8 @@ class EpicDb_View_Helper_Card extends MW_View_Helper_HtmlTag
 				'acknowledged by ' => $this->view->profileLink($record->acknowledgedBy)." ".$this->view->timeAgo($record->acknowledged)
 			);
 		}
-		return $this->card($record->voter, $params+array("content" => array(
-			"reported this ".$this->view->timeAgo($record->date) => $record->reason, 
-		)+$extra));
+		$params['content'] = array("reported this ".$this->view->timeAgo($record->date) => $record->reason)+$extra;
+		return $this->view->card($record->voter, $params);
 		
 	}
 
