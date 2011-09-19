@@ -51,6 +51,11 @@ class EpicDb_View_Helper_RecordLink extends MW_View_Helper_HtmlTag
 			$sectionParams = $params['section'];
 		}
 		
+		$action = "view";
+		if(isset($params['action'])) {
+			$action = $params['action'];
+		}
+		
 
 		
 		$this->view->tooltip($record)->addToCache();
@@ -64,7 +69,7 @@ class EpicDb_View_Helper_RecordLink extends MW_View_Helper_HtmlTag
 			"rel" => $rel,
 			"class" => $class,
 			"href" => $this->view->url($sectionParams+array(
-				'action'=> 'view',
+				'action'=> $action,
 			)+$record->getRouteParams(), $routeName, true),
 		), $text);
 	}
