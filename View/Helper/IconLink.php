@@ -44,6 +44,9 @@ class EpicDb_View_Helper_IconLink extends Zend_View_Helper_Abstract
 		$this->_record = $record;	
 		$this->_params = $params;
 		if(!isset($this->_params['class'])) $this->_params['class'] = "";
+		if($record->quality) {
+			$this->_params['class'] .= " border-quality-".$record->quality;
+		}
 		return $this;
 	}
 	
