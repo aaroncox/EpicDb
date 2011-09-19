@@ -8,6 +8,7 @@
  **/
 class EpicDb_Mongo_Post_Comment extends EpicDb_Mongo_Post implements EpicDb_Vote_Interface_UpOnly
 {
+	public $noTypeList = true;
 	protected static $_collectionName = 'posts';
 	protected static $_documentType = 'comment';
 	protected static $_editForm = 'EpicDb_Form_Post_Comment';
