@@ -165,7 +165,7 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 		
 		$description = $this->view->htmlFragment($doc->getDescription(), 250);
 		if(!$description) return '';
-		
+
 		$profile = $doc->tags->getTag('author')?:$doc->tags->getTag('source');
 		
 		$html = $this->view->htmlTag("p", array("style" => "font-style: italic"), $this->view->profileLink($profile)." writes...");
@@ -290,7 +290,7 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 		$this->_params = $params;
 		if($document instanceOf EpicDb_Interface_Tooltiped) $this->_doc = $document;
 		if(isset($params['rank'])) $this->_doc->setRank((int)$params['rank']);
-		return $this;
+		return clone $this;
 	}
 } // END class R2Db_View_Helper_
 
