@@ -55,7 +55,7 @@ class EpicDb_View_Helper_PostLink extends MW_View_Helper_HtmlTag
 		// 	$hash = "#".$hash;
 		// }
 		return $this->htmlTag("a", array(
-			"rel" => 'no-tooltip nofollow',
+			"rel" => $rel,
 			"href" => $this->view->url(array(
 				'action'=> $action,
 			)+$post->getRouteParams(), $post->routeName, true).$hash,
