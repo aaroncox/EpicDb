@@ -127,9 +127,11 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 	public function postStub($post, $options = array()) {
 
 		// If we find a cache for this postStub, just return it.
-		if($postStub = EpicDb_Cache::load($post, 'postStub')) {
-			return $postStub;
-		}
+		// TODO - The votewidget was being cached inside the cache, which caused it not to load if the first person looking at the cache was 
+		// 				an anonymous user. So, I'm not sure how to tackel this...
+		// if($postStub = EpicDb_Cache::load($post, 'postStub')) {
+		// 	return $postStub;
+		// }
 		
 		$author = $post->tags->getTag("author")?:$post->tags->getTag("source");
 		
@@ -187,7 +189,7 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 			)."".
 			$this->htmlTag("div", array("class" => "stub-loadin"), ' ')	
 		);
-		EpicDb_Cache::save($post, 'postStub', $html);
+		// EpicDb_Cache::save($post, 'postStub', $html);
 		return $html;
 		
 	}
