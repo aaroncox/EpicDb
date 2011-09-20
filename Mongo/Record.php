@@ -143,6 +143,14 @@ class EpicDb_Mongo_Record extends EpicDb_Auth_Mongo_Resource_Document implements
 	}
 	
 	public function getRelatedPosts($query = array(), $sort = array("_created" => -1)) {
+		$query += array(
+			'_type' => array(
+				'$in' => array(
+					'article',
+					'article-rss',
+				)
+			)
+		);
 		return EpicDb_Mongo::db('post')->findRelated($this, $query, $sort);
 	}
 	
