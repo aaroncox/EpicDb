@@ -26,8 +26,5 @@ class EpicDb_Form_Post_Question_Comment extends EpicDb_Form_Post
 		$this->removeElement('tags');
 		$this->setButtons(array("save" => "Post Comment"));
 	}
-	public function save() {
-		$question = $this->getPost();
-		return parent::save();
-	}
+	
 } // END class EpicDb_Form_Post_Comment
