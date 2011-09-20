@@ -218,7 +218,7 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 					$sort = array('touched' => -1, '_created' => -1);
 					break;
 			}
-			
+			Zend_Paginator::setDefaultItemCountPerPage( 10 );
 			$questions = EpicDb_Mongo::db('question')->fetchAll($query, $sort);
 			$paginator = Zend_Paginator::factory($questions);
 			$paginator->setCurrentPageNumber($this->getRequest()->getParam('page', 1));
