@@ -120,7 +120,7 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 					'$exists' => false
 				)
 		) + $query;
-		$sort = array("_created" => 1);
+		$sort += array("_created" => 1);
 		return $results = EpicDb_Mongo::db('post')->fetchAll($query, $sort, $limit);
 	}
 
