@@ -8,10 +8,11 @@
  **/
 class EpicDb_Mongo_Post_Question extends EpicDb_Mongo_Post implements EpicDb_Vote_Interface_Votable
 {
+	public $routeName = "questions";
 	protected static $_documentType = 'question';
 	protected static $_editForm = 'EpicDb_Form_Post_Question';
 
-	public function findAnswers($limit = 10, $query = array(), $sort = array()) {
+	public function findAnswers($limit = 10, $query = array(), $sort = array('votes.accept' => -1, 'votes.score' => -1)) {
 		return $this->findResponses( $limit, array( "_type" => "answer" ) + $query, $sort );
 	}
 
@@ -24,5 +25,11 @@ class EpicDb_Mongo_Post_Question extends EpicDb_Mongo_Post implements EpicDb_Vot
 		// Return a max of 9999
 		return $this->findAnswers( false )->count();
 	}
+	
+	public function getRouteParams() {
+		$filter = new MW_Filter_Slug();
+		return parent::getRouteParams()+array('slug' => $filter->filter($this->title));
+	}
+	
 
 } // END class EpicDb_Mongo_Post
