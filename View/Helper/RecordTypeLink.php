@@ -12,7 +12,7 @@ class EpicDb_View_Helper_RecordTypeLink extends MW_View_Helper_HtmlTag
 {
 	public function recordTypeLink($record) {
 		$cleaned = ucwords(str_replace("-", " ", $record->_type));
-		if($record->noTypeList) {
+		if(!$record->_type || $record->noTypeList) {
 			return $cleaned;
 		}
 		return $this->htmlTag("a", array(
