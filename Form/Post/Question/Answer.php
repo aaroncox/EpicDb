@@ -33,11 +33,4 @@ class EpicDb_Form_Post_Question_Answer extends EpicDb_Form_Post
 		$this->source->setLabel("Your Answer")->setDescription("Do you have the answer to this question? Post your answer to earn achievements and reputation on EpicAdvice.com!");
 		$this->setButtons(array("save" => "Post Answer"));
 	}
-	public function process($data) {
-		if($this->isValid($data)) {
-			$this->save();
-			return true;
-		}
-		return false;
-	}
 } // END class EpicDb_Form_Post_Question_Answer
