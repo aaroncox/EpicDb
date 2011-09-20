@@ -40,7 +40,7 @@ class EpicDb_View_Helper_QuestionStub extends MW_View_Helper_HtmlTag
 			
 		}
 
-		$link = $this->view->questionLink($question);
+		$link = $this->view->postLink($question);
 		// Shrinking Number Logic (Should prob be a view helper?)
 		$views = $question->viewCount;
 		if($question->viewCount >= 1000) {
@@ -63,7 +63,7 @@ class EpicDb_View_Helper_QuestionStub extends MW_View_Helper_HtmlTag
 			}
 		}
 		// var_dump($question->tags->getTag('author')); 
-		return $this->htmlTag('div', array('class' => 'question-summary ui-helper-clearfix rounded shadowy'), 
+		return $this->htmlTag('div', array('class' => 'question-summary ui-helper-clearfix rounded shadowy transparent-bg-blue'), 
 			$this->htmlTag('div', array('style' => 'float: right'), 
 				$this->view->card($author, array(
 					"class" => "medium-icon hide-info", 
@@ -79,8 +79,11 @@ class EpicDb_View_Helper_QuestionStub extends MW_View_Helper_HtmlTag
 				$this->htmlTag('div', array('class' => 'mini-label'), 'answers')
 			)."".
 			$this->htmlTag('div', array('class' => 'summary inline-flow'),
-				$this->htmlTag("h3", array(), 
-					$this->view->questionLink($question)
+				$this->htmlTag("h3", array('class' => 'text-verylarge'), 
+					$this->view->postLink($question)
+				)."".
+				$this->htmlTag("p", array('class' => 'text-medium'), 
+					$this->view->htmlFragment(strip_tags($question->body), 150)
 				)."".
 				$this->htmlTag('div', array('class' => 'tags'), $tags)
 			)
