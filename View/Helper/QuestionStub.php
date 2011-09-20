@@ -80,7 +80,7 @@ class EpicDb_View_Helper_QuestionStub extends MW_View_Helper_HtmlTag
 			)."".
 			$this->htmlTag('div', array('class' => 'summary inline-flow'),
 				$this->htmlTag("h3", array('class' => 'text-verylarge'), 
-					$this->view->postLink($question)
+					$this->view->postLink($question, array("rel" => "no-tooltip"))
 				)."".
 				$this->htmlTag("p", array('class' => 'text-medium'), 
 					$this->view->htmlFragment(strip_tags($question->body), 150)

@@ -36,7 +36,6 @@ class EpicDb_View_Helper_PostLink extends MW_View_Helper_HtmlTag
 		}
 		
 		$this->view->tooltip($post)->addToCache();
-		
 		// var_dump($text);
 		if($text == null) {
 			return 
@@ -45,7 +44,7 @@ class EpicDb_View_Helper_PostLink extends MW_View_Helper_HtmlTag
 				"href" => $this->view->url(array(
 					'action'=> $action,
 				)+$post->getRouteParams(), $post->routeName, true).$hash,
-			), (string) $text);
+			), (string) $text)."";
 		}
 
 		// This will let us pass in the post as a # and hit it directly.
@@ -60,6 +59,6 @@ class EpicDb_View_Helper_PostLink extends MW_View_Helper_HtmlTag
 			"href" => $this->view->url(array(
 				'action'=> $action,
 			)+$post->getRouteParams(), $post->routeName, true).$hash,
-		), (string) $text);
+		), (string) $text)."";
 	}
 }
