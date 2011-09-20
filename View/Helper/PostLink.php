@@ -14,9 +14,6 @@ class EpicDb_View_Helper_PostLink extends MW_View_Helper_HtmlTag
 		if (!is_object($post)) {
 			return '';
 		}
-		if($post->_type == 'question') {
-			return $this->view->questionLink($post, $params);
-		}
 		$textLimit = 80;
 		if(isset($params['text-limit'])) {
 			$textLimit = $params['text-limit'];
@@ -28,6 +25,10 @@ class EpicDb_View_Helper_PostLink extends MW_View_Helper_HtmlTag
 		}
 		if(!$text) {
 			$text = $this->view->htmlFragment($post->body, $textLimit);
+		}
+		$action = "view";
+		if(isset($params['action'])) {
+			$action = $params['action'];
 		}
 		$rel = "";
 		if(isset($params['rel'])) {
@@ -42,9 +43,8 @@ class EpicDb_View_Helper_PostLink extends MW_View_Helper_HtmlTag
 				$this->htmlTag("a", array(
 				"rel" => $rel,
 				"href" => $this->view->url(array(
-					'action'=> 'view',
-					'post' => $post,
-				), 'post', true).$hash,
+					'action'=> $action,
+				)+$post->getRouteParams(), $post->routeName, true).$hash,
 			), (string) $text);
 		}
 
@@ -58,9 +58,8 @@ class EpicDb_View_Helper_PostLink extends MW_View_Helper_HtmlTag
 		return $this->htmlTag("a", array(
 			"rel" => 'no-tooltip nofollow',
 			"href" => $this->view->url(array(
-				'action'=> 'view',
-				'post' => $post,
-			), 'post', true).$hash,
+				'action'=> $action,
+			)+$post->getRouteParams(), $post->routeName, true).$hash,
 		), (string) $text);
 	}
 }
