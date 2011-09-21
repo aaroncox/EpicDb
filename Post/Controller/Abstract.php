@@ -23,13 +23,56 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 				)
 			));
 		}
+		if (!$contextSwitch->hasContext('poll')) {
+			$contextSwitch->addContext('poll', array(
+				'callbacks' => array(
+						'init' => array($this, 'initPollContext'),
+						'post' => array($this, 'postPollContext'),
+				)
+			));
+		}
 		$contextSwitch->addActionContext('questions', 'rss');
 		$contextSwitch->addActionContext('view', 'rss');
+		$contextSwitch->addActionContext('view', 'poll');
 		try {
 			$contextSwitch->initContext();
 		} catch (Exception $e) {
 			// Unknown Context Exception?
 		}
+	}
+
+	public function initPollContext()
+	{
+		$viewRenderer = Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer');
+		$view = $viewRenderer->view;
+		if ($view instanceof Zend_View_Interface) {
+				$viewRenderer->setNoRender(true);
+		}
+	}
+	
+	public function postPollContext()
+	{
+		if($user = EpicDb_Auth::getInstance()->getUserProfile()) {
+			$poll = $this->getPost();
+			$raw = $this->getRequest()->getParam("choices");
+			$choices = explode("|", $raw);
+			foreach($poll->options as $option) {
+				$option->voters->untag($user);					
+			}
+			foreach($choices as $choice) {	
+				$parts = explode("-", $choice);
+				if(isset($parts[2])) {
+					$id = $parts[2];
+					foreach($poll->options as $option) {
+						if($option->id == $id) {
+							$option->voters->tag($user);
+						}
+					}
+				}
+			}
+			$poll->save();
+		}
+		exit;
 	}
 
 	public function initRssContext()
@@ -228,6 +271,77 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 			$this->view->popularTags = array();// EpicDb_Mongo_Post::getTagsByUsage();
 		}
 	}
+	
+	public function pollsAction() {
+		$this->view->breadcrumb = "Polls";
+		$this->view->profile = $this->_helper->auth->getUserProfile();
+
+		$request = $this->getRequest();
+		$auth = $this->_helper->auth;
+
+		if ($request->getParam('create')) {
+			if(!$auth->getUser()) {
+				throw new MW_Auth_Exception("You must be logged in to post a question.");
+			}
+			$poll = EpicDb_Mongo::newDoc('poll');
+			$this->view->form = $form = $poll->getEditForm();
+			$this->_helper->viewRenderer('create-poll');
+			$this->_handleMWForm($form, 'create-poll');
+		} else if($poll = $request->getParam('id')) {
+			$query = array(
+				'id' => (int) $this->getRequest()->getParam('id')
+			);
+			$poll = $this->view->poll = EpicDb_Mongo::db('poll')->fetchOne($query);
+			$this->_post = $poll;
+			$this->getRequest()->setParam('post', $poll);
+			if (!$this->getRequest()->getParam("format")) {
+				$this->_forward('view');
+			}
+		} else {
+			$query = array();
+			if($this->view->tag = $tag = $request->getParam("tagged")) {
+				$queryData = EpicDb_Search::getInstance()->parseQueryString($tag);
+				$query = $queryData['query'];
+				$tags = $queryData['terms']['tagged'];
+				$query["_type"] = "poll";
+				$tagLinks = array();
+				foreach ($tags as $tag) {
+					if ($tag instanceOf EpicDb_Mongo_Record) {
+						$tagLinks[] = $this->view->recordLink($tag)."";
+					} else {
+						$tagLinks[] = $this->view->profileLink($tag)."";
+					}
+				}
+				$this->view->title = "Recent Polls Tagged ".implode(", ", $tagLinks);
+			} else {
+				$this->view->title = "Recent Polls";
+			}
+			switch($this->getRequest()->getParam("sort")) {
+				case "highest-voted":
+					$sort = array('votes.score' => -1, '_created' => -1);
+					break;
+				case "lowest-voted":
+					$sort = array('votes.score' => 1, '_created' => -1);
+					break;
+				case "oldest":
+					$sort = array('_created' => 1);
+					break;
+				case "newest":
+				default:
+					$sort = array('touched' => -1, '_created' => -1);
+					break;
+			}
+			Zend_Paginator::setDefaultItemCountPerPage( 10 );
+			$polls = EpicDb_Mongo::db('poll')->fetchAll($query, $sort);
+			$paginator = Zend_Paginator::factory($polls);
+			$paginator->setCurrentPageNumber($this->getRequest()->getParam('page', 1));
+
+			$this->view->polls = $paginator;
+
+			$this->view->popularTags = array();// EpicDb_Mongo_Post::getTagsByUsage();
+		}
+	}
+	
 	public function postJson() {
 		if($this->_request->isXmlHttpRequest()) {
 			$this->getResponse()->setHeader('Content-type', 'application/json');
