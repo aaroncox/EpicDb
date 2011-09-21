@@ -5,7 +5,7 @@
  * @package default
  * @author Aaron Cox
  **/
-class EpicDb_Mongo_Post_Poll extends EpicDb_mongo_Post
+class EpicDb_Mongo_Post_Poll extends EpicDb_Mongo_Post
 {
 	public $routeName = "polls";
 	protected static $_documentType = 'poll';
