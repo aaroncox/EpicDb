@@ -94,6 +94,17 @@ class EpicDb_View_Helper_Card extends MW_View_Helper_HtmlTag
 		return $this->view->card($record->voter, $params);
 		
 	}
+	
+	public function cardDetailsWrapper($record, $params) {
+		return $this->htmlTag("div", array('class' => 'record-info inline-flow'), $this->cardDetails($record, $params))."";
+	}
+	
+	public function cardIconWrapper($record, $params) {
+		return $this->htmlTag("div", array('class' => 'record-icon inline-flow rounded '.$params['iconClass']), 
+			$this->cardScore($record)."".
+			$this->link($record, array("text" => $this->htmlTag("img", array('src' => $this->getIcon($record), 'alt' => $record->name, 'class' => 'icon'))))
+		)."";
+	}
 
 	public function card($record, $params = array()) {
 		if($record instanceOf EpicDb_Vote_Abstract) return $this->voteCard($record, $params);
@@ -110,12 +121,14 @@ class EpicDb_View_Helper_Card extends MW_View_Helper_HtmlTag
 		// 	$params['class'] .= " faction-".$character->faction;
 		// }
 		if(!$record instanceOf EpicDb_Interface_Cardable) return '';
+		if(isset($params['noContent']) && $params['noContent'] == true) {
+			return $this->htmlTag("div", array('class' => 'inline-flow db-card rounded font-sans '.$params['class']), 
+				$this->cardIconWrapper($record, $params)
+			);
+		}
 		return $this->htmlTag("div", array('class' => 'inline-flow db-card rounded font-sans '.$params['class']), 
-			$this->htmlTag("div", array('class' => 'record-icon inline-flow rounded '.$params['iconClass']), 
-				$this->cardScore($record)."".
-				$this->link($record, array("text" => $this->htmlTag("img", array('src' => $this->getIcon($record), 'alt' => $record->name, 'class' => 'icon'))))
-			)."".
-			$this->htmlTag("div", array('class' => 'record-info inline-flow'), $this->cardDetails($record, $params))
+			$this->cardIconWrapper($record, $params)."".
+			$this->cardDetailsWrapper($record, $params)
 		);
 	}
 }
