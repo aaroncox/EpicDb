@@ -109,9 +109,6 @@ class EpicDb_View_Helper_VoteWidget extends MW_View_Helper_HtmlTag
 				$content .= $this->makeVoteButton("down");
 			}
 			if ($post instanceOf EpicDb_Vote_Interface_Acceptable) {
-				if ($post->votes['accept']) {
-					$content .= "<div class='is-accepted tc-shadow tc-epic'> ✓ </div>";
-				}
 				$content .= $this->view->htmlTag("p", array(), $this->makeVoteButton("accept")."");
 			}
 		}
