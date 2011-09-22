@@ -33,4 +33,9 @@ class EpicDb_Form_Post_Question_Answer extends EpicDb_Form_Post
 		$this->source->setLabel("Your Answer")->setDescription("Do you have the answer to this question? Post your answer to earn achievements and reputation on EpicAdvice.com!");
 		$this->setButtons(array("save" => "Post Answer"));
 	}
+	public function save() {
+		$answer = $this->getPost();
+		$answer->_parent->bump(EpicDb_Auth::getInstance()->getUserProfile());
+		return parent::save();
+	}
 } // END class EpicDb_Form_Post_Question_Answer
