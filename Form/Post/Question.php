@@ -46,7 +46,8 @@ class EpicDb_Form_Post_Question extends EpicDb_Form_Post
 					'order' => 200,
 				));				
 			}
-			$this->setDefaults(array("title" => $question->title, "body" => $question->body, "parent" => $question->_parent->_id, "community" => $question->disablerep));
+			// var_dump($question->disableRep); exit;
+			$this->setDefaults(array("title" => $question->title, "body" => $question->body, "parent" => $question->_parent->_id, "community" => $question->disableRep));
 		} else {
 			$this->source->setLabel("The Question")->setDescription("Please be as descriptive as possible when asking your question, include as many details as possible, and don't hit people in the face with a wall of text in one huge paragraph.");
 			$this->setButtons(array("save" => "Post Question"));
@@ -69,7 +70,9 @@ class EpicDb_Form_Post_Question extends EpicDb_Form_Post
 	public function save() {
 		$question = $this->getPost();
 		$question->title = $this->title->getValue();
-		$question->disableRep = $this->community->getValue();
+		if($this->community && $this->community->getValue()) {
+			$question->disableRep = $this->community->getValue();			
+		}
 		return parent::save();
 	}
 } // END class R2Db_Form_Post_Comment
