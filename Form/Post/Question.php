@@ -37,7 +37,6 @@ class EpicDb_Form_Post_Question extends EpicDb_Form_Post
 		$this->setButtons(array("save" => "Post"));
 		if(!$this->_isNew) {
 			$this->source->setLabel("The Question")->setDescription("Please be as descriptive as possible when asking your question, include as many details as possible, and don't hit people in the face with a wall of text in one huge paragraph.");
-			$this->setDefaults(array("title" => $question->title, "body" => $question->body, "parent" => $question->_parent->_id));
 			$this->setButtons(array("save" => "Post Question"));
 			// Add the Community Post button to the edit only if you're a moderator.
 			if(EpicDb_Auth::getInstance()->hasPrivilege(new EpicDb_Auth_Resource_Moderator())) {
@@ -47,6 +46,7 @@ class EpicDb_Form_Post_Question extends EpicDb_Form_Post
 					'order' => 200,
 				));				
 			}
+			$this->setDefaults(array("title" => $question->title, "body" => $question->body, "parent" => $question->_parent->_id, "community" => $question->disablerep));
 		} else {
 			$this->source->setLabel("The Question")->setDescription("Please be as descriptive as possible when asking your question, include as many details as possible, and don't hit people in the face with a wall of text in one huge paragraph.");
 			$this->setButtons(array("save" => "Post Question"));
