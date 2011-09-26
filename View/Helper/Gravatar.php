@@ -16,6 +16,7 @@ class EpicDb_View_Helper_Gravatar extends Zend_View_Helper_Gravatar
 	public function gravatar($email = "", $options = array(), $attribs = array()) {
 		$options += $this->_defaultOptions;
 		if (empty($attribs['alt'])) $attribs['alt'] = 'user gravatar';
+		$email = strtolower($email);
 		return parent::gravatar($email, $options, $attribs);
 	}
 	public function url() {
