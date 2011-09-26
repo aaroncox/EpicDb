@@ -318,6 +318,11 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 	public function getCachePrefix() {
 		return str_replace("-","_",$this->_type."_".$this->id);
 	}
+	
+	public function isReputationDisabled() {
+		return $this->disableRep || ( $this->_parent && $this->_parent->id && $this->_parent->isReputationDisabled() );
+	}
+  
 	// This is for watching queries as they execute on posts, perhaps we could enable it by a flag? or mode? I just used it for debugging queries.
 	// public static function fetchAll($query = array(), $sort = array(), $limit = false, $skip = false) {
 	// 	$writer = new Zend_Log_Writer_Firebug();

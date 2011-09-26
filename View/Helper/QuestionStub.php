@@ -63,6 +63,12 @@ class EpicDb_View_Helper_QuestionStub extends MW_View_Helper_HtmlTag
 			}
 		}
 		// var_dump($question->tags->getTag('author')); 
+		$voteClass = "votes font-sans inline-flow";
+		$voteParams = array();
+		if($question->isReputationDisabled()) {
+			$voteClass .= " has-tooltip ui-state-disabled";
+			$voteParams['data-tooltip'] = "This question has been marked as a 'Community Post' disabling all reputation gains/losses. Please read the Q&A FAQ for more information!";
+		}
 		return $this->htmlTag('div', array('class' => 'question-summary ui-helper-clearfix rounded shadowy transparent-bg-blue'), 
 			$this->htmlTag('div', array('style' => 'float: right'), 
 				$this->view->card($author, array(
@@ -70,7 +76,7 @@ class EpicDb_View_Helper_QuestionStub extends MW_View_Helper_HtmlTag
 					"content" => $cardDetails,
 				)
 			))."".
-			$this->htmlTag('div', array('class' => 'votes font-sans inline-flow'), 
+			$this->htmlTag('div', array('class' => $voteClass)+$voteParams, 
 				$this->htmlTag('div', array('class' => 'mini-counts'), isset($question->votes['score'])? $question->votes['score'] : 0)."".
 				$this->htmlTag('div', array('class' => 'mini-label'), 'votes')
 			)."".

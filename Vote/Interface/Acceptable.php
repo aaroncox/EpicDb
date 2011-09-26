@@ -20,5 +20,5 @@
  * @version $Id:$
  */
 interface EpicDb_Vote_Interface_Acceptable {
-  
+  public function isReputationDisabled(); // Returns true or false based on whether the reputation gain/loss is disabled	
 }

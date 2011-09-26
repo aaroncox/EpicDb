@@ -48,8 +48,10 @@ class EpicDb_Vote_Down extends EpicDb_Vote_Abstract {
 
 	protected function _postCast()
 	{
-		$this->giveReputationToTarget(-5);
-		$this->giveReputationToVoter(-2);
+		if (!$this->_post->isReputationDisabled()) {
+			$this->giveReputationToTarget(-5);
+			$this->giveReputationToVoter(-2);			
+		}
 		parent::_postCast();
 	}
 

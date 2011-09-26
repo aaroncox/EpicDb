@@ -45,7 +45,7 @@ class EpicDb_Vote_Up extends EpicDb_Vote_Abstract {
 
 	protected function _postCast()
 	{
-		if (!$this->_post instanceOf EpicDb_Vote_Interface_UpOnly)
+		if (!$this->_post instanceOf EpicDb_Vote_Interface_UpOnly && !$this->_post->isReputationDisabled())
 		{  // posts that only have upvotes don't gain rep.
 			$this->giveReputationToTarget(10);
 		}

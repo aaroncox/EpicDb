@@ -20,5 +20,5 @@
  * @version $Id: Votable.php 421 2010-12-16 00:08:31Z root $
  */
 interface EpicDb_Vote_Interface_Votable {
-  
+  public function isReputationDisabled(); // Returns true or false based on whether the reputation gain/loss is disabled
 }
