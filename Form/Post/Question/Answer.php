@@ -30,7 +30,7 @@ class EpicDb_Form_Post_Question_Answer extends EpicDb_Form_Post
 				"tags" => $post->tags->getTags('answer-tag'),
 			));
 		}
-		$this->source->setLabel("Your Answer")->setDescription("Do you have the answer to this question? Post your answer to earn achievements and reputation on EpicAdvice.com!");
+		$this->source->setLabel("Your Answer");
 		$this->setButtons(array("save" => "Post Answer"));
 	}
 	public function save() {
