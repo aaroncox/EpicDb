@@ -155,15 +155,17 @@ class EpicDb_Mongo_Profile_Group extends EpicDb_Mongo_Profile
 			if (!$checkType) continue;
 			$typeSetKey = $checkType.'s';
 			$set = $this->$typeSetKey;
-
 			if ($checkType == $type) {
 				$updateQuery['$addToSet'][$typeSetKey] = $profile->createReference();
+				$profile->tags->tag($this, 'group-'.$checkType);
 				$user->addGroup($this->getRole($checkType));
 			} else {
 				$updateQuery['$pull'][$typeSetKey] = $profile->createReference();
+				$profile->tags->untag($this, 'group-'.$checkType);
 				$user->removeGroup($this->getRole($checkType));
 			}
 		}
+		$profile->save();
 		$user->save();
 		self::update(array('_id' => $this->_id), $updateQuery);
 		return true;
