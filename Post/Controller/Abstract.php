@@ -487,6 +487,7 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 	}
 	public function revisionsAction() {
 	  $this->getPost();
+		$this->view->breadcrumb = "Revision History";
 	}
 	
 	/**
