@@ -12,6 +12,7 @@ class EpicDb_Mongo_Wiki extends EpicDb_Auth_Mongo_Resource_Document implements E
 		'record' => array('AsReference'),
 		'type' => array('Required'),
 		'_lastEditedBy' => array('Document:EpicDb_Mongo_Profile', 'AsReference'),
+		'tags' => array('DocumentSet:EpicDb_Mongo_Tags'),
 		'revisions' => array('DocumentSet'),
 		'revisions.$' => array('Document:EpicDb_Mongo_Revision'),
 		'revisions.$.tags' => array('DocumentSet:EpicDb_Mongo_Tags'),
@@ -42,7 +43,7 @@ class EpicDb_Mongo_Wiki extends EpicDb_Auth_Mongo_Resource_Document implements E
 	{
 		$revision = $this->revisions->new();
 		$this->revisions->addDocument($revision);
-		$copy = array('source', 'header', '_lastEditedBy', '_lastEditedReason', '_lastEdited');
+		$copy = array('source', 'html', 'header', '_lastEditedBy', '_lastEditedReason', '_lastEdited');
 		foreach ($copy as $key) {
 			$revision->$key = $this->$key;
 		}

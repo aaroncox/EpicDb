@@ -72,6 +72,39 @@ class EpicDb_Form_Wiki extends EpicDb_Form
 		$this->_wiki = $wiki;
 		return $this;
 	}
+	
+	protected $_revision = false;
+	public function setRev($rev) {
+		$this->_revision = $rev;
+		return $this;
+	}
+	
+	public function getInitialData()
+	{
+		$wiki = $this->getWiki();
+		return ($this->_revision === false) ? $wiki : $wiki->revisions[ $this->_revision ];
+	}
+
+	public function getDefaultValues()
+	{
+		$values = array();
+		$data = $this->getInitialData();
+
+		$values['source'] = $data->source ?: $data->html;
+		$values['tags'] = $data->tags->getTags('tag');
+
+		if ($this->_revision !== false) $values['reason'] = "Rollback to Revision #".($this->_revision+1);
+
+		return $values;
+	}
+
+    public function __construct($options = null)
+	{
+		parent::__construct( $options );
+		// postinit - post decorators
+		$this->setDefaults( $this->getDefaultValues() );
+	}
+	
 	/**
 	 * init - undocumented function
 	 *
@@ -121,7 +154,6 @@ class EpicDb_Form_Wiki extends EpicDb_Form
 
 	public function save() {
 		$wiki = $this->getWiki();
-		EpicDb_Mongo_Revision::makeEditFor($wiki, $this->reason->getValue());
 		if($this->source) {
 			$wiki->source = $this->source->getValue();
 			$wiki->html = $this->source->getRenderedValue();			
@@ -135,6 +167,7 @@ class EpicDb_Form_Wiki extends EpicDb_Form
 		if($this->_isNew) {
 			$wiki->record = $this->_record;
 		}
+		// var_dump($wiki->export()); exit;
 		return $wiki->save();
 		// $post = $this->getPost();
 		// if($this->source) {
@@ -160,6 +193,9 @@ class EpicDb_Form_Wiki extends EpicDb_Form
 	}
 	public function process($data) {
 		if($this->isValid($data)) {
+			$wiki = $this->getWiki();
+			EpicDb_Mongo_Revision::makeEditFor($wiki, $this->reason->getValue());
+			$wiki->save();
 			$this->save();
 			return true;
 		}
