@@ -26,6 +26,7 @@ class EpicDb_Mongo_Profile extends EpicDb_Auth_Mongo_Resource_Document implement
 	  if (!is_array($this->_requirements)) $this->_requirements = array();
 	  $this->_requirements += array(
 			'_lastEditedBy' => array('Document:EpicDb_Mongo_Profile', 'AsReference'),
+			'tags' => array('DocumentSet:EpicDb_Mongo_Tags', 'Required'),
 	    );
 	  $return = parent::__construct($data, $config);
 	}
