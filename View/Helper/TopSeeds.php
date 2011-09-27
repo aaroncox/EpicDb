@@ -16,6 +16,6 @@ class EpicDb_View_Helper_TopSeeds extends MW_View_Helper_HtmlTag
 		foreach($seeds as $seed) {
 			$html .= $this->view->seedStub($seed, $record);
 		}
-		return $this->htmlTag('div', array('class' => 'transparent-bg rounded'), $html);
+		return $this->htmlTag('div', array('class' => 'transparent-bg-blue rounded'), $html);
 	}
 } // END class EpicDb_View_Helper_TopSeeds extends MW_View_Helper_HtmlTag

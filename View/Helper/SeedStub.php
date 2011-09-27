@@ -51,7 +51,7 @@ class EpicDb_View_Helper_SeedStub extends EpicDb_View_Helper_PostStub
 		}
 		// Load in specific answer thing here.
 		foreach($answers as $answer) {
-			$html .= $this->view->card($answer, array('class' => 'medium-icon'));
+			$html .= $this->view->htmlTag("div", array("style" => "width: 180px", "class" => "inline-flow"), $this->view->card($answer, array('class' => 'medium-icon')));
 		}
 		$html .= $seed->wiki($record)->html;
 		return $html;
