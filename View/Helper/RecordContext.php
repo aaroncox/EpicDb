@@ -29,6 +29,8 @@ class EpicDb_View_Helper_RecordContext extends MW_View_Helper_HtmlTag
 		
 		if($buttons) $placeholder->widget('<h3>Available Actions</h3>'.$buttons);
 
+		// $placeholder->widget($this->view->render("./_context/related-images.phtml"));
+		
 		// Get followers for the widget
 		$followers = $record->getMyFollowers();
 		if($followers->count()) {
