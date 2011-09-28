@@ -79,11 +79,11 @@ class EpicDb_View_Helper_VoteWidget extends MW_View_Helper_HtmlTag
 				switch($vote) {
 					case "up":
 						$tagOpts["class"] .= " has-tooltip";
-						$tagOpts["data-tooltip"] = "Up Vote - This post was useful, informative and helpful.";
+						$tagOpts["data-tooltip"] = "Cast an Up Vote - This post was on-topic, useful, informative or helpful.";
 						break;
 					case "down":
 						$tagOpts["class"] .= " has-tooltip";
-						$tagOpts["data-tooltip"] = "Down Vote - This post was irrelevant, inflammatory, inaccurate or off-topic.";
+						$tagOpts["data-tooltip"] = "Cast a Down Vote - This post was irrelevant, inflammatory, inaccurate or off-topic.";
 						break;
 					default: 
 						break;
@@ -124,9 +124,9 @@ class EpicDb_View_Helper_VoteWidget extends MW_View_Helper_HtmlTag
 			);
 			
 		}
-		if ($post instanceOf EpicDb_Vote_Interface_Flaggable) {
-			$content .= $this->view->htmlTag("p", array(), $this->makeVoteButton("flag")." ");
-		}
+		// if ($post instanceOf EpicDb_Vote_Interface_Flaggable) {
+		// 	$content .= $this->view->htmlTag("p", array(), $this->makeVoteButton("flag")." ");
+		// }
 		return $this->view->htmlTag("div", array("class" => 'vote-widget ' . @$this->_opts['class'] ?: ''), $content)." ";
 	}
 	
