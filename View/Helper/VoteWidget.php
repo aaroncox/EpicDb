@@ -54,19 +54,22 @@ class EpicDb_View_Helper_VoteWidget extends MW_View_Helper_HtmlTag
 				return $content;
 			}
 			return "";
-		} elseif ($dbVote = EpicDb_Vote::factory( $post, $vote )) {
+		} else {
+			$dbVote = EpicDb_Vote::factory( $post, $vote );
 			$content = " ";
 			if (isset($this->_flagTypes[$vote])) {
 				$content = "<span class='$iconClass' style='display: inline-block'> </span>";
 				$content .= $this->_flagTypes[$vote];
-				if ($vote == "moderator") $content .= "<br><input type='text' name='reason' placeholder='Reason for flagging' value='".$this->view->escape($dbVote->reason)."'>";
+				if($dbVote) {
+					if ($vote == "moderator") $content .= "<br><input type='text' name='reason' placeholder='Reason for flagging' value='".$this->view->escape($dbVote->reason)."'>";					
+				}
 			} else {
 				$tagOpts['class'] .= $iconClass;
 			}
 
-			if ($message = $dbVote->isDisabled()) {
-				if ($vote == "accept") return "";
-				$tagOpts["class"] .= " ui-state-disabled";
+			if (!$dbVote || $message = $dbVote->isDisabled()) {
+				if(!isset($message)) $message = "You must be logged in to perform this action.";
+				$tagOpts["class"] .= " ui-state-disabled has-tooltip";
 				$tagOpts["data-tooltip"] = $message;
 			} else {
 				$tagOpts["data-voteurl"] = $this->voteUrl($post, $vote);
@@ -76,11 +79,11 @@ class EpicDb_View_Helper_VoteWidget extends MW_View_Helper_HtmlTag
 				switch($vote) {
 					case "up":
 						$tagOpts["class"] .= " has-tooltip";
-						$tagOpts["data-tooltip"] = "Vote Up";
+						$tagOpts["data-tooltip"] = "Up Vote - This post was useful, informative and helpful.";
 						break;
 					case "down":
 						$tagOpts["class"] .= " has-tooltip";
-						$tagOpts["data-tooltip"] = "Vote Down.";
+						$tagOpts["data-tooltip"] = "Down Vote - This post was irrelevant, inflammatory, inaccurate or off-topic.";
 						break;
 					default: 
 						break;
@@ -88,10 +91,7 @@ class EpicDb_View_Helper_VoteWidget extends MW_View_Helper_HtmlTag
 				$tag = "a";
 			}
 			return $this->view->htmlTag($tag, $tagOpts, $content);
-		} else {
-			return "";
 		}
-		
 	}
 	protected $_post = null;
 	protected $_opts = array();
@@ -115,21 +115,19 @@ class EpicDb_View_Helper_VoteWidget extends MW_View_Helper_HtmlTag
 			// 		), $this->_opts['title']);
 			// }
 			$content .= $this->view->htmlTag("div", array("class" => "transparent-bg-blue rounded padded"),
-				$this->view->htmlTag("div", array("class" => "vote-count".$this->color($score)), $score)."".
+				$this->view->htmlTag("div", array("class" => "vote-count".$this->color($score)), $score)." ".
 				$this->view->htmlTag("div", array(), 
-					$this->makeVoteButton("up")."".
-					((!$post instanceOf EpicDb_Vote_Interface_UpOnly) ? $this->makeVoteButton("down") : "")
-				)
+					$this->makeVoteButton("up")." ".
+					((!$post instanceOf EpicDb_Vote_Interface_UpOnly) ? $this->makeVoteButton("down") : " ")
+				)."".
+				(($post instanceOf EpicDb_Vote_Interface_Acceptable) ? $this->view->htmlTag("p", array(), $this->makeVoteButton("accept")."") : "")
 			);
-			// if ($post instanceOf EpicDb_Vote_Interface_Acceptable) {
-			// 	$content .= $this->view->htmlTag("p", array(), $this->makeVoteButton("accept")."");
-			// }
+			
 		}
-		// if ($post instanceOf EpicDb_Vote_Interface_Flaggable) {
-		// 	$content .= $this->view->htmlTag("p", array(), $this->makeVoteButton("flag")."");
-		// }
-		$this->htmlTag("div", array("class" => 'vote-widget ' . @$this->_opts['class'] ?: ''), $content);
-		return parent::render();
+		if ($post instanceOf EpicDb_Vote_Interface_Flaggable) {
+			$content .= $this->view->htmlTag("p", array(), $this->makeVoteButton("flag")." ");
+		}
+		return $this->view->htmlTag("div", array("class" => 'vote-widget ' . @$this->_opts['class'] ?: ''), $content)." ";
 	}
 	
 	public function voteWidget($post, array $opts = array()) {
