@@ -67,12 +67,24 @@ class EpicDb_View_Helper_VoteWidget extends MW_View_Helper_HtmlTag
 			if ($message = $dbVote->isDisabled()) {
 				if ($vote == "accept") return "";
 				$tagOpts["class"] .= " ui-state-disabled";
-				$tagOpts["title"] = $message;
+				$tagOpts["data-tooltip"] = $message;
 			} else {
 				$tagOpts["data-voteurl"] = $this->voteUrl($post, $vote);
 				$tagOpts["class"] .= (( $dbVote && $dbVote->hasCast() ) ? " ui-state-active" : " ");
 				$tagOpts["href"] = "#";
 				$tagOpts["title"] = $dbVote->linkTitle;
+				switch($vote) {
+					case "up":
+						$tagOpts["class"] .= " has-tooltip";
+						$tagOpts["data-tooltip"] = "Vote Up";
+						break;
+					case "down":
+						$tagOpts["class"] .= " has-tooltip";
+						$tagOpts["data-tooltip"] = "Vote Down.";
+						break;
+					default: 
+						break;
+				}
 				$tag = "a";
 			}
 			return $this->view->htmlTag($tag, $tagOpts, $content);
@@ -96,25 +108,26 @@ class EpicDb_View_Helper_VoteWidget extends MW_View_Helper_HtmlTag
 		$content = " ";
 		// Move this somewhere, I haven't found it yet
 		if ($post instanceOf EpicDb_Vote_Interface_Votable) {
-			if (!empty($this->_opts['title'])) {
-				$content .= $this->view->htmlTag("p", array(
-						"class" => "text-verysmall font-sans", 
-						"style" => "margin: 5px 0; font-weight: bold;"
-					), $this->_opts['title']);
-			}
-			$content .= $this->makeVoteButton("up");
-			// using another htmlTag so we don't render using our render ours up...
-			$content .= $this->view->htmlTag("p", array("class" => "rounded vote-count".$this->color($score)), $score);
-			if (!$post instanceOf EpicDb_Vote_Interface_UpOnly) {
-				$content .= $this->makeVoteButton("down");
-			}
-			if ($post instanceOf EpicDb_Vote_Interface_Acceptable) {
-				$content .= $this->view->htmlTag("p", array(), $this->makeVoteButton("accept")."");
-			}
+			// if (!empty($this->_opts['title'])) {
+			// 	$content .= $this->view->htmlTag("p", array(
+			// 			"class" => "text-verysmall font-sans", 
+			// 			"style" => "margin: 5px 0; font-weight: bold;"
+			// 		), $this->_opts['title']);
+			// }
+			$content .= $this->view->htmlTag("div", array("class" => "transparent-bg-blue rounded padded"),
+				$this->view->htmlTag("div", array("class" => "vote-count".$this->color($score)), $score)."".
+				$this->view->htmlTag("div", array(), 
+					$this->makeVoteButton("up")."".
+					((!$post instanceOf EpicDb_Vote_Interface_UpOnly) ? $this->makeVoteButton("down") : "")
+				)
+			);
+			// if ($post instanceOf EpicDb_Vote_Interface_Acceptable) {
+			// 	$content .= $this->view->htmlTag("p", array(), $this->makeVoteButton("accept")."");
+			// }
 		}
-		if ($post instanceOf EpicDb_Vote_Interface_Flaggable) {
-			$content .= $this->view->htmlTag("p", array(), $this->makeVoteButton("flag")."");
-		}
+		// if ($post instanceOf EpicDb_Vote_Interface_Flaggable) {
+		// 	$content .= $this->view->htmlTag("p", array(), $this->makeVoteButton("flag")."");
+		// }
 		$this->htmlTag("div", array("class" => 'vote-widget ' . @$this->_opts['class'] ?: ''), $content);
 		return parent::render();
 	}
