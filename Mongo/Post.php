@@ -31,6 +31,7 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 			'_parent' => array('Document:EpicDb_Mongo_Post', 'AsReference'),
 			'_touchedBy' => array('Document:EpicDb_Mongo_Profile', 'AsReference'),
 			'_lastEditedBy' => array('Document:EpicDb_Mongo_Profile', 'AsReference'),
+			'_deletedBy' => array('Document:EpicDb_Mongo_Profile_User', 'AsReference'),
 			// '_profile' => array('Document:EpicDb_Mongo_Profile', 'AsReference', 'Required'),
 			'tags' => array('DocumentSet:EpicDb_Mongo_Tags', 'Required'),
 			'touchedBy' => array('Document:EpicDb_Mongo_Profile', 'AsReference'),
@@ -116,9 +117,6 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 	public function findResponses($limit = 10, $query = array(), $sort = array()) {
 		$query = array(
 			"_parent" => $this->createReference(),
-			'_deleted' => array(
-					'$exists' => false
-				)
 		) + $query;
 		$sort += array("_created" => 1);
 		return $results = EpicDb_Mongo::db('post')->fetchAll($query, $sort, $limit);
@@ -307,7 +305,14 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 	}
 	
 	public function delete() {
-		$this->_deleted = true;
+		$this->_deleted = time();
+		$this->_deletedBy = EpicDb_Auth::getInstance()->getUserProfile();
+		$this->save();
+	}
+
+	public function undelete() {
+		unset($this->_deleted);
+		unset($this->_deletedBy);
 		$this->save();
 	}
 	

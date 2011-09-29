@@ -18,7 +18,12 @@ class EpicDb_Auth_Mongo_Resource_Document extends MW_Auth_Mongo_Resource_Documen
 		return $result;
 	}
 	public static function fetchAll($query = array(), $sort = array(), $limit = false, $skip = false) {
-		if(!isset($query['_deleted'])) $query += array('_deleted' => array('$exists' => false));
+		if(!isset($query['_deleted'])) {
+			// This should check their rep level eventually, for now, we check if they are moderator.
+			if(!EpicDb_Auth::getInstance()->hasPrivilege(new EpicDb_Auth_Resource_Moderator())) {
+				$query += array('_deleted' => array('$exists' => false));				
+			}
+		}
 		$result = parent::fetchAll($query, $sort, $limit, $skip);
 		if(APPLICATION_ENV == 'development') {
 			// $explain = $result->getInnerIterator()->explain();
