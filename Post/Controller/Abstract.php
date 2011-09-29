@@ -157,13 +157,11 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 		);
 		$question = $this->view->post = EpicDb_Mongo::db('question')->fetchOne($query);
 		$this->view->hideComments = true;
-		if($this->_helper->auth->getUserProfile()) {
-			$newAnswer = EpicDb_Mongo::db('answer');
-			$newAnswer->_parent = $question;
-			$newAnswer->tags->tag($question, 'parent');
-			$answerForm = $this->view->form = $newAnswer->getEditForm();
-			$this->_handleMWForm($answerForm, 'answer');
-		}
+		$newAnswer = EpicDb_Mongo::db('answer');
+		$newAnswer->_parent = $question;
+		$newAnswer->tags->tag($question, 'parent');
+		$answerForm = $this->view->form = $newAnswer->getEditForm();
+		$this->_handleMWForm($answerForm, 'answer');
 	}
 	
 	protected function _formRedirect($form, $key, $ajax) {
