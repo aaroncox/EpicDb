@@ -17,8 +17,8 @@ class EpicDb_Form_Post extends EpicDb_Form
 	protected $_editSourceLabel = "Edit Post";
 
 	// These need to move into the config, just trying to get the protection online.
-	private $_publickey = "6Lf4j8USAAAAAKDmcKGNlZSGLxWa-lm1hL3II3pu";
-	private $_privatekey = "6Lf4j8USAAAAAPi5c4-afd6QOhwuOdr0Yh0MDRb5";
+	private $_publickey = "6LepocgSAAAAADWGXx_OP4jm0bYRJ8qF1N2hK1J6";
+	private $_privatekey = "6LepocgSAAAAANvcDTdYD-m1r3bD0cPkdYxAbAvr ";
 
 	/**
 	 * getPost - undocumented function
@@ -198,6 +198,7 @@ class EpicDb_Form_Post extends EpicDb_Form
 				$recaptcha = new Zend_Service_ReCaptcha($this->_publickey, $this->_privatekey);
 				$result = $recaptcha->verify($data['recaptcha_challenge_field'],
 																		 $data['recaptcha_response_field']);
+				
 				if (!$result->isValid()) {
 					return false;
 				}
