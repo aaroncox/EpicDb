@@ -196,8 +196,8 @@ class EpicDb_Form_Post extends EpicDb_Form
 		if($this->isValid($data)) {
 			if(!MW_Auth::getInstance()->getUser()) {
 				$recaptcha = new Zend_Service_ReCaptcha($this->_publickey, $this->_privatekey);
-				$result = $recaptcha->verify($this->_getParam('recaptcha_challenge_field'),
-									$this->_getParam('recaptcha_response_field'));
+				$result = $recaptcha->verify($data['recaptcha_challenge_field'],
+																		 $data['recaptcha_response_field']);
 				if (!$result->isValid()) {
 					return false;
 				}
