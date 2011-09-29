@@ -112,7 +112,11 @@ class EpicDb_View_Helper_Card extends MW_View_Helper_HtmlTag
 		// var_dump($record);exit;
 		$this->_tagType = 'h4';
 		if(isset($params['tagType'])) $this->setTagType($params['tagType']);
-		if(!$record) return $this->unknownCard($params);
+		if(!$record) {
+			$record = EpicDb_Mongo::newDoc('user');
+			$record->name = "Anonymous";
+			$record->email = "anonymous@r2-db.com";
+		}
 		if(!isset($params['extra'])) $params['extra'] = '';
 		if(!isset($params['class'])) $params['class'] = '';
 		if(!isset($params['iconClass'])) $params['iconClass'] = '';

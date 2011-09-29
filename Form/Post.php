@@ -17,8 +17,8 @@ class EpicDb_Form_Post extends EpicDb_Form
 	protected $_editSourceLabel = "Edit Post";
 
 	// These need to move into the config, just trying to get the protection online.
-	private $_publickey = "6LepocgSAAAAADWGXx_OP4jm0bYRJ8qF1N2hK1J6";
-	private $_privatekey = "6LepocgSAAAAANvcDTdYD-m1r3bD0cPkdYxAbAvr ";
+	private $_publickey = "6LeqocgSAAAAAG0ftSdCNyE7Ot2nGqgTKVziHghW";
+	private $_privatekey = "6LeqocgSAAAAAC-pegePxGhdQI8Ee9SiDvvbsmal";
 
 	/**
 	 * getPost - undocumented function
@@ -148,7 +148,7 @@ class EpicDb_Form_Post extends EpicDb_Form
 
 		if(!$profile) {
 			$recaptcha = new Zend_Service_ReCaptcha($this->_publickey, $this->_privatekey);
-			$captcha = new Zend_Form_Element_Captcha('challenge', array(
+			$captcha = new Zend_Form_Element_Captcha('captcha', array(
 				'order' => 2000,
 				'label' => 'Prove your a human',
 				'captcha' => 'ReCaptcha',
@@ -182,28 +182,20 @@ class EpicDb_Form_Post extends EpicDb_Form
 		if($this->requestType) {
 			$post->_requestType = $this->requestType->getValue();
 		}
-		if($post->_parent) {
+		if($me && $post->_parent) {
 			$me->watch($post->_parent);
 		}
 		$save = $post->save();
-		$me->watch($post);
-		$me->save();
+		if($me) {
+			$me->watch($post);
+			$me->save();			
+		}
 		return $save;
 	}
 	public function process($data) {
 		$me = $this->getAuthorProfile();
 		$post = $this->getPost();
 		if($this->isValid($data)) {
-			if(!MW_Auth::getInstance()->getUser()) {
-				$recaptcha = new Zend_Service_ReCaptcha($this->_publickey, $this->_privatekey);
-				$result = $recaptcha->verify($data['recaptcha_challenge_field'],
-																		 $data['recaptcha_response_field']);
-				
-				if (!$result->isValid()) {
-					return false;
-				}
-			}
-
 			if($post->isNewDocument()) {
 				$post->_created = time();
 			} else {
