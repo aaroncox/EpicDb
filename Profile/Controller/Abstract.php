@@ -149,13 +149,25 @@ abstract class EpicDb_Profile_Controller_Abstract extends MW_Controller_Action
 
 
 	public function unblockAction() {
+		$record = $this->getProfile();
 		$this->_helper->auth->unblock($this->getProfile());
+		if ($this->getRequest()->isXmlHttpRequest()) {
+			$this->_helper->layout->disableLayout();
+			echo $this->view->followButton($record, array("mode" => "block"));
+			exit;
+		}
 		$this->_redirect($this->getRequest()->getServer('HTTP_REFERER'));
 	}
 
 
 	public function blockAction() {
+		$record = $this->getProfile();
 		$this->_helper->auth->block($this->getProfile());
+		if ($this->getRequest()->isXmlHttpRequest()) {
+			$this->_helper->layout->disableLayout();
+			echo $this->view->followButton($record, array("mode" => "block"));
+			exit;
+		}
 		$this->_redirect($this->getRequest()->getServer('HTTP_REFERER'));
 	}
 
@@ -182,7 +194,7 @@ abstract class EpicDb_Profile_Controller_Abstract extends MW_Controller_Action
 	public function crawlAction() {
 		$profile = $this->getProfile();
 		try {
-			EpicDb_Crawler::crawl($profile, true);
+			EpicDb_Crawler::getInstance()->crawl($profile, true);
 		} catch (Exception $e) {
 			$this->view->error = "Error: Caught ".get_class($e)." ".$e->getMessage()." \n";
 		}
