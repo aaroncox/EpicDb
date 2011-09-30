@@ -244,19 +244,33 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 			} else {
 				$this->view->title = "Recent Questions";
 			}
-			switch($this->getRequest()->getParam("sort")) {
+			$this->view->sortBy = $sortBy = $this->getRequest()->getParam("sort");
+			switch($sortBy) {
 				case "highest-voted":
-					$sort = array('votes.score' => -1, '_created' => -1);
-					break;
-				case "lowest-voted":
-					$sort = array('votes.score' => 1, '_created' => -1);
-					break;
-				case "oldest":
-					$sort = array('_created' => 1);
+					$sort = array('votes.score' => -1);
 					break;
 				case "newest":
+					$sort = array('_created' => -1);
+					break;
 				default:
 					$sort = array('touched' => -1, '_created' => -1);
+					break;
+			}
+			$this->view->filterBy = $filterBy = $this->getRequest()->getParam("filter");
+			switch($filterBy) {
+				case "unanswered":
+					// ?????
+					break;
+				case "today":
+					$query['_created'] = array('$gt' => time() - (60*60*24));
+					break;
+				case "week":
+					$query['_created'] = array('$gt' =>time() - (60*60*24*7));
+					break;
+				case "month":
+					$query['_created'] = array('$gt' =>time() - (60*60*24*30));
+					break;
+				default:
 					break;
 			}
 			Zend_Paginator::setDefaultItemCountPerPage( 10 );
