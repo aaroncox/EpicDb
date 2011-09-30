@@ -8,14 +8,11 @@
  * @param undocumented class
  * @package undocumented class
  **/
-class EpicDb_View_Helper_GroupContext extends MW_View_Helper_HtmlTag
+class EpicDb_View_Helper_WebsiteContext extends MW_View_Helper_HtmlTag
 {
-	public function groupContext(EpicDb_Mongo_Profile $profile) {
+	public function websiteContext(EpicDb_Mongo_Profile_Group_Website $profile) {
 		$placeholder = $this->view->context();
-		$placeholder->prepend($this->view->tooltip($profile));
-		if($profile->description) $placeholder->widget($this->htmlTag("h3", array(), "Description")."".$this->htmlTag("p", array(), $profile->description));
-		$placeholder = $this->view->summary();
-		$placeholder->append($this->view->tooltip($profile)."");
+		$placeholder->append($this->view->tooltip($profile));
 		
 		$buttons = '';
 		if ($profile->user && MW_Auth::getInstance()->hasPrivilege(new MW_Auth_Resource_Super(), 'sudo')) {
@@ -27,13 +24,13 @@ class EpicDb_View_Helper_GroupContext extends MW_View_Helper_HtmlTag
 				'text' => 'Sudo',
 				'icon' => 'key'
 			));
-		}					
-		if(R2Db_Auth::getInstance()->hasPrivilege($profile, 'edit')) {
+		}
+		if(EpicDb_Auth::getInstance()->hasPrivilege($profile, 'edit')) {
 			$buttons .= $this->view->button(array(
 				'action' => 'edit',
 				'profile' => $profile
 			), 'profile', true, array(
-				'text' => 'Edit Group',
+				'text' => 'Edit',
 				'icon' => 'key',
 			));						
 			$buttons .= $this->view->button(array(
@@ -42,18 +39,11 @@ class EpicDb_View_Helper_GroupContext extends MW_View_Helper_HtmlTag
 			), 'profile', true, array(
 				'text' => 'Upload Icon/Logo',
 				'icon' => 'key',
-			));						
-			// $buttons .= $this->view->button(array(
-			// 	'action' => '',
-			// 	'profile' => $profile
-			// ), 'profile', true, array(
-			// 	'text' => 'Post',
-			// 	'icon' => 'pencil',
-			// ));						
+			));
 		}
 		if($profile->feed) {
 			$buttons .= $this->view->button(array(
-				'action' => 'manual-crawl',
+				'action' => 'crawl',
 				'profile' => $profile
 			), 'profile', true, array(
 				'text' => 'Scan RSS',
@@ -98,7 +88,7 @@ class EpicDb_View_Helper_GroupContext extends MW_View_Helper_HtmlTag
 		}
 		if($buttons != "") "<h3>Available Actions</h3>".$placeholder->widget($buttons);
 		
-		if($profile->description) $placeholder->widget($this->htmlTag("h3", array(), "Group Description")."".$this->htmlTag("p", array(), $profile->description));
+		if($profile->description) $placeholder->widget($this->htmlTag("h3", array(), "Website Description")."".$this->htmlTag("p", array(), $profile->description));
 
 		if($totalAdmins = $profile->admins->count()) {
 			$placeholder->widget(
@@ -112,6 +102,7 @@ class EpicDb_View_Helper_GroupContext extends MW_View_Helper_HtmlTag
 				)
 			);			
 		}
+		
 		if($totalMembers = $profile->members->count()) {
 			$placeholder->widget(
 				$this->htmlTag("h3", array(), $profile->name."'s Members")."".
@@ -138,5 +129,6 @@ class EpicDb_View_Helper_GroupContext extends MW_View_Helper_HtmlTag
 				)
 			);			
 		}
+		
 	}
 } // END class EpicDb_View_Helper_ProfileContext
