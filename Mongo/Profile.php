@@ -15,6 +15,7 @@ class EpicDb_Mongo_Profile extends EpicDb_Auth_Mongo_Resource_Document implement
 	public $routeName = "profile";
 	
 	protected $_layout = "2-column";
+	protected static $_defaultAction = 'view'; // You can override this to cause the default action on specific profiles to change.
 	protected static $_collectionName = 'profiles';
 	protected static $_documentType = null;
 	protected static $_editForm = 'EpicDb_Form_Profile';
@@ -150,6 +151,10 @@ class EpicDb_Mongo_Profile extends EpicDb_Auth_Mongo_Resource_Document implement
 	
 	public function getRouteParams() {
 		return array('profile' => $this);
+	}
+	
+	public function getDefaultAction() {
+		return static::$_defaultAction;
 	}
 	
 	public function getLayout() {
