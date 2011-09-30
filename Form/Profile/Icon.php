@@ -31,7 +31,7 @@ class EpicDb_Form_Profile_Icon extends EpicDb_Form_Profile
 	
 	public function process($data) {
 		$profile = $this->getProfile();
-		$profile->logo = $this->optimizeAndUpload('logo', $profile);
+		// $profile->logo = $this->optimizeAndUpload('logo', $profile);
 		$profile->icon = $this->optimizeAndUpload('icon', $profile);
 		$profile->save();
 		return true;
