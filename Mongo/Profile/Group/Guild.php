@@ -6,7 +6,7 @@
  **/
 class EpicDb_Mongo_Profile_Group_Guild extends EpicDb_Mongo_Profile_Group
 {
-	public $summaryHelper = 'guildSummary';
+	public $contextHelper = 'guildContext';
 	
 	protected static $_documentType = "guild";
 	protected static $_editForm = 'EpicDb_Form_Profile_Group_Guild';

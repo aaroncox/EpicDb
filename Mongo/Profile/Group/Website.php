@@ -6,9 +6,10 @@
  **/
 class EpicDb_Mongo_Profile_Group_Website extends EpicDb_Mongo_Profile_Group
 {
-	public $summaryHelper = 'websiteSummary';
+	public $contextHelper = 'websiteContext';
 	protected static $_documentType = "website";
 	protected static $_editForm = 'EpicDb_Form_Profile_Group_Website';
+	protected static $_defaultAction = 'news'; // You can override this to cause the default action on specific profiles to change.
 	
 	public function isAdmin() {}
 	public function isMe() {}
