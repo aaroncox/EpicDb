@@ -16,7 +16,7 @@ class EpicDb_Route_Profile extends Zend_Controller_Router_Route
   {
     $defaults = array(
       'controller' => 'profile',
-      'action' => 'view',
+			'action' => null,
       'module' => 'default', 
       'slug' => '-',
     );
@@ -43,6 +43,7 @@ class EpicDb_Route_Profile extends Zend_Controller_Router_Route
     if($profile instanceOf EpicDb_Mongo_Profile) {
       $data['id'] = $profile->id;				
       $data['type'] = $profile->_type;				
+			if(!isset($data['action'])) $data['action'] = $profile->getDefaultAction();
 			if(!isset($data['slug'])) {
 				$slug = new MW_Filter_Slug();
 				$data['slug'] = $slug->filter($profile->name);
@@ -70,6 +71,7 @@ class EpicDb_Route_Profile extends Zend_Controller_Router_Route
 		$match = parent::match($path, $partial);
 		if ($match) {
 			$profile = $this->getProfile($match);
+			if(!$match['action']) $match['action'] = $profile->getDefaultAction();
 			if (!$profile) {
 				$this->_values = array(); return false;
 			}
