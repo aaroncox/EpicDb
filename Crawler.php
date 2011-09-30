@@ -10,7 +10,39 @@
  **/
 class EpicDb_Crawler
 {
-	public static $errors = array();
+	/**
+	 * Class Instance - Singleton Pattern
+	 *
+	 * @var self
+	 **/
+	static protected $_instance = NULL;
+
+	/**
+	 * private constructor - singleton pattern
+	 *
+	 * @return void
+	 * @author Corey Frang
+	 **/
+	private function __construct()
+	{
+	}
+
+	/**
+	 * Returns (or creates) the Instance - Singleton Pattern
+	 *
+	 * @return self
+	 * @author Corey Frang
+	 **/
+	static public function getInstance()
+	{
+		if (self::$_instance === NULL) {
+			self::$_instance = new self();
+		}
+		return self::$_instance;
+	}
+	
+	protected static $_log = array();
+	
 	public static function crawl($profile, $throwErrors = true) {
 		// echo "Starting on ".$profile->feed;
 		$config = array(
@@ -32,8 +64,7 @@ class EpicDb_Crawler
 			$reader->setHttpClient($client);
 			$feed = $reader->import($profile->feed);						
 		} catch (Exception $e) {
-			// var_dump($e);
-		  if ($throwErrors) throw $e;
+			static::$_log[] = "ERROR: ".$e->getMessage();
 			// NYI - Should probably throw an error here and let the users know their URL sucks.
 			return null;
 		}
@@ -42,31 +73,41 @@ class EpicDb_Crawler
 			$article = EpicDb_Mongo::db('article-rss')->retrieveArticle($profile, $entry);
 			$purifier = new MW_Filter_HtmlPurifier(array(array("HTML.Nofollow", 1)));
 
+			if(trim($article->body) == "") {
+				static::$_log[] = "Skipped crawling [".$article->title."] because body is empty";
+				continue;
+			}
+			if(trim($article->title) == "") {
+				static::$_log[] = "Skipped crawling [".$entry->getPermaLink()."] because title is empty";
+				continue;
+			}
+
 			$article->title = $entry->getTitle();
 			$article->body = $purifier->filter($entry->getContent()?:$entry->getDescription());
-			// If the body is empty, fuck it, skip it.
-			if(trim($article->body) == "") static::$errors[] = "Skipping Article because body is empty [".$article->title."]<br/>";
-			// same with the title
-			if(trim($article->title) == "") continue;
-			// var_dump($entry->getImage()); exit;
+
 			try {
 				$article->_modified = strtotime((string)$entry->getDateModified());			
 				$article->_created = strtotime((string)$entry->getDateCreated());
-				// var_dump($article->_created); exit;
 				if($article->_created == false) {
 					$article->_created = $article->_modified;
 				}
+				if($article->_created > time()) {
+					$article->_created = time();
+				}
 				$article->link = $entry->getPermaLink();
 				$article->save();
+				static::$_log[] = "Successfully crawled content @ ".$entry->getPermaLink();
 				// exit;
 			} catch(Exception $exception) {
-				echo "\n\rUnable to crawl!";
-				var_dump($entry);
-				exit;
+				static::$_log[] = "Error crawling content @ ".$entry->getPermaLink();
 			}
 		}
 		$profile->crawledFeed = time();
 		$profile->save();
 		return true;
+	}
+	
+	public static function getLog() {
+		return static::$_log;
 	}
 } // END class EpicDb_Crawler
