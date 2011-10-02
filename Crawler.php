@@ -73,6 +73,9 @@ class EpicDb_Crawler
 			$article = EpicDb_Mongo::db('article-rss')->retrieveArticle($profile, $entry);
 			$purifier = new MW_Filter_HtmlPurifier(array(array("HTML.Nofollow", 1)));
 
+			$article->title = $entry->getTitle();
+			$article->body = $purifier->filter($entry->getContent()?:$entry->getDescription());
+
 			if(trim($article->body) == "") {
 				static::$_log[] = "Skipped crawling [".$article->title."] because body is empty";
 				continue;
@@ -81,9 +84,6 @@ class EpicDb_Crawler
 				static::$_log[] = "Skipped crawling [".$entry->getPermaLink()."] because title is empty";
 				continue;
 			}
-
-			$article->title = $entry->getTitle();
-			$article->body = $purifier->filter($entry->getContent()?:$entry->getDescription());
 
 			try {
 				$article->_modified = strtotime((string)$entry->getDateModified());			
