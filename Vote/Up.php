@@ -49,9 +49,9 @@ class EpicDb_Vote_Up extends EpicDb_Vote_Abstract {
 		{  // posts that only have upvotes don't gain rep.
 			$this->giveReputationToTarget(10);
 		}
+		parent::_postCast();
 		if($this->_post instanceOf EpicDb_Interface_Autotweet) {
 			$this->_post->autoTweet();
 		}
-		parent::_postCast();
 	}
 }
