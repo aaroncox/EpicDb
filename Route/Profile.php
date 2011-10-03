@@ -71,7 +71,7 @@ class EpicDb_Route_Profile extends Zend_Controller_Router_Route
 		$match = parent::match($path, $partial);
 		if ($match) {
 			$profile = $this->getProfile($match);
-			if(!$match['action']) $match['action'] = $profile->getDefaultAction();
+			if(!$match['action'] && $profile) $match['action'] = $profile->getDefaultAction();
 			if (!$profile) {
 				$this->_values = array(); return false;
 			}
