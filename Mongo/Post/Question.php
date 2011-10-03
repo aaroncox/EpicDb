@@ -6,7 +6,7 @@
  *
  * @author Aaron Cox <aaronc@fmanet.org>
  **/
-class EpicDb_Mongo_Post_Question extends EpicDb_Mongo_Post implements EpicDb_Vote_Interface_Votable
+class EpicDb_Mongo_Post_Question extends EpicDb_Mongo_Post implements EpicDb_Vote_Interface_Votable, EpicDb_Interface_Autotweet
 {
 	public $routeName = "questions";
 	protected static $_documentType = 'question';
@@ -29,6 +29,27 @@ class EpicDb_Mongo_Post_Question extends EpicDb_Mongo_Post implements EpicDb_Vot
 	public function getRouteParams() {
 		$filter = new MW_Filter_Slug();
 		return parent::getRouteParams()+array('slug' => $filter->filter($this->title));
+	}
+	
+	public function autoTweet() {
+		if(!$this->_wasTweeted && $this->votes['score'] >= 2) {
+			// There's gotta be a better way to do this... 
+			$rtwoqa = EpicDb_Mongo::db('user')->fetchOne(array('id' => 2732));
+			$token = unserialize($rtwoqa->user->auth[0]->twitter->oauth_token);
+			$twitter = new Zend_Service_Twitter(array(
+			    'username' => 'rtwoqa',
+			    'accessToken' => $token
+			));
+			// Build the new tweet.
+			$link = "http://r2db.com/question/".$this->id;
+			$newTweet = substr($this->title, 0, 95)." - ".$link." #SWTOR #R2DB";
+			// Send the new tweet
+			$response = $twitter->status->update($newTweet);	
+			// Set that this was tweeted
+			$this->_wasTweeted = true;
+			$this->save();
+		}
+		exit;
 	}
 	
 
