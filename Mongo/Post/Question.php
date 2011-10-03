@@ -49,7 +49,6 @@ class EpicDb_Mongo_Post_Question extends EpicDb_Mongo_Post implements EpicDb_Vot
 			$this->_wasTweeted = true;
 			$this->save();
 		}
-		exit;
 	}
 	
 
