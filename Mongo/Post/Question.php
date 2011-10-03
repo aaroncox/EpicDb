@@ -32,22 +32,26 @@ class EpicDb_Mongo_Post_Question extends EpicDb_Mongo_Post implements EpicDb_Vot
 	}
 	
 	public function autoTweet() {
-		if(!$this->_wasTweeted && $this->votes['score'] >= 2) {
+		if(!$this->_twitterId && $this->votes['score'] >= 2) {
 			// There's gotta be a better way to do this... 
 			$rtwoqa = EpicDb_Mongo::db('user')->fetchOne(array('id' => 2732));
-			$token = unserialize($rtwoqa->user->auth[0]->twitter->oauth_token);
-			$twitter = new Zend_Service_Twitter(array(
-			    'username' => 'rtwoqa',
-			    'accessToken' => $token
-			));
-			// Build the new tweet.
-			$link = "http://r2db.com/question/".$this->id;
-			$newTweet = substr($this->title, 0, 95)." - ".$link." #SWTOR #R2DB";
-			// Send the new tweet
-			$response = $twitter->status->update($newTweet);	
-			// Set that this was tweeted
-			$this->_wasTweeted = true;
-			$this->save();
+			try {
+				$token = unserialize($rtwoqa->user->auth[0]->twitter->oauth_token);
+				$twitter = new Zend_Service_Twitter(array(
+				    'username' => 'rtwoqa',
+				    'accessToken' => $token
+				));
+				// Build the new tweet.
+				$link = "http://r2db.com/question/".$this->id;
+				$newTweet = substr($this->title, 0, 100)." ".$link." #SWTOR";
+				// Send the new tweet
+				$response = $twitter->status->update($newTweet);	
+				// Set that this was tweeted and what the twitter ID was.
+				$this->_twitterId = new MongoInt64($response->id);
+				$this->save();				
+			} catch (Exception $e) {
+				// Couldn't tweet for some reason.
+			}
 		}
 	}
 	
