@@ -405,7 +405,7 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 					array(
 						'url' => $post->link,
 						'icon' => 'link',
-						'text' => 'View Link',
+						'text' => 'View Original',
 						'style' => 'float: right',
 						'tooltip' => 'Head on over to '.$site->name.' to view the original!',
 					)
@@ -494,8 +494,12 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 	  } else {
 	    $source = $post->source;
 	  }
+		if(!$source && $post instanceOf EpicDb_Mongo_Post_Article_RSS) {
+			$source = htmlspecialchars($post->body);
+		}
     $this->getResponse()->setHeader("Content-type", "text/plain");
-    echo $source;
+    echo "<pre>".$source."</pre>";
+		exit;
 	}
 	public function revisionsAction() {
 	  $this->getPost();
