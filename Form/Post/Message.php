@@ -25,20 +25,26 @@ class EpicDb_Form_Post_Message extends EpicDb_Form_Post
 	{
 		$post = $this->getPost();
 		parent::init();
+		$this->removeElement("tags");
 		if($post->_parent->id) {
 			// Then this is a message responding to a message
-			$this->removeElement("tags");
 		} else {
 			// Then this is a new message
 			$this->addElement("text", "title", array(
-					'order' => 50,
-					'validators' => array(
-						array('StringLength',120,0),
-					),
-					'label' => 'Message Title (Optional)',
-					'size' => 80,
-					'description' => '120 character or less title for your message.'
-				));			
+				'order' => 50,
+				'validators' => array(
+					array('StringLength',120,0),
+				),
+				'label' => 'Message Title (Optional)',
+				'size' => 80,
+				'description' => '120 character or less title for your message.'
+			));			
+			$this->addElement("checkbox", "private", array(
+				'order' => 101,
+				'label' => 'Is this message Private?',
+				'description' => 'Checking this checkbox will cause this message to only appear for you and the recipient.',
+			));
+			
 		}
 		$this->setButtons(array("save" => "Post Message"));
 	}
@@ -51,7 +57,10 @@ class EpicDb_Form_Post_Message extends EpicDb_Form_Post
 	}
 	public function save() {
 		$message = $this->getPost();
-		if(!$message->_parent) {
+		if(!$message->_parent->id) {
+			if($this->private->getValue()) {
+				$message->_private = true;
+			}
 			$message->title = $this->title->getValue();			
 		}
 		return parent::save();
