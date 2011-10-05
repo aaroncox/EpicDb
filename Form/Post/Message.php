@@ -25,15 +25,21 @@ class EpicDb_Form_Post_Message extends EpicDb_Form_Post
 	{
 		$post = $this->getPost();
 		parent::init();
-		$this->addElement("text", "title", array(
-				'order' => 50,
-				'validators' => array(
-					array('StringLength',120,0),
-				),
-				'label' => 'Message Title (Optional)',
-				'size' => 80,
-				'description' => '120 character or less title for your message.'
-			));
+		if($post->_parent->id) {
+			// Then this is a message responding to a message
+			$this->removeElement("tags");
+		} else {
+			// Then this is a new message
+			$this->addElement("text", "title", array(
+					'order' => 50,
+					'validators' => array(
+						array('StringLength',120,0),
+					),
+					'label' => 'Message Title (Optional)',
+					'size' => 80,
+					'description' => '120 character or less title for your message.'
+				));			
+		}
 		$this->setButtons(array("save" => "Post Message"));
 	}
 	public function getDefaultValues()
@@ -45,7 +51,9 @@ class EpicDb_Form_Post_Message extends EpicDb_Form_Post
 	}
 	public function save() {
 		$message = $this->getPost();
-		$message->title = $this->title->getValue();
+		if(!$message->_parent) {
+			$message->title = $this->title->getValue();			
+		}
 		return parent::save();
 	}
 	

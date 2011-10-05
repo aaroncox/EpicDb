@@ -549,6 +549,13 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 			$answerForm = $this->view->answerForm = $newAnswer->getEditForm();
 			$this->_handleMWForm($answerForm, 'answer');
 		}
+		if($post instanceOf EpicDb_Mongo_Post_Message ) {
+			$newReply = EpicDb_Mongo::newDoc('message');
+			$newReply->_parent = $post;
+			$newReply->tags->tag($post, 'parent');
+ 			$this->view->form = $replyForm = $newReply->getEditForm();
+			$this->_handleMWForm($replyForm, 'reply');
+		}
 	}
 	
 
