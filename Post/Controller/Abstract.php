@@ -264,6 +264,9 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 				case "today":
 					$query['_created'] = array('$gt' => time() - (60*60*24));
 					break;
+				case "72h":
+					$query['_created'] = array('$gt' => time() - (60*60*24*3));
+					break;
 				case "week":
 					$query['_created'] = array('$gt' =>time() - (60*60*24*7));
 					break;
