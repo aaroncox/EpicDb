@@ -39,12 +39,13 @@ class EpicDb_Form_Post_Message extends EpicDb_Form_Post
 				'size' => 80,
 				'description' => '120 character or less title for your message.'
 			));			
-			$this->addElement("checkbox", "private", array(
-				'order' => 101,
-				'label' => 'Is this message Private?',
-				'description' => 'Checking this checkbox will cause this message to only appear for you and the recipient.',
-			));
-			
+			if($post->tags->getTag('subject')) {
+				$this->addElement("checkbox", "private", array(
+					'order' => 101,
+					'label' => 'Is this message Private?',
+					'description' => 'Checking this checkbox will cause this message to only appear for you and the recipient.',
+				));				
+			}
 		}
 		$this->setButtons(array("save" => "Post Message"));
 	}
