@@ -59,7 +59,7 @@ class EpicDb_Form_Post_Message extends EpicDb_Form_Post
 	public function save() {
 		$message = $this->getPost();
 		if(!$message->_parent->id) {
-			if($this->private->getValue()) {
+			if($this->private && $this->private->getValue()) {
 				$message->_private = true;
 				$message->grant($message->tags->getTag('author')->user);
 				foreach($message->tags->getTags("subject") as $subject) {
