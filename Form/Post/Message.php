@@ -60,6 +60,10 @@ class EpicDb_Form_Post_Message extends EpicDb_Form_Post
 		if(!$message->_parent->id) {
 			if($this->private->getValue()) {
 				$message->_private = true;
+				$message->grant($message->tags->getTag('author')->user);
+				foreach($message->tags->getTags("subject") as $subject) {
+					$message->grant($subject->user);
+				}
 			}
 			$message->title = $this->title->getValue();			
 		}
