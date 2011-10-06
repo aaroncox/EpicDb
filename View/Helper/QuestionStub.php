@@ -69,7 +69,12 @@ class EpicDb_View_Helper_QuestionStub extends MW_View_Helper_HtmlTag
 			$voteClass .= " has-tooltip ui-state-disabled";
 			$voteParams['data-tooltip'] = "This question has been marked as a 'Community Post' disabling all reputation gains/losses. Please read the Q&A FAQ for more information!";
 		}
-		return $this->htmlTag('div', array('class' => 'question-summary ui-helper-clearfix rounded shadowy transparent-bg-blue'), 
+		if($question->_deleted) {
+			$containerColor = "red";			
+		} else {
+			$containerColor = "blue";
+		}
+		return $this->htmlTag('div', array('class' => 'question-summary ui-helper-clearfix rounded shadowy transparent-bg-'.$containerColor), 
 			$this->htmlTag('div', array('style' => 'float: right'), 
 				$this->view->card($author, array(
 					"class" => "medium-icon hide-info", 
