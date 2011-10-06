@@ -13,7 +13,7 @@ class EpicDb_Form_Post_Message extends EpicDb_Form_Post
 	protected $_isNew = false;
 	protected $_record = null;
 	protected $_recordType = 'message';
-	protected $_sourceLabel = "Your Message";
+	protected $_sourceLabel = "Message Body";
 	protected $_editSourceLabel = "Edit Your Message";
 	/**
 	 * init - undocumented function
@@ -35,17 +35,25 @@ class EpicDb_Form_Post_Message extends EpicDb_Form_Post
 				'validators' => array(
 					array('StringLength',120,0),
 				),
-				'label' => 'Message Title (Optional)',
+				'label' => 'Message Title',
+				'required' => true,
 				'size' => 80,
 				'description' => '120 character or less title for your message.'
 			));			
-			if($post->tags->getTag('subject')) {
-				$this->addElement("checkbox", "private", array(
-					'order' => 101,
-					'label' => 'Is this message Private?',
-					'description' => 'Checking this checkbox will cause this message to only appear for you and the recipient.',
-				));				
-			}
+			$this->addElement("checkbox", "private", array(
+				'order' => 101,
+				'label' => 'Is this Private?',
+				'description' => 'Checking this checkbox will cause this message to only appear for you and the recipient.',
+			));				
+			$existingSubjects = $post->tags->getTags("subject");
+			$this->addElement("tags", "subjects", array(
+				'order' => 150,
+				'required' => true,
+				'label' => 'Message Recipients...',
+				'recordType' => 'user',
+				'description' => 'To send a message to specific users, please find them using the search box above and click on the users you wish to send this message to.',
+				'value' => $existingSubjects,
+			));
 		}
 		$this->setButtons(array("save" => "Post Message"));
 	}
@@ -62,20 +70,31 @@ class EpicDb_Form_Post_Message extends EpicDb_Form_Post
 		if($this->title) {
 			$message->title = $this->title->getValue();			
 		}
+		// Take all users specified in the subject tagset
+		if($this->subjects && $profiles = $this->subjects->getTags()) {
+			// Set them as a tag of subject
+			$message->tags->setTags('subject', $profiles); 
+			foreach($profiles as $profile) {
+				// Grant all subjects "view" permissions
+				$message->grant($profile->user, 'view'); 
+			}
+		}
 		// If the private flag exists and is set to true, set this message to private.
 		if($this->private && $this->private->getValue()) {
+			// Set the private flag on the post
 			$message->_private = true;
-			$message->grant($message->tags->getTag('author')->user);
-			foreach($message->tags->getTags("subject") as $subject) {
-				$message->grant($subject->user);
-			}
+			// Grant permission to the author of the post.
+			$message->grant($message->tags->getTag('author')->user, 'view');
 		}
 		// If the message's parent is private, this should be too.
 		if($message->_parent && $message->_parent->_private) {
+			// Set the private flag on the post
 			$message->_private = true;
+			// Grant permission to the author of the parent's post.
 			$message->grant($message->_parent->tags->getTag('author')->user);
 			foreach($message->_parent->tags->getTags("subject") as $subject) {
-				$message->grant($subject->user);
+				// Grant permission to all the subjects of the original post.
+				$message->grant($subject->user, 'view');
 			}				
 		}
  		return parent::save();
