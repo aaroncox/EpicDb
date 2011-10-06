@@ -46,7 +46,6 @@ class EpicDb_Form_Element_Tags extends Zend_Form_Element_Hidden {
 	
 	public function getTags() {
 		$value = $this->getValue();
-		var_dump($value);
 		$filter = $this->getFilter("TagJSON");
 		return $filter->toArray($this->getValue());
 	}
