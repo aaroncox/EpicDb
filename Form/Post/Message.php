@@ -58,17 +58,27 @@ class EpicDb_Form_Post_Message extends EpicDb_Form_Post
 	}
 	public function save() {
 		$message = $this->getPost();
-		if(!$message->_parent->id) {
-			if($this->private && $this->private->getValue()) {
-				$message->_private = true;
-				$message->grant($message->tags->getTag('author')->user);
-				foreach($message->tags->getTags("subject") as $subject) {
-					$message->grant($subject->user);
-				}
-			}
+		// If the title field exists, save it onto the post.
+		if($this->title) {
 			$message->title = $this->title->getValue();			
 		}
-		return parent::save();
+		// If the private flag exists and is set to true, set this message to private.
+		if($this->private && $this->private->getValue()) {
+			$message->_private = true;
+			$message->grant($message->tags->getTag('author')->user);
+			foreach($message->tags->getTags("subject") as $subject) {
+				$message->grant($subject->user);
+			}
+		}
+		// If the message's parent is private, this should be too.
+		if($message->_parent && $message->_parent->_private) {
+			$message->_private = true;
+			$message->grant($message->_parent->tags->getTag('author')->user);
+			foreach($message->_parent->tags->getTags("subject") as $subject) {
+				$message->grant($subject->user);
+			}				
+		}
+ 		return parent::save();
 	}
 	
 } // END class EpicDb_Form_Post_Message
