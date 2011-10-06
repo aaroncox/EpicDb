@@ -208,8 +208,11 @@ class EpicDb_Form_Post extends EpicDb_Form
 		}
 		return false;
 	}
-	public function render() {
+	public function render()
+	{
 		$this->removeDecorator('FloatClear');
+		$this->getDecorator('HtmlTag')->setOption('class','r2-post-form')->setOption('id', 'ad-edit');
 		return parent::render();
-	}
+	}	
+	
 } // END class R2Db_Form_Message
