@@ -15,12 +15,10 @@ class EpicDb_View_Helper_QuestionStub extends MW_View_Helper_HtmlTag
 		$tagsNames = ''; // This is a merged array of the tags, all with 't-' in front of the tag, for CSS purposes.
 		$viewStatus = ''; //' warm'; // This is how "hot" the question is, colors the text.
 		
-		$answerCount = $question->findAnswers()->count();
-
 		$answerStatus = ' unanswered';
 		if($question->findAnswers(false, array('votes.accept' => array('$gt' => 0)))->count() > 0) {
 			$answerStatus = ' answered-accepted'; 
-		} elseif($answerCount > 0) {
+		} elseif($question->_answerCount > 0) {
 			$answerStatus = ' answered';
 		}
 
@@ -86,7 +84,7 @@ class EpicDb_View_Helper_QuestionStub extends MW_View_Helper_HtmlTag
 				$this->htmlTag('div', array('class' => 'mini-label'), 'votes')
 			)."".
 			$this->htmlTag('div', array('class' => 'status font-sans inline-flow'.$answerStatus), 
-				$this->htmlTag('div', array('class' => 'mini-counts'), $answerCount)."".
+				$this->htmlTag('div', array('class' => 'mini-counts'), $question->_answerCount?:0)."".
 				$this->htmlTag('div', array('class' => 'mini-label'), 'answers')
 			)."".
 			$this->htmlTag('div', array('class' => 'summary inline-flow'),

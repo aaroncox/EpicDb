@@ -35,7 +35,7 @@ class EpicDb_Form_Post_Question_Answer extends EpicDb_Form_Post
 	}
 	public function save() {
 		$answer = $this->getPost();
+		parent::save();
 		$answer->_parent->bump(EpicDb_Auth::getInstance()->getUserProfile());
-		return parent::save();
 	}
 } // END class EpicDb_Form_Post_Question_Answer

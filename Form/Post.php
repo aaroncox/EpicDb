@@ -199,11 +199,10 @@ class EpicDb_Form_Post extends EpicDb_Form
 			if($post->isNewDocument()) {
 				$post->_created = time();
 			} else {
-				$post->bump($me);
 				EpicDb_Mongo_Revision::makeEditFor($post, $this->reason->getValue());
 			}
-
 			$this->save();
+			$post->bump($me);
 			return true;
 		}
 		return false;

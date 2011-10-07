@@ -32,5 +32,9 @@ class EpicDb_Mongo_Post_Question_Answer extends EpicDb_Mongo_Post implements Epi
 		return array("icon", "parentTitle", "body");
 	}
 	
+	public function delete() {
+		parent::delete();
+		$this->_parent->save();
+	}
 
 } // END class EpicDb_Mongo_Post_Question_Answer

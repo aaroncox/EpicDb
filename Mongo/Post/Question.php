@@ -23,12 +23,17 @@ class EpicDb_Mongo_Post_Question extends EpicDb_Mongo_Post implements EpicDb_Vot
 	public function countAnswers() {
 		// TODO - XHProf Improvement Here: This count repeatedly fires, could be improved and reduce pageload by approx 1/2 second
 		// Return a max of 9999
-		return $this->findAnswers( false )->count();
+		return $this->findAnswers( false, array('_deleted' => array('$exists' => false) ) )->count();
 	}
 	
 	public function getRouteParams() {
 		$filter = new MW_Filter_Slug();
 		return parent::getRouteParams()+array('slug' => $filter->filter($this->title));
+	}
+		
+	public function save() {
+		$this->_answerCount = $this->countAnswers();
+		return parent::save();
 	}
 	
 	public function autoTweet() {
