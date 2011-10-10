@@ -30,6 +30,10 @@ class EpicDb_Form_Profile_Group extends EpicDb_Form_Profile {
 			$this->addElement("checkbox", "_isForum", array(
 				'label' => 'Display this group as a forum'
 			));
+			$this->addElement("text", "_forumOrder", array(
+				'label' => 'Forum # for Ordering',
+				'description' => 'A made up number for ordering the forums. Every 50 a separator is added into the display.'
+			));
 		}
 		$this->setDefaults($profile->export());
 	}
@@ -42,6 +46,9 @@ class EpicDb_Form_Profile_Group extends EpicDb_Form_Profile {
 		$profile->description = $this->description->getValue();
 		if($this->_isForum) {
 			$profile->_isForum = true;
+			if($this->_forumOrder) {
+				$profile->_forumOrder = $this->_forumOrder->getValue();
+			}
 		}
 		if($profile->isNewDocument()) {
 			// Do we need this still?
