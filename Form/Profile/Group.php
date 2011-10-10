@@ -47,7 +47,7 @@ class EpicDb_Form_Profile_Group extends EpicDb_Form_Profile {
 		if($this->_isForum) {
 			$profile->_isForum = true;
 			if($this->_forumOrder) {
-				$profile->_forumOrder = $this->_forumOrder->getValue();
+				$profile->_forumOrder = (int) $this->_forumOrder->getValue();
 			}
 		}
 		if($profile->isNewDocument()) {
