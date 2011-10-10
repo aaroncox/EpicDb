@@ -23,6 +23,14 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 				)
 			));
 		}
+		if (!$contextSwitch->hasContext('stub')) {
+			$contextSwitch->addContext('stub', array(
+				'callbacks' => array(
+						'init' => array($this, 'initStubContext'),
+						'post' => array($this, 'postStubContext'),
+				)
+			));
+		}
 		if (!$contextSwitch->hasContext('poll')) {
 			$contextSwitch->addContext('poll', array(
 				'callbacks' => array(
@@ -33,12 +41,149 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 		}
 		$contextSwitch->addActionContext('questions', 'rss');
 		$contextSwitch->addActionContext('view', 'rss');
+		$contextSwitch->addActionContext('view', 'stub');
 		$contextSwitch->addActionContext('view', 'poll');
 		try {
 			$contextSwitch->initContext();
 		} catch (Exception $e) {
 			// Unknown Context Exception?
 		}
+	}
+	
+	public function initStubContext() {
+		$viewRenderer = Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer');
+		$view = $viewRenderer->view;
+		if ($view instanceof Zend_View_Interface) {
+				$viewRenderer->setNoRender(true);
+		}		
+	}
+	
+	public function postStubContext() {
+		$this->getPost();
+		$this->getResponse()->setHeader('Content-type', 'application/json');
+		$this->_helper->layout->disableLayout();
+		$this->_helper->viewRenderer->setNoRender(true);
+		
+		$post = $this->view->post;
+		
+		// Prob a better way to do this!
+		$parent = $post->_parent;
+		while($parent->_parent->_id) {
+			$parent = $parent->_parent;
+		}
+		
+		
+		
+		
+		// Default Controls for every post...
+		$controls = array(
+			'permaLink' => (string) $this->view->button(
+				array(
+					'post' => $this->view->post, 
+					'action' => 'view'
+				), 'post', true,
+				array(
+					'icon' => 'comment',
+					'text' => 'Read w/ '.$this->view->post->findComments()->count().' comments',
+					'tooltip' => 'Read the full version including comments',
+				)
+			),
+			'parentLink' => (string) $this->view->button(
+				array(
+					'post' => ($parent->export() != array()) ? $parent : $this->view->post,
+					'action' => 'view',
+				), 'post', true,
+				array(
+					'icon' => 'pencil',
+					'text' => ($parent->export() != array()) ? 'View Full Discussion' : 'View Original',
+					'style' => 'float: right'
+				)
+			),
+		);
+		
+		if($post instanceOf EpicDb_Mongo_Post_Article_Rss) {	
+			$site = $post->tags->getTag('source');
+			$controls['parentLink'] = (string) $this->view->button(
+				array(
+				), null, true,
+				array(
+					'url' => $post->link,
+					'icon' => 'link',
+					'text' => 'View Original',
+					'style' => 'float: right',
+					'tooltip' => 'Head on over to '.$site->name.' to view the original!',
+				)
+			);
+		}
+		
+		if(EpicDb_Auth::getInstance()->getUser()) {
+			if($post->_type == 'question') {
+				$controls['answerLink'] = (string) $this->view->button(
+					array(
+						'post' => $post,
+						'action' => 'answer',
+					), 'post', true,
+					array(
+						'icon' => 'pencil',
+						'text' => 'Answer',
+						'tooltip' => 'Post an answer to this question.',
+					)
+				);
+			}
+
+			$target = $post;
+			while($target->_parent->id && $target->_type != "answer") {
+				$target = $target->_parent;
+			}
+			if($post instanceOf EpicDb_Mongo_Post_Message) {
+				$controls['replyLink'] = (string) $this->view->button(
+					array(
+						'post' => $target,
+						'action' => 'reply',
+					), 'post', true,
+					array(
+						'icon' => 'pencil',
+						'text' => 'Reply',
+						'tooltip' => 'Reply to this message.',
+						'style' => 'float: left'
+					)
+				);				
+			} else {
+				$controls['commentLink'] = (string) $this->view->button(
+					array(
+						'post' => $target,
+						'action' => 'comment',
+					), 'post', true,
+					array(
+						'icon' => 'pencil',
+						'text' => 'Comment',
+						'tooltip' => 'Post a comment on this post.',
+					)
+				);				
+			}				
+		}
+		
+		if(EpicDb_Auth::getInstance()->hasPrivilege(new EpicDb_Auth_Resource_Moderator)) {
+			$controls['_delete'] = $this->view->button(array(
+				'action'=>'delete',
+				'post'=>$target,
+			), 'post', true, array(
+				'icon' => 'trash',
+				'tooltip' => 'Delete this Post',
+			));				
+		}
+		
+		
+		ksort($controls);
+		// var_dump($controls); exit;
+		$result = array(
+			'post' => $post->id,
+			'postType' => $post->_type,
+			'body' => $post->body,
+			'controls' => implode($controls),
+		);
+		echo Zend_Json::encode($result);
+		exit;
 	}
 
 	public function initPollContext()
@@ -165,6 +310,9 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 	}
 	
 	protected function _formRedirect($form, $key, $ajax) {
+		if($referrer = $form->getElement('referrer')->getValue()) {
+			$this->_redirect($referrer);
+		}
 		$post = $form->getPost();
 		if($post->_parent->hasId() && $post->_parent->_parent->hasId() && $parentParent = $post->_parent->_parent) $this->_redirect($this->view->url(array(
 			'post'=>$parentParent,
@@ -177,11 +325,7 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 		if($post = $form->getPost()) $this->_redirect($this->view->url(array(
 			'post'=>$post,
 			'action'=>'view',
-		), 'post', true));
- 
-		if($referrer = $form->getElement('referrer')->getValue()) {
-			$this->_redirect($referrer);
-		}
+		), 'post', true)); 
 		parent::_formRedirect($form, $key, $ajax);
 	}
 	
@@ -358,135 +502,6 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 		}
 	}
 	
-	public function postJson() {
-		if($this->_request->isXmlHttpRequest()) {
-			$this->getResponse()->setHeader('Content-type', 'application/json');
-			$this->_helper->layout->disableLayout();
-			$this->_helper->viewRenderer->setNoRender(true);
-			
-			$post = $this->view->post;
-			
-			// Prob a better way to do this!
-			$parent = $post->_parent;
-			while($parent->_parent->_id) {
-				$parent = $parent->_parent;
-			}
-			
-			
-			
-			
-			// Default Controls for every post...
-			$controls = array(
-				'permaLink' => (string) $this->view->button(
-					array(
-						'post' => $this->view->post, 
-						'action' => 'view'
-					), 'post', true,
-					array(
-						'icon' => 'comment',
-						'text' => 'Read w/ '.$this->view->post->findComments()->count().' comments',
-						'tooltip' => 'Read the full version including comments',
-					)
-				),
-				'parentLink' => (string) $this->view->button(
-					array(
-						'post' => ($parent->export() != array()) ? $parent : $this->view->post,
-						'action' => 'view',
-					), 'post', true,
-					array(
-						'icon' => 'pencil',
-						'text' => ($parent->export() != array()) ? 'View Full Discussion' : 'View Original',
-						'style' => 'float: right'
-					)
-				),
-			);
-			
-			if($post instanceOf EpicDb_Mongo_Post_Article_Rss) {	
-				$site = $post->tags->getTag('source');
-				$controls['parentLink'] = (string) $this->view->button(
-					array(
-					), null, true,
-					array(
-						'url' => $post->link,
-						'icon' => 'link',
-						'text' => 'View Original',
-						'style' => 'float: right',
-						'tooltip' => 'Head on over to '.$site->name.' to view the original!',
-					)
-				);
-			}
-			
-			if(EpicDb_Auth::getInstance()->getUser()) {
-				if($post->_type == 'question') {
-					$controls['answerLink'] = (string) $this->view->button(
-						array(
-							'post' => $post,
-							'action' => 'answer',
-						), 'post', true,
-						array(
-							'icon' => 'pencil',
-							'text' => 'Answer',
-							'tooltip' => 'Post an answer to this question.',
-						)
-					);
-				}
-
-				$target = $post;
-				while($target->_parent->id && $target->_type != "answer") {
-					$target = $target->_parent;
-				}
-				if($post instanceOf EpicDb_Mongo_Post_Message) {
-					$controls['replyLink'] = (string) $this->view->button(
-						array(
-							'post' => $target,
-							'action' => 'reply',
-						), 'post', true,
-						array(
-							'icon' => 'pencil',
-							'text' => 'Reply',
-							'tooltip' => 'Reply to this message.',
-							'style' => 'float: left'
-						)
-					);				
-				} else {
-					$controls['commentLink'] = (string) $this->view->button(
-						array(
-							'post' => $target,
-							'action' => 'comment',
-						), 'post', true,
-						array(
-							'icon' => 'pencil',
-							'text' => 'Comment',
-							'tooltip' => 'Post a comment on this post.',
-						)
-					);				
-				}				
-			}
-			
-			if(EpicDb_Auth::getInstance()->hasPrivilege(new EpicDb_Auth_Resource_Moderator)) {
-				$controls['_delete'] = $this->view->button(array(
-					'action'=>'delete',
-					'post'=>$target,
-				), 'post', true, array(
-					'icon' => 'trash',
-					'tooltip' => 'Delete this Post',
-				));				
-			}
-			
-			
-			ksort($controls);
-			// var_dump($controls); exit;
-			$result = array(
-				'post' => $post->id,
-				'postType' => $post->_type,
-				'body' => $post->body,
-				'controls' => implode($controls),
-			);
-			echo Zend_Json::encode($result); 
-			exit;
-		}
-	}
-
 	public function sourceAction() {
     $this->_helper->layout->disableLayout();
     $this->_helper->viewRenderer->setNoRender(true);
@@ -521,7 +536,6 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 		$this->view->post = $post = $this->getPost();
 		$this->_helper->auth->requirePrivilege($post, 'view');
 		$params = $this->getRequest()->getParams();
-		$this->postJson();
 
 		while($post->_parent->id) {
 			$this->view->post = $post = $post->_parent;
@@ -551,6 +565,9 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 			$this->_handleMWForm($answerForm, 'answer');
 		}
 		if($post instanceOf EpicDb_Mongo_Post_Message ) {
+			$paginator = Zend_Paginator::factory($post->findResponses());
+			$paginator->setCurrentPageNumber($this->getRequest()->getParam('page', 1));
+			$this->view->responses = $paginator;
 			$newReply = EpicDb_Mongo::newDoc('message');
 			$newReply->_parent = $post;
 			$newReply->tags->tag($post, 'parent');
