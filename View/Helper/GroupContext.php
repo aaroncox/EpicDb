@@ -14,8 +14,6 @@ class EpicDb_View_Helper_GroupContext extends MW_View_Helper_HtmlTag
 		$placeholder = $this->view->context();
 		$placeholder->prepend($this->view->tooltip($profile));
 		if($profile->description) $placeholder->widget($this->htmlTag("h3", array(), "Description")."".$this->htmlTag("p", array(), $profile->description));
-		$placeholder = $this->view->summary();
-		$placeholder->append($this->view->tooltip($profile)."");
 		
 		$buttons = '';
 		if ($profile->user && MW_Auth::getInstance()->hasPrivilege(new MW_Auth_Resource_Super(), 'sudo')) {
