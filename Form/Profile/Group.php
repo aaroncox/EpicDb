@@ -26,6 +26,11 @@ class EpicDb_Form_Profile_Group extends EpicDb_Form_Profile {
 					'invite-only' => 'Closed Group (Invites Only)',
 				),
 			));
+		if(EpicDb_Auth::getInstance()->hasPrivilege(new EpicDb_Auth_Resource_Moderator())) {
+			$this->addElement("checkbox", "_isForum", array(
+				'label' => 'Display this group as a forum'
+			));
+		}
 		$this->setDefaults($profile->export());
 	}
 	
@@ -35,6 +40,9 @@ class EpicDb_Form_Profile_Group extends EpicDb_Form_Profile {
 		$profile->_groupType = $this->_groupType->getValue();
 		$profile->_created = time();
 		$profile->description = $this->description->getValue();
+		if($this->_isForum) {
+			$profile->_isForum = true;
+		}
 		if($profile->isNewDocument()) {
 			// Do we need this still?
 			$user = EpicDb_Auth::getInstance()->getUser();
