@@ -114,7 +114,7 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 		return parent::fetchAll($query, $sort, $limit, $skip);
 	}
 
-	public function findResponses($limit = 10, $query = array(), $sort = array()) {
+	public function findResponses( $query = array(), $sort = array(), $limit = false ) {
 		$query = array(
 			"_parent" => $this->createReference(),
 		) + $query;
@@ -122,8 +122,8 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 		return $results = EpicDb_Mongo::db('post')->fetchAll($query, $sort, $limit);
 	}
 
-	public function findComments($limit = 1000, $query = array(), $sort = array()) {
-		return $this->findResponses( $limit, array( "_type" => "comment" ) + $query, $sort );
+	public function findComments($query = array(), $sort = array(), $limit = 1000) {
+		return $this->findResponses( array( "_type" => "comment" ) + $query, $sort, $limit );
 	}
 
 	public static function getTagsByUsage($limit = 99) {

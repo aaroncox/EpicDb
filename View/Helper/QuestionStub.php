@@ -16,7 +16,7 @@ class EpicDb_View_Helper_QuestionStub extends MW_View_Helper_HtmlTag
 		$viewStatus = ''; //' warm'; // This is how "hot" the question is, colors the text.
 		
 		$answerStatus = ' unanswered';
-		if($question->findAnswers(false, array('votes.accept' => array('$gt' => 0)))->count() > 0) {
+		if($question->findAnswers(array('votes.accept' => array('$gt' => 0)))->count() > 0) {
 			$answerStatus = ' answered-accepted'; 
 		} elseif($question->_answerCount > 0) {
 			$answerStatus = ' answered';

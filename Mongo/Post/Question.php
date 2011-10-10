@@ -12,18 +12,18 @@ class EpicDb_Mongo_Post_Question extends EpicDb_Mongo_Post implements EpicDb_Vot
 	protected static $_documentType = 'question';
 	protected static $_editForm = 'EpicDb_Form_Post_Question';
 
-	public function findAnswers($limit = 10, $query = array(), $sort = array('votes.accept' => -1, 'votes.score' => -1)) {
-		return $this->findResponses( $limit, array( "_type" => "answer" ) + $query, $sort );
+	public function findAnswers($query = array(), $sort = array('votes.accept' => -1, 'votes.score' => -1), $limit = 10) {
+		return $this->findResponses(array( "_type" => "answer" ) + $query, $sort, $limit);
 	}
 
-	public function findComments($limit = 10, $query = array(), $sort = array()) {
-		return $this->findResponses( $limit, array( "_type" => "question-comment" ) + $query, $sort );
+	public function findComments($query = array(), $sort = array(), $limit = 10) {
+		return $this->findResponses( array( "_type" => "question-comment" ) + $query, $sort, $limit );
 	}
 
 	public function countAnswers() {
 		// TODO - XHProf Improvement Here: This count repeatedly fires, could be improved and reduce pageload by approx 1/2 second
 		// Return a max of 9999
-		return $this->findAnswers( false, array('_deleted' => array('$exists' => false) ) )->count();
+		return $this->findAnswers( array('_deleted' => array('$exists' => false) ) )->count();
 	}
 	
 	public function getRouteParams() {
