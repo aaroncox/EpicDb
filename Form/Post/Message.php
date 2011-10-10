@@ -12,6 +12,7 @@ class EpicDb_Form_Post_Message extends EpicDb_Form_Post
 {
 	protected $_isNew = false;
 	protected $_record = null;
+	protected $_forumPost = false;
 	protected $_recordType = 'message';
 	protected $_sourceLabel = "Message Body";
 	protected $_editSourceLabel = "Edit Your Message";
@@ -39,23 +40,28 @@ class EpicDb_Form_Post_Message extends EpicDb_Form_Post
 				'required' => true,
 				'size' => 80,
 				'description' => '120 character or less title for your message.'
-			));			
-			$this->addElement("checkbox", "private", array(
-				'order' => 101,
-				'label' => 'Is this Private?',
-				'description' => 'Checking this checkbox will cause this message to only appear for you and the recipient.',
-			));				
-			$existingSubjects = $post->tags->getTags("subject");
-			$this->addElement("tags", "subjects", array(
-				'order' => 150,
-				'required' => true,
-				'label' => 'Message Recipients...',
-				'recordType' => 'user',
-				'description' => 'To send a message to specific users, please find them using the search box above and click on the users you wish to send this message to.',
-				'value' => $existingSubjects,
 			));
+			if(!$this->_forumPost) {
+				$this->addElement("checkbox", "private", array(
+					'order' => 101,
+					'label' => 'Is this Private?',
+					'description' => 'Checking this checkbox will cause this message to only appear for you and the recipient.',
+				));				
+				$existingSubjects = $post->tags->getTags("subject");
+				$this->addElement("tags", "subjects", array(
+					'order' => 150,
+					'required' => true,
+					'label' => 'Message Recipients...',
+					'recordType' => 'user',
+					'description' => 'To send a message to specific users, please find them using the search box above and click on the users you wish to send this message to.',
+					'value' => $existingSubjects,
+				));				
+			}
 		}
 		$this->setButtons(array("save" => "Post Message"));
+	}
+	public function setForumPost($value) {
+		$this->_forumPost = true;
 	}
 	public function getDefaultValues()
 	{
@@ -69,6 +75,9 @@ class EpicDb_Form_Post_Message extends EpicDb_Form_Post
 		// If the title field exists, save it onto the post.
 		if($this->title) {
 			$message->title = $this->title->getValue();			
+		}
+		if($message->_parent->id) {
+			$message->_parent->bump(EpicDb_Auth::getInstance()->getUserProfile());
 		}
 		// Take all users specified in the subject tagset
 		if($this->subjects && $profiles = $this->subjects->getTags()) {
