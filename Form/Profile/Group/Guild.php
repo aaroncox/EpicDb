@@ -22,7 +22,7 @@ class EpicDb_Form_Profile_Group_Guild extends EpicDb_Form_Profile_Group
 	public function getProfile()
 	{
 		if($this->_profile) return $this->_profile;
-		$this->_profile = new R2Db_Mongo_Profile_Group_Guild();
+		$this->_profile = new EpicDb_Mongo::newDoc('guild');
 		$this->_isNew = true;
 		return $this->_profile;
 	}
