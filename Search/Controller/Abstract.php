@@ -157,8 +157,9 @@ class EpicDb_Search_Controller_Abstract extends MW_Controller_Action
 		$lower = strtolower($q);
 
 		$query = array("name" => new MongoRegex("/".$q."/i"));
-		if ($type) {
-			$query['_type'] = $type;
+		if ( $type ) {
+			$types = explode( ",", $type );
+			$query['_type'] = array( '$in' => $types );
 		}
 
 		$return = array();
