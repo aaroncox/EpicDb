@@ -168,8 +168,8 @@ class EpicDb_Search_Controller_Abstract extends MW_Controller_Action
 		foreach ($results as $result) {
 			$ref = $result->createReference();
 			$return[] = array(
-				'$ref' => $ref['$ref'],
-				'$id' => $ref['$id'].'',
+				'id' => $result->id,
+				'type' => $result->_type,
 				'label' => $this->view->partial("search/_result.ajax.phtml", array("document" => $result)),
 				'card' => $this->view->card($result, array("class" => "medium-icon create-new") )."",
 				'name' => $result->name,
@@ -185,8 +185,8 @@ class EpicDb_Search_Controller_Abstract extends MW_Controller_Action
 			foreach ($results as $result) {
 				$ref = $result->createReference();
 				$return[] = array(
-					'$ref' => $ref['$ref'],
-					'$id' => $ref['$id'].'',
+					'id' => $result->id,
+					'type' => $result->_type,
 					'label' => $this->view->partial("search/_result.ajax.phtml", array("document" => $result)),
 					'name' => $result->name,
 					'card' => $this->view->card($result, array("class" => "medium-icon create-new") )."",
@@ -198,7 +198,8 @@ class EpicDb_Search_Controller_Abstract extends MW_Controller_Action
 			$blank->name = $q;
 			$blank->_type = 'create tag';
 			$return[] = array(
-				'$new' => true,
+				'new' => true,
+				'type' => 'tag',
 				'name' => $q,
 				'label' => $this->view->partial("search/_result.ajax.phtml", array("document" => $blank)),
 				'card' => $this->view->card($blank, array("class" => "medium-icon create-new", "content" => array("not found..." => "Create New Tag" ) ) )."",

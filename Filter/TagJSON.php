@@ -20,65 +20,114 @@
 class EpicDb_Filter_TagJSON implements Zend_Filter_Interface {
 	protected $_type;
 
+	// json format:
+	//
+	// [{
+	//	"type" => "website",
+	//	"id" => 1,
+	//	"name" => "R2-Db.com"
+	// }, ....
+
 	public function __construct($options = array()) {
-		if (isset($options['type'])) $this->_type = $options['type'];
+		if ( isset( $options['type'] ) ) {
+			$this->_type = explode( ",", $options['type'] );
+			if ( empty( $options["type"] ) || !count( $this->_type ) ) {
+				$this->_type = false;
+			}
+		}
 	}
-	
+
 	public function filter($value)
 	{
+
+		// array input -> json output
 		if (is_array($value)) {
+
 			// tags array
 			$type = $this->_type;
 			$contained = array();
-			$mapped = array_filter($value, function( $value ) use($type, &$contained) {
-				if (in_array($value->_id."", $contained)) return false;
-				if ($type && $value->_type != $type ) return false;
-				$contained[] = $value->_id."";
-				return true;
-			});
-			
-			$map = function($value) {
-				$ref = $value->createReference();
-				$ref['$id'].='';
-				return $ref;
-			};
-			$mapped = array_map($map, $mapped);
-			return json_encode($mapped);
+			foreach ( $value as $tag ) {
+				if ( $type && !in_array( $tag->_type, $type ) ) {
+					continue;
+				}
+				$contained[ $tag->_type . ":" . $tag->id ] = array(
+					"type" => $tag->_type,
+					"id" => $tag->id,
+					"name" => $tag->name
+				);
+			}
+
+			return json_encode(array_values($contained));
 		} else {
+
+			// validate json
 			$refs = json_decode($value, true);
+			if (!is_array($refs)) {
+				$refs = array();
+			}
+
 			$contained = array();
-			if (!is_array($refs)) $refs = array();
-			$refs = array_filter($refs, function($ref) use(&$contained) {
-				if (in_array($ref['$id'], $contained)) return false;
-				$contained[] = $ref['$id'];
-				return true;
-			});
-			return json_encode($refs);
+			foreach( $refs as $ref ) {
+				if ( empty($ref["type"]) || $this->_type && !in_array($ref["type"], $this->_type) ) {
+					continue;
+				}
+				if ( isset($ref["new"]) ) {
+					$contained[] = $ref;
+				} else {
+					$contained[ $ref["type"].":".$ref["id"] ] = $ref;
+				}
+			}
+			return json_encode(array_values($contained));
 		}
 	}
-	
+
+	// to get an array of documents from a json string
 	public function toArray($value)
 	{
 		$return = array();
-		$refs = json_decode($value,true);
-		if (!is_array($refs)) $refs = array();
-		foreach($refs as $value) {
-			if ( isset( $value['$new'] ) ) {
-				$ref = EpicDb_Mongo::newDoc('tag');
+		$refs = json_decode( $value, true );
+		if ( !is_array( $refs ) ) {
+			$refs = array();
+		}
+		$added = array();
+		foreach ( $refs as $value ) {
+			if ( isset( $value['new'] ) ) {
+
+				// TODO: Validate the ability to create
+				$ref = EpicDb_Mongo::newDoc( $value['type'] );
 				$ref->name = $value['name'];
 				$ref->tags->setTag('author', EpicDb_Auth::getInstance()->getUserProfile());
 				$ref->_created = time();
 				$ref->save();
 				$return[] = $ref;
+
 			} elseif ($value) {
-				$added = array();
-				$record = EpicDb_Mongo::resolveReference($value);
-				$id = $record->_id."";
-				if (in_array($id, $added)) continue;
-				if ($record && (!$this->_type || $this->_type == $record->_type) ) {
-					$return[] = $record;					
-					$added[] = $id;
+				if ( empty($value["type"]) ) {
+					continue;
 				}
+
+				try {
+					$db = EpicDb_Mongo::db($value['type']);
+					$record = $db->fetchOne(array( "id" => (int)$value['id'] ));
+				} catch ( MW_Mongo_Exception $e ) {
+					$record = false;
+				}
+
+				if ( !$record ) {
+					continue;
+				}
+
+				// make sure we found one - and that it matches our type filter
+				if ( $this->_type && !in_array( $record->_type, $this->_type ) ) {
+					continue;
+				}
+
+				$id = $record->_type.":".$record->id;
+				if ( isset( $added[$id] ) ) {
+					continue;
+				}
+				$return[] = $record;
+				$added[$id] = $id;
 			}
 		}
 		return $return;
