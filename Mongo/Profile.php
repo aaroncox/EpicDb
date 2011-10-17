@@ -109,6 +109,7 @@ class EpicDb_Mongo_Profile extends EpicDb_Auth_Mongo_Resource_Document implement
 		// var_dump($profile	->export());
 		// exit;/
 		$query['_deleted'] = array('$exists' => false);
+		$query['_created'] = array('$ne' => false);		
 		foreach(array($this->following, $this->watching) as $set) {
 			foreach($set as $record) { 
 				if(!$record) continue;
