@@ -14,20 +14,24 @@ class EpicDb_View_Helper_IconLink extends Zend_View_Helper_Abstract
 	protected $_record = null;
 	public function icon() {
 		$record = $this->_record;
+		$class = null;
+		if(isset($this->_params['iconClass'])) {
+			$class = $this->_params['iconClass'];
+		}
 		if (!$record) return '';
 		if($record instanceOf EpicDb_Mongo_Record) {
-			$image = "<img src='".$record->getIcon()."' alt='".$this->view->escape($record->name)."'/>";
+			$image = "<img src='".$record->getIcon()."' alt='".$this->view->escape($record->name)."' class=".$class."/>";
 		} elseif($record instanceOf EpicDb_Mongo_Profile) {
 			if($record->logo) {
-				$image = $this->view->htmlTag("img", array("alt" => $record->name, "src" => $record->getIcon()))."";
+				$image = $this->view->htmlTag("img", array("alt" => $record->name, "src" => $record->getIcon(), "class" => $class))."";
 			} elseif($record->_parent && $record->_parent->logo) {
-				$image = $this->view->htmlTag("img", array("alt" => $record->name, "src" => $record->_parent->getIcon()))."";
+				$image = $this->view->htmlTag("img", array("alt" => $record->name, "src" => $record->_parent->getIcon(), "class" => $class))."";
 			} else {
-				$image = $this->view->gravatar($record->email);
+				$image = $this->view->gravatar($record->email, array(), array("class" => $class));
 			}
 			// $html .= $this->view->profileLink($record, array("text" => $image));
 		}
-		// var_dump($image); exit;
+		// var_dump($image, $class); exit;
 		return $image;
 	}
 	
