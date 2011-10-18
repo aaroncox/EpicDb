@@ -48,7 +48,7 @@ class EpicDb_View_Helper_VoteWidget extends MW_View_Helper_HtmlTag
 		if ($vote == 'flag') {
 			if ($post instanceOf EpicDb_Vote_Interface_Flaggable) {
 				$tagOpts['class'] .= $iconClass;
-				$content = $this->view->htmlTag( "a", $tagOpts, " " )."<ul class='vote-flag-popout ui-widget ui-state-default' style='display:none'>";
+				$content = $this->view->htmlTag( "a", $tagOpts, " " )."<ul class='vote-flag-popout ui-widget ui-state-default rounded' style='display:none'>";
 				foreach(array_keys($this->_flagTypes) as $type) $content .= "<li>".$this->makeVoteButton( $type )."</li>";
 				$content .= "</ul>";
 				return $content;

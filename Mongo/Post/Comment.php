@@ -6,7 +6,7 @@
  *
  * @author Aaron Cox <aaronc@fmanet.org>
  **/
-class EpicDb_Mongo_Post_Comment extends EpicDb_Mongo_Post implements EpicDb_Vote_Interface_UpOnly
+class EpicDb_Mongo_Post_Comment extends EpicDb_Mongo_Post implements EpicDb_Vote_Interface_Votable
 {
 	public $noTypeList = true;
 	protected static $_collectionName = 'posts';
