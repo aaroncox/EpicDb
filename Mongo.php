@@ -10,6 +10,7 @@
  **/
 class EpicDb_Mongo
 {
+	protected static $_profile = null;
 	public static function db($type) {
 		return EpicDb_Mongo_Schema::getInstance()->getCollectionForType($type);
 	}
@@ -22,5 +23,11 @@ class EpicDb_Mongo
 	}
 	public static function resolveReference($data) {
 		return EpicDb_Mongo_Schema::getInstance()->resolveReference($data);
+	}
+	public static function setSiteProfile($profile) {
+		static::$_profile = $profile;
+	}
+	public static function getSiteProfile() {
+		return static::$_profile;
 	}
 } // END class R2Db_Mongo
