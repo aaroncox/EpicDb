@@ -101,4 +101,27 @@ class EpicDb_Record_Controller_Abstract extends MW_Controller_Action
 	public function historyAction() {
 		$record = $this->view->record;
 	}
+	
+	public function unfollowAction() {
+		$record = $this->view->record;
+		$this->_helper->auth->unfollow($record);
+		if ($this->getRequest()->isXmlHttpRequest()) {
+			$this->_helper->layout->disableLayout();
+			echo $this->view->followButton($record);
+			exit;
+		}
+		$this->_redirect($this->getRequest()->getServer('HTTP_REFERER'));
+	}
+
+
+	public function followAction() {
+		$record = $this->view->record;
+		$this->_helper->auth->follow($record);
+		if ($this->getRequest()->isXmlHttpRequest()) {
+			$this->_helper->layout->disableLayout();
+			echo $this->view->followButton($record);
+			exit;
+		}
+		$this->_redirect($this->getRequest()->getServer('HTTP_REFERER'));
+	}
 } // END class EpicDb_Record_Controller_Abstract extends MW_Controller_Action
