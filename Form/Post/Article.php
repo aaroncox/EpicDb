@@ -56,8 +56,10 @@ class EpicDb_Form_Post_Article extends EpicDb_Form_Post
 	public function save() {
 		parent::save();
 		$post = $this->getPost();
-		$profile = $this->getProfile();
-		$post->tags->setTag('author', $profile);
+		if($post->isNewDocument()) {
+			$profile = $this->getProfile();
+			$post->tags->setTag('author', $profile);			
+		}
 		$post->title = $this->title->getValue();
 		return $post->save();
 	} 
