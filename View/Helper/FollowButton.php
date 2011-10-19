@@ -20,6 +20,9 @@ class EpicDb_View_Helper_FollowButton extends MW_View_Helper_HtmlTag
 		if($record instanceOf EpicDb_Mongo_Record) $type = $route = 'record';
 		if($record instanceOf EpicDb_Mongo_Profile) $type = $route = 'profile';
 		if($record instanceOf EpicDb_Mongo_Post) $type = $route = 'post';
+		if(isset($opts['route'])) {
+			$route = $opts['route'];
+		}
 		if($profile = EpicDb_Auth::getInstance()->getUserProfile()) {
 			if(in_array($record->createReference(), $profile->$modeField->export())) {
 				return $this->view->button(array(

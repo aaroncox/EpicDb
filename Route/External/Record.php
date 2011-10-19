@@ -1,12 +1,12 @@
 <?php
-class EpicDb_Route_External_Post extends EpicDb_Route_Post {
+class EpicDb_Route_External_Record extends EpicDb_Route_Record {
 	public function assemble($data = array(), $reset = false, $encode = false, $partial = false)
 	{
 		/*
 				Usage Example: 
-				resources.router.routes.r2db-post.type = "EpicDb_Route_External_Post"
-				resources.router.routes.r2db-post.route = ":type/:id/:action/*"
-				resources.router.routes.r2db-post.defaults.hostname = "http://r2-db.com/"
+				resources.router.routes.r2db-record.type = "EpicDb_Route_External_Record"
+				resources.router.routes.r2db-record.route = ":type/:id/:action/*"
+				resources.router.routes.r2db-record.defaults.hostname = "http://r2-db.com/"
 		*/
 		$hostname = "/";
 		if(isset($this->_defaults['hostname'])) {
