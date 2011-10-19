@@ -168,9 +168,12 @@ class EpicDb_Form_Post extends EpicDb_Form
 		$me = $this->getAuthorProfile();
 		$post = $this->getPost();
 
-		if($this->source) {
+		if($this->source && $this->source instanceOf EpicDb_Form_Element_Markdown) {
 			$post->source = $this->source->getValue();
 			$post->body = $this->source->getRenderedValue();
+		} else {
+			$post->source = $this->source->getValue();
+			$post->body = $this->source->getValue();			
 		}
 
 		$filter = new EpicDb_Filter_TagJSON();
