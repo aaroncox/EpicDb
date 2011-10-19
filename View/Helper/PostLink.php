@@ -35,6 +35,11 @@ class EpicDb_View_Helper_PostLink extends MW_View_Helper_HtmlTag
 			$rel = $params['rel'];
 		}
 		
+		$route = $post->routeName;
+		if(isset($params['routeName'])) {
+			$route = $params['routeName'];
+		}
+		
 		$this->view->tooltip($post)->addToCache();
 		// var_dump($text);
 		if($text == null) {
@@ -43,7 +48,7 @@ class EpicDb_View_Helper_PostLink extends MW_View_Helper_HtmlTag
 				"rel" => $rel,
 				"href" => $this->view->url(array(
 					'action'=> $action,
-				)+$post->getRouteParams(), $post->routeName, true).$hash,
+				)+$post->getRouteParams(), $route, true).$hash,
 			), (string) $text)."";
 		}
 
@@ -58,7 +63,7 @@ class EpicDb_View_Helper_PostLink extends MW_View_Helper_HtmlTag
 			"rel" => $rel,
 			"href" => $this->view->url(array(
 				'action'=> $action,
-			)+$post->getRouteParams(), $post->routeName, true).$hash,
+			)+$post->getRouteParams(), $route, true).$hash,
 		), (string) $text)."";
 	}
 }

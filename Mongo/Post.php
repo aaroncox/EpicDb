@@ -275,7 +275,7 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 		return $results;
 	}
 	
-	public function findRelated($record, $query = array(), $sort = array()) {
+	public function findRelated($record, $query = array(), $sort = array(), $limit = false) {
 		$metaArray = array();
 		if($record instanceOf EpicDb_Interface_TagMeta) {
 			foreach($record->getTagMeta() as $key => $value) {
@@ -293,7 +293,7 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 		if(empty($sort)) {
 			$sort = array("_created" => -1);			
 		}
-		return EpicDb_Mongo::db('post')->fetchAll($query, $sort);
+		return EpicDb_Mongo::db('post')->fetchAll($query, $sort, $limit);
 	}
 		
 	public function getVotes($type = false) {
