@@ -11,9 +11,9 @@
 class EpicDb_View_Helper_WikiWrapper extends Zend_View_Helper_Abstract
 {
 	public function wrap($header, $content, $params = array()) {
-		$classes = "rounded";
+		$classes = "transparent-bg-blue rounded padded-10";
 		if(isset($params['class'])) {
-			$classes .= " ".$params['class'];
+			$classes = $params['class'];
 		}
 		if(isset($params['wiki']) && $params['wiki'] instanceOf EpicDb_Mongo_Wiki) {
 			// FIX ME!!!!
@@ -23,7 +23,7 @@ class EpicDb_View_Helper_WikiWrapper extends Zend_View_Helper_Abstract
 				}
 			}
 		}
-		return "<div class='transparent-bg-blue rounded padded-10'>
+		return "<div class='".$classes."'>
 			<h2 class='wiki-header'>
 				".$header." 
 			</h2>
