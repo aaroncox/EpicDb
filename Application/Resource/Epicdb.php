@@ -1,5 +1,5 @@
 <?php
-class EpicDb_Application_Resource_EpicDb extends Zend_Application_Resource_ResourceAbstract {
+class EpicDb_Application_Resource_Epicdb extends Zend_Application_Resource_ResourceAbstract {
   /**
    * Loads configuration data 
    *
