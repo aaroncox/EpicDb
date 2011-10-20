@@ -35,7 +35,7 @@ class EpicDb_Auth_Form_Validate_UniqueEmail extends Zend_Validate_Abstract {
 	{
 			$this->_setValue($value);
 			// var_dump(EpicDb_Mongo_Profile_User::fetchOne(array('username' => $value))); exit;
-			if (!EpicDb_Mongo::db('user')->fetchOne(array('display_email' => $value))) {
+			if (!EpicDb_Mongo::db('user')->fetchOne(array('email' => $value))) {
 					return true;
 			}
 			$this->_error(self::IN_USE);
