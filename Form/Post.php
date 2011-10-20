@@ -147,6 +147,18 @@ class EpicDb_Form_Post extends EpicDb_Form
 		}
 
 		if(!$profile) {
+			$this->addElement("text", "anonymous_name", array(
+				'order' => 25,
+				'required' => true, 
+				'placeholder' => 'Your Name',
+				'label' => 'Name',
+			));
+			$this->addElement("text", "anonymous_email", array(
+				'order' => 26, 
+				'placeholder' => 'Your email address',
+				'label' => 'Email Address',
+				'description' => 'If you\'d like us to use your Gravatar for this post, please enter your email address.',
+			));
 			$recaptcha = new Zend_Service_ReCaptcha($this->_publickey, $this->_privatekey);
 			$captcha = new Zend_Form_Element_Captcha('captcha', array(
 				'order' => 2000,
@@ -176,6 +188,11 @@ class EpicDb_Form_Post extends EpicDb_Form
 			$post->body = $this->source->getValue();			
 		}
 
+		if(!$me) {
+			$post->anonymous_name = $this->anonymous_name->getValue();
+			$post->anonymous_email = $this->anonymous_email->getValue();
+		}
+
 		$filter = new EpicDb_Filter_TagJSON();
 
 		if ($this->tags) {
@@ -192,7 +209,7 @@ class EpicDb_Form_Post extends EpicDb_Form
 		if($me) {
 			$me->watch($post);
 			$me->save();			
-		}
+		} 
 		return $save;
 	}
 	public function process($data) {
