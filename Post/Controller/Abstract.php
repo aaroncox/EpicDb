@@ -273,9 +273,8 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 		$this->view->form = $form = $post->getEditForm(array("rev" => $revision));
 		$this->_handleMWForm($form);
 	}
-	
-	public function commentAction() {
-		$parent = $this->view->parent = $this->getPost();
+
+	public function getCommentForm($parent) {
 		if($parent instanceOf EpicDb_Mongo_Post_Question) {
 			$newComment = EpicDb_Mongo::db('question-comment');			
 		} else {
@@ -283,7 +282,13 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 		}
 		$newComment->_parent = $parent;
 		$newComment->tags->tag($parent, 'parent');
-		$commentForm = $this->view->form = $newComment->getEditForm();
+		$commentForm = $newComment->getEditForm();
+		return $commentForm;
+	}
+	
+	public function commentAction() {
+		$parent = $this->view->parent = $this->getPost();
+		$commentForm = $this->view->form = $this->getCommentForm($parent);
 		$this->_handleMWForm($commentForm, 'comment');
 	}
 	
