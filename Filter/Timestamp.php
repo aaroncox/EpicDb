@@ -7,9 +7,10 @@
  **/
 class EpicDb_Filter_Timestamp implements Zend_Filter_Interface
 {
-	public $format = 'Y-M-d H:m:s';
+	public $format = 'Y-M-d H:i:s';
 	
 	public function filter($value) {
+		if(!$value) return '';
 		if(is_int($value)) {
 			return date($this->format, $value);
 		}
