@@ -17,8 +17,9 @@ class EpicDb_View_Helper_WikiWrapper extends Zend_View_Helper_Abstract
 		}
 		if(isset($params['wiki']) && $params['wiki'] instanceOf EpicDb_Mongo_Wiki) {
 			// FIX ME!!!!
-			if(MW_Auth::getInstance()->getUser()) {
-				if(MW_Auth::getInstance()->getUser()->isMember(MW_Auth_Group_Super::getInstance())) {
+			if($user = EpicDb_Auth::getInstance()->getUser()) {
+				if(EpicDb_Auth::getInstance()->hasPrivilege($params['wiki']->record, 'edit')) {
+				// if(MW_Auth::getInstance()->getUser()->isMember(MW_Auth_Group_Super::getInstance())) {
 					$header .= " (<a href='/wiki/".$params['wiki']->record->_id."/".$params['wiki']->type."'>Edit</a>)";				
 				}
 			}

@@ -21,7 +21,7 @@ class EpicDb_Form_Post_Article extends EpicDb_Form_Post
 	}
 	public function getProfile() {
 		if($this->_profile) return $this->_profile;
-		throw new Exception("Profile not set within the article.");
+		return null;
 	}
 	/**
 	 * init - undocumented function

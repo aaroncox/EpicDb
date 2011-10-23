@@ -19,6 +19,6 @@ class EpicDb_View_Helper_WikiInline extends EpicDb_View_Helper_WikiWrapper
 		if(isset($params['returnEmpty']) && $params['returnEmpty'] == true) {
 			return '';
 		}
-		return $this->wrap("Incomplete Wiki called '".ucfirst($section)."'", "This wiki entry has not yet been created. If you are the owner of this page, or have been given permissions, you should see an edit button that will allow you to fill this section of the site out.", array('wiki' => new EpicDb_Mongo_Wiki(array('record' => $record, 'type' => $section)))+$params);
+		return $this->wrap("Incomplete Wiki called '".ucfirst($section)."' for ".$this->view->recordLink($record), "This wiki entry has not yet been created. If you are the owner of this page, or have been given permissions, you should see an edit button that will allow you to fill this section of the site out.", array('wiki' => new EpicDb_Mongo_Wiki(array('record' => $record, 'type' => $section)))+$params);
 	}
 } // END class EpicDb_View_Helper_WikiInline
