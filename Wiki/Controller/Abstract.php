@@ -12,6 +12,9 @@ class EpicDb_Wiki_Controller_Abstract extends MW_Controller_Action
 	public function getWiki() {
 		if($id = $this->getRequest()->getParam("record")) {
 			$record = $this->_record = EpicDb_Mongo::db('record')->find(new MongoId($id));
+			if(!$record) {
+				$record = $this->_record = EpicDb_Mongo::db('profile')->find(new MongoId($id));				
+			}
 			if(!$type = $this->getRequest()->getParam("type")) {
 				$type = "new";
 			}
