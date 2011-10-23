@@ -19,6 +19,9 @@ class EpicDb_View_Helper_PostLink extends MW_View_Helper_HtmlTag
 			$textLimit = $params['text-limit'];
 		}
 		$hash = '';
+		if(isset($params['hash'])) {
+			$hash = $params['hash'];
+		}
 		$text = $post->title;
 		if(isset($params['text'])) {
 			$text = $params['text'];
