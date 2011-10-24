@@ -41,8 +41,8 @@ class EpicDb_Vote_Accept extends EpicDb_Vote_Abstract {
 	{
 		if ((!$this->_post instanceOf EpicDb_Vote_Interface_Acceptable)) return "This object can't be accepted";
 		$author = $this->_post->_parent->tags->getTag("author");
-		if ( $author && $author->createReference() != $this->_userProfile->createReference() ) {
-			return "You are not the questions asker";
+		if ( !$author || $author->createReference() != $this->_userProfile->createReference() ) {
+			return "You are not the questions asker.";
 		}
 	}
 
