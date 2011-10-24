@@ -176,4 +176,12 @@ class EpicDb_Mongo_Profile_User extends EpicDb_Mongo_Profile
 		$query['$or'][] = array('admins' => $this->createReference());
 		return EpicDb_Mongo::db($type)->fetchAll($query); 
 	}
+	
+	public function getAuthoredPosts($query = array(), $sort = array("_created" => -1), $limit = false) {
+		$query['$and'][] = array(
+			'tags.ref' => $this->createReference(),
+			'tags.reason' => 'author'
+		);
+		return EpicDb_Mongo::db('post')->fetchAll($query, $sort, $limit);
+	}
 } // END class EpicDb_Mongo_Profile_User
