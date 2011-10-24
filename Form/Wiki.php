@@ -194,8 +194,10 @@ class EpicDb_Form_Wiki extends EpicDb_Form
 	public function process($data) {
 		if($this->isValid($data)) {
 			$wiki = $this->getWiki();
-			EpicDb_Mongo_Revision::makeEditFor($wiki, $this->reason->getValue());
-			$wiki->save();
+			if($this->reason) {
+				EpicDb_Mongo_Revision::makeEditFor($wiki, $this->reason->getValue());
+				$wiki->save();
+			}
 			$this->save();
 			return true;
 		}
