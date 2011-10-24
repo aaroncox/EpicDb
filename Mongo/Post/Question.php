@@ -12,11 +12,11 @@ class EpicDb_Mongo_Post_Question extends EpicDb_Mongo_Post implements EpicDb_Vot
 	protected static $_documentType = 'question';
 	protected static $_editForm = 'EpicDb_Form_Post_Question';
 
-	public function findAnswers($query = array(), $sort = array('votes.accept' => -1, 'votes.score' => -1), $limit = 10) {
+	public function findAnswers($query = array(), $sort = array('votes.accept' => -1, 'votes.score' => -1), $limit = false) {
 		return $this->findResponses(array( "_type" => "answer" ) + $query, $sort, $limit);
 	}
 
-	public function findComments($query = array(), $sort = array(), $limit = 10) {
+	public function findComments($query = array(), $sort = array(), $limit = false) {
 		return $this->findResponses( array( "_type" => "question-comment" ) + $query, $sort, $limit );
 	}
 
