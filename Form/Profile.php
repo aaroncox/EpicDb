@@ -41,6 +41,15 @@ class EpicDb_Form_Profile extends EpicDb_Form
 		$this->_profile = $profile;
 		return $this;
 	}
+	
+	public function getDefaultValues()
+	{
+		$values = parent::getDefaultValues();
+		$profile = $this->getProfile();
+		$values['icon'] = $profile->tags->getTag('icon');
+		return $values;
+	}
+	
 	/**
 	 * init - undocumented function
 	 *
@@ -57,11 +66,12 @@ class EpicDb_Form_Profile extends EpicDb_Form
 				'label' => 'Display Name',
 			));
 		$this->addElement("tags", "icon", array(
-			'recordType' => EpicDb_Mongo_Schema::getInstance()->getRecordTypes(),
+			'recordType' => implode(",",EpicDb_Mongo_Schema::getInstance()->getRecordTypes()),
 			'label' => 'My Icon',
+			'description' => 'You have 2 options now when choosing what your profile icon is: You can use the Gravatar associated to your email address or you can choose a record from our database and use it\'s icon',
 			'limit' => 1,
 		));
-		$this->setDefaults($profile->export()+array('icon' => array($profile->tags->getTag('icon'))));
+		$this->setDefaults($profile->export());
 		$this->setButtons(array("save" => "Save Profile"));
 	}
 	
