@@ -64,6 +64,10 @@ class EpicDb_Mongo_Schema extends MW_Mongo_Schema {
 	 return static::$_instance;
 	}
 	
+	public function getRecordTypes() {
+		return array('tag', 'resource');
+	}
+	
 	public function updateFrom($version)
   {
     $db = self::getMongoDb();

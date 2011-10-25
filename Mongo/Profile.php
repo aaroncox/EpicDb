@@ -75,6 +75,9 @@ class EpicDb_Mongo_Profile extends EpicDb_Auth_Mongo_Resource_Document implement
 
 	// Returns the string URL of where to load the icon for this
 	public function getIcon() {
+		if($icon = $this->tags->getTag('icon')) {
+			return $icon->getIcon();
+		}
 		if($this->icon) {
 			return $this->icon;
 		}

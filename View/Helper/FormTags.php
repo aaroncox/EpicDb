@@ -44,6 +44,12 @@ class EpicDb_View_Helper_FormTags extends Zend_View_Helper_FormHidden {
 			}
 			$attribs['data-search-url'] = $this->view->url($params, 'tag-search', true);
 		}
+		
+		if(isset($attribs['limit'])) {
+			$attribs['data-limit'] = $attribs['limit'];
+			unset($attribs['limit']);
+		}
+		
 		$hidden = parent::formHidden($name, $value, $attribs);
 		
 		

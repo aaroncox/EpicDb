@@ -34,7 +34,6 @@ class EpicDb_Form_Profile_User extends EpicDb_Form_Profile
 				'filters' => array('StringTrim', 'StripTags'),
 				'label' => 'About Me',
 				'cols' => 75,
-				
 			));
 		$this->setDefaults($profile->export());
 		$this->setButtons(array("save" => "Save Profile"));

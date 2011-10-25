@@ -8,7 +8,7 @@
  * @param undocumented class
  * @package undocumented class
  **/
-class EpicDb_Form_Profile extends MW_Form
+class EpicDb_Form_Profile extends EpicDb_Form
 {
 	protected $_profile = null;
 	protected $_isNew = false;
@@ -56,7 +56,12 @@ class EpicDb_Form_Profile extends MW_Form
 				'required' => true,
 				'label' => 'Display Name',
 			));
-		$this->setDefaults($profile->export());
+		$this->addElement("tags", "icon", array(
+			'recordType' => EpicDb_Mongo_Schema::getInstance()->getRecordTypes(),
+			'label' => 'My Icon',
+			'limit' => 1,
+		));
+		$this->setDefaults($profile->export()+array('icon' => array($profile->tags->getTag('icon'))));
 		$this->setButtons(array("save" => "Save Profile"));
 	}
 	
@@ -65,6 +70,10 @@ class EpicDb_Form_Profile extends MW_Form
 		$profile->name = $this->name->getValue();
 		$profile->_lastEdited = time();
 		$profile->_lastEditedBy = EpicDb_Auth::getInstance()->getUserProfile();
+		$value = $this->icon->getValue();
+		$filter = new EpicDb_Filter_TagJSON();
+		$value = $filter->toArray($value);
+		$profile->tags->setTags('icon', $value);
 		$profile->save();
 		return $profile;
 	}

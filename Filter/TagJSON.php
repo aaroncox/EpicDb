@@ -19,7 +19,8 @@
  */
 class EpicDb_Filter_TagJSON implements Zend_Filter_Interface {
 	protected $_type;
-
+	protected $_limit;
+	
 	// json format:
 	//
 	// [{
@@ -29,12 +30,22 @@ class EpicDb_Filter_TagJSON implements Zend_Filter_Interface {
 	// }, ....
 
 	public function __construct($options = array()) {
+		if ( isset( $options['limit'] ) ) {
+			$this->_limit = (int) $options['limit'];
+		}
 		if ( isset( $options['type'] ) ) {
 			$this->_type = explode( ",", $options['type'] );
 			if ( empty( $options["type"] ) || !count( $this->_type ) ) {
 				$this->_type = false;
 			}
 		}
+	}
+	
+	public function limit($output) {
+		if($this->_limit) {
+			$output = array_slice($output, 0, $this->_limit);				
+		}
+		return $output;
 	}
 
 	public function filter($value)
@@ -56,8 +67,7 @@ class EpicDb_Filter_TagJSON implements Zend_Filter_Interface {
 					"name" => $tag->name
 				);
 			}
-
-			return json_encode(array_values($contained));
+			return json_encode($this->limit(array_values($contained)));
 		} else {
 
 			// validate json
@@ -77,7 +87,7 @@ class EpicDb_Filter_TagJSON implements Zend_Filter_Interface {
 					$contained[ $ref["type"].":".$ref["id"] ] = $ref;
 				}
 			}
-			return json_encode(array_values($contained));
+			return json_encode($this->limit(array_values($contained)));
 		}
 	}
 
@@ -130,6 +140,6 @@ class EpicDb_Filter_TagJSON implements Zend_Filter_Interface {
 				$added[$id] = $id;
 			}
 		}
-		return $return;
+		return $this->limit($return);
 	}
 }
