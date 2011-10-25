@@ -20,11 +20,11 @@ class EpicDb_Mongo_Profile_Group_Guild extends EpicDb_Mongo_Profile_Group
 	}
 	
 	public function getIcon() {
-		if($this->icon) {
-			return $this->icon;
-		}
 		if($icon = $this->tags->getTag('icon')) {
 			return $icon->getIcon();
+		}
+		if($this->icon) {
+			return $this->icon;
 		}
 		return "http://s3.r2-db.com/unknown.jpg";
 	}

@@ -9,6 +9,14 @@
  * @package undocumented class
  **/
 class EpicDb_Form_Profile_Group extends EpicDb_Form_Profile {
+	public function getProfile()
+	{
+		if($this->_profile) return $this->_profile;
+		$class = EpicDb_Mongo::newDoc('group');
+		$this->_isNew = true;
+		return $this->_profile;
+	}
+	
 	public function init() {
 		parent::init();
 		$profile = $this->getProfile();
@@ -57,7 +65,6 @@ class EpicDb_Form_Profile_Group extends EpicDb_Form_Profile {
 			$profile->grant($user);
 			$profile->admins->addDocument(EpicDb_Auth::getInstance()->getUserProfile());				
 		}
-		$profile->save();
-		return $profile;
+		return parent::save();
 	}
 }

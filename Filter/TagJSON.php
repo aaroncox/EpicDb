@@ -58,6 +58,7 @@ class EpicDb_Filter_TagJSON implements Zend_Filter_Interface {
 			$type = $this->_type;
 			$contained = array();
 			foreach ( $value as $tag ) {
+				if ( !$tag ) continue;
 				if ( $type && !in_array( $tag->_type, $type ) ) {
 					continue;
 				}

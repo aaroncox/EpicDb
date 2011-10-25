@@ -124,29 +124,32 @@ class EpicDb_Form_Profile_Group_Guild extends EpicDb_Form_Profile_Group
 			$this->setButtons(array("save" => "Save Guild"));			
 		}
 	}
+	public function save($data) {
+		$profile = $this->getProfile();
+		$profile->_groupType = $this->_groupType->getValue();
+		$profile->url = $this->url->getValue();
+		$profile->feed = $this->feed->getValue();
+		$profile->ages = $this->ages->getValue();
+		$profile->regions = $this->regions->getValue();
+		$profile->language = $this->language->getValue();
+		$profile->playstyle = $this->playstyle->getValue();
+		$profile->faction = EpicDb_Mongo::db('faction')->fetchOne(array("id" => (int)$this->faction->getValue()));
+		$profile->description = $this->description->getValue();
+		if($profile->isNewDocument()) {
+			$user = MW_Auth::getInstance()->getUser();
+			$profile->_created = time();
+			$profile->_owner = $user;
+			$user->addGroup($profile->getAdminRole());
+			$user->save();
+			$membership = MW_Auth::getInstance()->getUserProfile();
+			$profile->admins->addDocument($membership);				
+		}
+		return parent::save($data);
+	}
 	public function process($data) {
 		$profile = $this->getProfile();
 		if($this->isValid($data)) {
-			$profile->name = $this->name->getValue();
-			$profile->_groupType = $this->_groupType->getValue();
-			$profile->url = $this->url->getValue();
-			$profile->feed = $this->feed->getValue();
-			$profile->ages = $this->ages->getValue();
-			$profile->regions = $this->regions->getValue();
-			$profile->language = $this->language->getValue();
-			$profile->playstyle = $this->playstyle->getValue();
-			$profile->faction = EpicDb_Mongo::db('faction')->fetchOne(array("id" => (int)$this->faction->getValue()));
-			$profile->description = $this->description->getValue();
-			if($profile->isNewDocument()) {
-				$user = MW_Auth::getInstance()->getUser();
-				$profile->_created = time();
-				$profile->_owner = $user;
-				$user->addGroup($profile->getAdminRole());
-				$user->save();
-				$membership = MW_Auth::getInstance()->getUserProfile();
-				$profile->admins->addDocument($membership);				
-			}
-			$profile->save();
+			$this->save($data);
 			return true;
 		}
 	}	

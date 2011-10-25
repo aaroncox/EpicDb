@@ -10,6 +10,14 @@
  **/
 class EpicDb_Form_Profile_User extends EpicDb_Form_Profile
 {
+	public function getProfile()
+	{
+		if($this->_profile) return $this->_profile;
+		$this->_profile = EpicDb_Mongo::newDoc('user');
+		$this->_isNew = true;
+		return $this->_profile;
+	}
+	
 	/**
 	 * init - undocumented function
 	 *

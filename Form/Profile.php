@@ -22,8 +22,7 @@ class EpicDb_Form_Profile extends EpicDb_Form
 	public function getProfile()
 	{
 		if($this->_profile) return $this->_profile;
-		$class = EpicDb_Mongo::dbClass('profile');
-		$this->_profile = new $class;
+		$profile = EpicDb_Mongo::newDoc('profile');
 		$this->_isNew = true;
 		return $this->_profile;
 	}
