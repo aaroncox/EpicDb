@@ -122,6 +122,7 @@ class EpicDb_Form_Post extends EpicDb_Form
 		$this->addElement("tags", "tags", array(
 			'order' => 150,
 			'required' => true,
+			'limit' => 8,
 			'label' => 'Tags',
 			'description' => 'Tagging questions helps categorize them, making it easier to find questions based on specific topics. To use the tagging engine, simply start typing what you are looking for in the search box, and click on the tag that matches the topics your question is related to.',
 		));
