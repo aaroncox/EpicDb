@@ -23,6 +23,9 @@ class EpicDb_Mongo_Profile_Group_Guild extends EpicDb_Mongo_Profile_Group
 		if($this->icon) {
 			return $this->icon;
 		}
+		if($icon = $this->tags->getTag('icon')) {
+			return $icon->getIcon();
+		}
 		return "http://s3.r2-db.com/unknown.jpg";
 	}
 	

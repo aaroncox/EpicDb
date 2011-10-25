@@ -163,6 +163,9 @@ class EpicDb_Mongo_Profile_User extends EpicDb_Mongo_Profile
 	}
 	
 	public function getIcon() {
+		if($icon = $this->tags->getTag('icon')) {
+			return $icon->getIcon();
+		}
 		if($this->email) {
 			$helper = new EpicDb_View_Helper_Gravatar();
 			return $helper->gravatar($this->email)->url();
