@@ -91,7 +91,7 @@ class EpicDb_Form_Post extends EpicDb_Form
 		return $values;
 	}
 
-    public function __construct($options = null)
+  public function __construct($options = null)
 	{
 		parent::__construct( $options );
 		// postinit - post decorators
