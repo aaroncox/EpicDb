@@ -27,7 +27,7 @@ class EpicDb_View_Helper_PostLink extends MW_View_Helper_HtmlTag
 			$text = $params['text'];
 		}
 		if(!strlen($text)) {
-			$text = $this->view->htmlFragment($post->body, $textLimit);
+			$text = $this->view->htmlFragment($post->body, $textLimit)." ";
 		}
 		$action = "view";
 		if(isset($params['action'])) {
