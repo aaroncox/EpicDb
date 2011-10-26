@@ -38,10 +38,14 @@ class EpicDb_View_Helper_VoteWidget extends MW_View_Helper_HtmlTag
 	{
 		$post = $this->_post;
 		$dbVote = null;
+		$voteLinkClass = null;
+		if(isset($this->_opts['voteLinkClass'])) {
+			$voteLinkClass = $this->_opts['voteLinkClass'];
+		}
 		$tagOpts = array(
 			"style" => "display: inline-block;",
 			"alt" => "Vote",
-			"class" => "vote-link vote-".$vote." rounded",
+			"class" => "vote-link vote-".$vote." rounded ".$voteLinkClass,
 		);
 		$iconClass = " ui-icon ".$this->_iconClass[$vote];
 		$tag = "span";
@@ -102,6 +106,10 @@ class EpicDb_View_Helper_VoteWidget extends MW_View_Helper_HtmlTag
 		if (!$post) {
 			return " ";
 		}
+		$widgetClass = "transparent-bg-blue rounded padded";
+		if(isset($this->_opts['widgetClass'])) {
+			$widgetClass = $this->_opts['widgetClass'];
+		}
 		$score = 0;
 		if(isset($post->votes['score'])) $score = $post->votes['score'];
 		// Return the widget
@@ -114,7 +122,7 @@ class EpicDb_View_Helper_VoteWidget extends MW_View_Helper_HtmlTag
 			// 			"style" => "margin: 5px 0; font-weight: bold;"
 			// 		), $this->_opts['title']);
 			// }
-			$content .= $this->view->htmlTag("div", array("class" => "transparent-bg-blue rounded padded"),
+			$content .= $this->view->htmlTag("div", array("class" => $widgetClass),
 				$this->view->htmlTag("div", array("class" => "vote-count".$this->color($score)), $score)." ".
 				$this->view->htmlTag("div", array(), 
 					$this->makeVoteButton("up")." ".
