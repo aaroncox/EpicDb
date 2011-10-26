@@ -100,7 +100,22 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 				)
 			),
 		);
-		
+
+		if($post instanceOf EpicDb_Mongo_Post_Article && $post->link) {	
+			$site = $post->tags->getTag('source');
+			$controls['parentLink'] = (string) $this->view->button(
+				array(
+				), null, true,
+				array(
+					'url' => $post->link,
+					'icon' => 'link',
+					'text' => 'View Original',
+					'style' => 'float: right',
+					'tooltip' => 'Head on over to '.$site->name.' to view the original!',
+				)
+			);
+		}
+
 		if($post instanceOf EpicDb_Mongo_Post_Article_Rss) {	
 			$site = $post->tags->getTag('source');
 			$controls['parentLink'] = (string) $this->view->button(
