@@ -49,8 +49,14 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 					$type = ' comment';
 				}
 				break;
+			case 'article':
 			case 'article-rss':
 				$type = 'n article';
+				$author = $post->tags->getTag('author');
+				$source = $post->tags->getTag('source');
+				if($author && $source && $author != $source) {
+					$type .= " on ".$this->view->profileLink($source);
+				}
 				break;
 			case "message":
 				$subject = $post->tags->getTag('subject');
