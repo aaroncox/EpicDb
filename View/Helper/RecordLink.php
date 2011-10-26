@@ -60,9 +60,7 @@ class EpicDb_View_Helper_RecordLink extends MW_View_Helper_HtmlTag
 		if(isset($params['action'])) {
 			$action = $params['action'];
 		}
-		
-
-		
+				
 		$this->view->tooltip($record)->addToCache();
 
 		if(!empty($urlParams)) return $this->htmlTag("a", array(
@@ -74,6 +72,7 @@ class EpicDb_View_Helper_RecordLink extends MW_View_Helper_HtmlTag
 		return $this->htmlTag("a", array(
 			"rel" => $rel,
 			"class" => $class,
+			"target" => $target,
 			"href" => $this->view->url($sectionParams+array(
 				'action'=> $action,
 			)+$record->getRouteParams(), $routeName, true),

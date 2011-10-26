@@ -69,6 +69,7 @@ class EpicDb_View_Helper_PostLink extends MW_View_Helper_HtmlTag
 		// }
 		return $this->htmlTag("a", array(
 			"rel" => $rel,
+			"target" => $target,
 			"href" => $this->view->url(array(
 				'action'=> $action,
 			)+$post->getRouteParams(), $route, true).$hash,
