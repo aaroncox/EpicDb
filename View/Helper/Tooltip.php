@@ -166,9 +166,14 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 		$description = $this->view->htmlFragment($doc->getDescription(), 250);
 		if(!$description) return '';
 
-		$profile = $doc->tags->getTag('author')?:$doc->tags->getTag('source');
+		if($source = $doc->tags->getTag('source')) {
+			$html = $this->view->htmlTag("p", array("style" => "font-style: italic"), "Posted on ".$this->view->profileLink($source));			
+		} else {
+			$profile = $doc->tags->getTag('author'); 
+			$html = $this->view->htmlTag("p", array("style" => "font-style: italic"), $this->view->profileLink($profile)." writes...");
+						
+		}
 		
-		$html = $this->view->htmlTag("p", array("style" => "font-style: italic"), $this->view->profileLink($profile)." writes...");
 		if($doc instanceOf EpicDb_Mongo_Post) {
 			$html .= $description;
 			$html .= $this->view->htmlTag("p", array(), $this->view->postLink($doc, array("text" => "Read More...")));			
