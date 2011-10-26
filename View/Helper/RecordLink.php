@@ -37,6 +37,11 @@ class EpicDb_View_Helper_RecordLink extends MW_View_Helper_HtmlTag
 			$rel = $params['rel'];
 		}
 		
+		$target = null;
+		if(isset($params['target'])) {
+			$target = $params['target'];
+		} 
+		
 		if($record->quality) {
 			$class .= " quality-".$record->quality;
 		}
@@ -62,6 +67,7 @@ class EpicDb_View_Helper_RecordLink extends MW_View_Helper_HtmlTag
 
 		if(!empty($urlParams)) return $this->htmlTag("a", array(
 			"rel" => $rel,
+			"target" => $target, 
 			"class" => $class,
 			"href" => $this->view->url($urlParams+$record->getRouteParams(), $record->routeName, true),
 		), $text);

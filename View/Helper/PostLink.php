@@ -29,6 +29,10 @@ class EpicDb_View_Helper_PostLink extends MW_View_Helper_HtmlTag
 		if(!strlen($text)) {
 			$text = $this->view->htmlFragment($post->body, $textLimit)." ";
 		}
+		$target = null;
+		if(isset($params['target'])) {
+			$target = $params['target'];
+		} 
 		$action = "view";
 		if(isset($params['action'])) {
 			$action = $params['action'];
@@ -49,6 +53,7 @@ class EpicDb_View_Helper_PostLink extends MW_View_Helper_HtmlTag
 			return 
 				$this->htmlTag("a", array(
 				"rel" => $rel,
+				"target" => $target,
 				"href" => $this->view->url(array(
 					'action'=> $action,
 				)+$post->getRouteParams(), $route, true).$hash,
