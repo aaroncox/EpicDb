@@ -46,7 +46,7 @@ class EpicDb_View_Helper_Card extends MW_View_Helper_HtmlTag
 	protected $_tagType = "h4";
 	public function cardDetails($record, $params = null) {
 		$details = '';
-		$details .= $this->htmlTag($this->_tagType, array('class' => 'text-medium'), $this->link($record));
+		$details .= $this->htmlTag($this->_tagType, array('class' => 'text-medium'), $this->link($record, $params));
 		if(!isset($params['content']) || $params['content'] === false) return $details;
 		if(isset($params['content']) && !empty($params['content'])) {
 			foreach($params['content'] as $qualifier => $content) {
@@ -102,7 +102,7 @@ class EpicDb_View_Helper_Card extends MW_View_Helper_HtmlTag
 	public function cardIconWrapper($record, $params) {
 		return $this->htmlTag("div", array('class' => 'record-icon inline-flow rounded '.$params['iconClass']), 
 			$this->cardScore($record)."".
-			$this->link($record, array("text" => $this->htmlTag("img", array('src' => $this->getIcon($record), 'alt' => $record->name, 'class' => 'icon'))))
+			$this->link($record, array("text" => $this->htmlTag("img", array('src' => $this->getIcon($record), 'alt' => $record->name, 'class' => 'icon')))+$params)
 		)."";
 	}
 
