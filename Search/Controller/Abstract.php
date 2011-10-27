@@ -107,8 +107,12 @@ class EpicDb_Search_Controller_Abstract extends MW_Controller_Action
 		
 		if($param = $this->getRequest()->getParam("view")) {
 			switch($param) {
+				case "iframe":
+					$this->view->layout()->setLayout('iframe');
+					$this->_helper->viewRenderer($param);  
+					break;
 				case "compact":
-					$this->_helper->viewRenderer('compact');  
+					$this->_helper->viewRenderer($param);  
 					break;
 			}
 		}
