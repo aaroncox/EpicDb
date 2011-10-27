@@ -112,6 +112,11 @@ class EpicDb_View_Helper_VoteWidget extends MW_View_Helper_HtmlTag
 		}
 		$score = 0;
 		if(isset($post->votes['score'])) $score = $post->votes['score'];
+		$controlText = null;
+		if(isset($this->_opts['controlText'])) {
+			$controlText = $this->_opts['controlText'];
+		}
+		
 		// Return the widget
 		$content = " ";
 		// Move this somewhere, I haven't found it yet
@@ -125,6 +130,7 @@ class EpicDb_View_Helper_VoteWidget extends MW_View_Helper_HtmlTag
 			$content .= $this->view->htmlTag("div", array("class" => $widgetClass),
 				$this->view->htmlTag("div", array("class" => "vote-count".$this->color($score)), $score)." ".
 				$this->view->htmlTag("div", array(), 
+					$this->view->htmlTag("span", array('class' => 'control-text'), $controlText)." ".
 					$this->makeVoteButton("up")." ".
 					((!$post instanceOf EpicDb_Vote_Interface_UpOnly) ? $this->makeVoteButton("down") : " ")
 				)."".
