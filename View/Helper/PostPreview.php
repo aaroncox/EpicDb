@@ -16,7 +16,7 @@ class EpicDb_View_Helper_PostPreview extends Zend_View_Helper_Abstract
 	function postPreview($html, $preview = false)
 	{
 		if($preview) {
-			$partial = explode("<!--more-->", $html);
+			$partial = preg_split("/<!--\s*more\s*-->/i", $html);
 			$html = $partial[0];
 		}
 		return $html;
