@@ -203,7 +203,7 @@ class EpicDb_Form_Post extends EpicDb_Form
 		if($this->requestType) {
 			$post->_requestType = $this->requestType->getValue();
 		}
-		if($me && $post->_parent) {
+		if($me && $post->_parent && $post->_parent->id) {
 			$me->watch($post->_parent);
 		}
 		$save = $post->save();

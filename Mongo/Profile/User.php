@@ -48,6 +48,7 @@ class EpicDb_Mongo_Profile_User extends EpicDb_Mongo_Profile
   {
     $id = (string) $record->_id;
     foreach ($this->watching as $key => $target) {
+	var_dump("-------------", $id, $key, $target);
 			if ( !$target ) continue;
       if ( (string) $target->_id == $id) {
         return true;
@@ -58,8 +59,11 @@ class EpicDb_Mongo_Profile_User extends EpicDb_Mongo_Profile
 
 	public function watch($record)
   {
-    if (!$this->isWatching($record))
-      $this->watching->addDocument($record);
+		// var_dump($record); exit;
+    if (!$this->isWatching($record)) {
+      $this->watching->addDocument($record);	
+		}
+		// var_dump($record); exit;
 		return $this;
   }
 

@@ -7,7 +7,7 @@
  **/
 class EpicDb_View_Helper_NetBar extends Zend_View_Helper_Abstract
 {
-	protected $_imagePath = "/images/netbar/";
+	protected $_imagePath = "http://reloaded.askajedi.com/images/netbar/";
 	protected $_scriptPath = "/js/";
 	protected $_profile = null;
 	public function netBar() {
@@ -31,6 +31,10 @@ class EpicDb_View_Helper_NetBar extends Zend_View_Helper_Abstract
 			$content .= $this->view->htmlTag("div", array("class" => "inline-flow level"), $levelBar->getLevel());
 			$content .= $this->view->htmlTag("div", array("class" => "inline-flow"), $levelBar."");
 			// $content .= $this->view->htmlTag("div", array("class" => "inline-flow"));
+		} else {
+			$content = $this->view->htmlTag("p", array(), 
+				'<a href="/user/login">Log in</a> or <a href="/user/register">Create an Account</a>'
+			);
 		}
 		return $this->view->htmlTag("div", array("class" => "user-status"), $content);
 	}

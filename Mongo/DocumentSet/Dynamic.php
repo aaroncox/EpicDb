@@ -11,6 +11,7 @@
 class EpicDb_Mongo_DocumentSet_Dynamic extends Shanty_Mongo_DocumentSet
 {
 	public function getPropertyClass($property, $data) {
+		// var_dump($property, $data); 
 		if (isset($data['_type'])) {
 			return EpicDb_Mongo::dbClass($data['_type']);
 		}

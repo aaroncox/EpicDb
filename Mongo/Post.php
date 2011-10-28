@@ -6,7 +6,7 @@
  *
  * @author Aaron Cox <aaronc@fmanet.org>
  **/
-class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements EpicDb_Interface_Revisionable, EpicDb_Interface_Tooltiped, EpicDb_Vote_Interface_Flaggable
+class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements EpicDb_Interface_Revisionable, EpicDb_Interface_Tooltiped, EpicDb_Vote_Interface_Flaggable, EpicDb_Interface_TagMeta
 {
 	public $contextHelper = 'context';
 	public $routeName = "post";
@@ -33,7 +33,7 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 			'_lastEditedBy' => array('Document:EpicDb_Mongo_Profile', 'AsReference'),
 			'_deletedBy' => array('Document:EpicDb_Mongo_Profile_User', 'AsReference'),
 			// '_profile' => array('Document:EpicDb_Mongo_Profile', 'AsReference', 'Required'),
-			'tags' => array('DocumentSet:EpicDb_Mongo_Tags', 'Required'),
+			'tags' => array('DocumentSet:EpicDb_Mongo_Tags'),
 			'touchedBy' => array('Document:EpicDb_Mongo_Profile', 'AsReference'),
 			'revisions' => array('DocumentSet'),
 			'revisions.$' => array('Document:EpicDb_Mongo_Revision'),
@@ -238,7 +238,6 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 		for(;$i<count($this->_viewers); $i++) {
 			$this->_viewers->setProperty($i, null);
 		}
-		// var_dump($this); exit;
 		return parent::save();
 	}
 
@@ -326,6 +325,14 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 	
 	public function isReputationDisabled() {
 		return $this->disableRep || ( $this->_parent && $this->_parent->id && $this->_parent->isReputationDisabled() );
+	}
+	
+	public function getTagMeta() {
+		return array();
+	}
+	
+	public function setTagMeta($tag) {
+		return $this;
 	}
   
 	// This is for watching queries as they execute on posts, perhaps we could enable it by a flag? or mode? I just used it for debugging queries.
