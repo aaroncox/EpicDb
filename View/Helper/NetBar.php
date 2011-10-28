@@ -44,7 +44,10 @@ class EpicDb_View_Helper_NetBar extends Zend_View_Helper_Abstract
 				$this->view->htmlTag("img", array("src" => $this->_imagePath."r2db.png")).""
 			)."".
 			$this->view->htmltag("div", array("class" => "drop-down"), 
-				$this->view->htmlTag("input", array("type" => "text", "name" => "q", "class" => "search-box"))."".
+				$this->view->htmlTag("form", array("id" => "netbar-search", "action" => "http://beta.r2-db.com/search"),
+					$this->view->htmlTag("input", array("id" => "searchInput", "type" => "text", "name" => "q", "class" => "search-box", 'placeholder' => "Search R2Db", 'autocomplete' => 'off'))."".
+					$this->view->htmlTag("iframe", array("id" => "netbar-search-results", 'width' => "198"), " ")
+				)."".
 				$this->view->htmlTag("div", array("class" => "buttons"),
 					$this->view->htmlTag("a", array("href" => "http://r2-db.com/skill-tree/calculators"), 
 						$this->view->htmlTag("img", array("src" => $this->_imagePath."r2db/calcs.png")).""
