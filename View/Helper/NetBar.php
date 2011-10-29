@@ -16,11 +16,28 @@ class EpicDb_View_Helper_NetBar extends Zend_View_Helper_Abstract
 	}
 	public function userStatus() {		
 		if($this->_profile) {
+			$iconClass = "";
+			if($this->_profile->faction) {
+				switch($this->_profile->faction->name) {
+					case "The Sith Empire":
+						$iconClass = " border-faction-sith";
+						break;
+					case "The Galactic Republic":
+						$iconClass = " border-faction-republic";
+						break;
+					default:
+						break;
+				}							
+			}
+			
 			$levelBar = $this->view->levelBar($this->_profile);
 			$content = $this->view->htmlTag("div", array("class" => "inline-flow menu", "id" => "user-menu"), 
 				$this->view->htmlTag("div", array("class" => "inline-flow"), $this->view->profileLink($this->_profile))."".
 				$this->view->htmlTag("div", array("class" => "inline-flow"), 
 					$this->view->htmlTag("img", array("src" => $this->_imagePath."expand.png"))				
+				)."".
+				$this->view->htmlTag("div", array("class" => "inline-flow profile-icon rounded".$iconClass), 
+					$this->view->htmlTag("img", array("src" => $this->_profile->getIcon()))
 				)."".
 				$this->view->htmlTag("div", array("class" => "drop-down"), "Some User Stuff?")
 			)."";
@@ -87,7 +104,7 @@ class EpicDb_View_Helper_NetBar extends Zend_View_Helper_Abstract
 			$this->view->htmlTag("div", array("class" => "wrap"), 
 				$this->userStatus()."".
 				$this->r2Bar()."".
-				$content .= $this->view->htmlTag("div", array("class" => "inline-flow"), 
+				$this->view->htmlTag("div", array("class" => "inline-flow"), 
 					$this->view->htmlTag("img", array("src" => $this->_imagePath."divider.png")).""
 				)."".
 				$this->aajBar()
