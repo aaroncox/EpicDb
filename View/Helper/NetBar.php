@@ -87,6 +87,9 @@ class EpicDb_View_Helper_NetBar extends Zend_View_Helper_Abstract
 			$this->view->htmlTag("div", array("class" => "wrap"), 
 				$this->userStatus()."".
 				$this->r2Bar()."".
+				$content .= $this->view->htmlTag("div", array("class" => "inline-flow"), 
+					$this->view->htmlTag("img", array("src" => $this->_imagePath."divider.png")).""
+				)."".
 				$this->aajBar()
 			)."".
 			$this->script()
