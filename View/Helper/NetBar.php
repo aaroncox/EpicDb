@@ -7,12 +7,15 @@
  **/
 class EpicDb_View_Helper_NetBar extends Zend_View_Helper_Abstract
 {
-	protected $_imagePath = "http://reloaded.askajedi.com/images/netbar/";
+	protected $_imagePath = "/images/netbar/";
 	protected $_scriptPath = "/js/";
 	protected $_profile = null;
 	public function netBar() {
 		$this->_profile = EpicDb_Auth::getInstance()->getUserProfile();
 		return clone $this;
+	}
+	public function recentActivity() {
+		return 'stuff';
 	}
 	public function userStatus() {		
 		if($this->_profile) {
@@ -32,14 +35,46 @@ class EpicDb_View_Helper_NetBar extends Zend_View_Helper_Abstract
 			
 			$levelBar = $this->view->levelBar($this->_profile);
 			$content = $this->view->htmlTag("div", array("class" => "inline-flow menu", "id" => "user-menu"), 
-				$this->view->htmlTag("div", array("class" => "inline-flow"), $this->view->profileLink($this->_profile))."".
+				$this->view->htmlTag("div", array("class" => "inline-flow"), "Welcome back, ".$this->view->htmlTag("strong", array(), $this->view->profileLink($this->_profile)))."".
 				$this->view->htmlTag("div", array("class" => "inline-flow"), 
 					$this->view->htmlTag("img", array("src" => $this->_imagePath."expand.png"))				
 				)."".
-				$this->view->htmlTag("div", array("class" => "inline-flow profile-icon rounded".$iconClass), 
-					$this->view->htmlTag("img", array("src" => $this->_profile->getIcon()))
-				)."".
-				$this->view->htmlTag("div", array("class" => "drop-down"), "Some User Stuff?")
+				$this->view->htmlTag("div", array("class" => "drop-down wide"), 
+					$this->view->htmlTag("div", array("class" => "profile-side inline-flow"), 
+						$this->view->htmlTag("div", array("class" => "inline-flow profile-icon rounded".$iconClass), 
+							$this->view->htmlTag("img", array("src" => $this->_profile->getIcon()))
+						)."".
+						$this->view->htmlTag("p", array(), "Level")."".
+						$this->view->htmlTag("p", array("class" => "level"), $levelBar->getLevel())
+					)."".
+					$this->view->htmlTag("div", array("class" => "profile-info inline-flow"), 
+						$this->view->htmlTag("p", array("class" => "profile-name"), 
+							$this->view->profileLink($this->_profile)
+						)."".
+						$this->view->htmlTag("p", array("class" => "profile-activity-header"), "Recent Activity")."".
+						$this->view->htmlTag("div", array("class" => "profile-activity"), 
+							$this->recentActivity()
+						)."".
+						$this->view->htmlTag("p", array("class" => "profile-activity-footer"), "View Earlier Activity →").""
+					)."".
+					$this->view->htmlTag("div", array("class" => "buttons"),
+						$this->view->htmlTag("a", array("href" => "#"), 
+							$this->view->htmlTag("img", array("src" => $this->_imagePath."/profile.png")).""
+						)."".
+						$this->view->htmlTag("img", array("src" => $this->_imagePath."r2db/divider.png"))."".
+						$this->view->htmlTag("a", array("href" => "#"), 
+							$this->view->htmlTag("img", array("src" => $this->_imagePath."/achievements.png")).""
+						)."".
+						$this->view->htmlTag("img", array("src" => $this->_imagePath."r2db/divider.png"))."".
+						$this->view->htmlTag("a", array("href" => "#"), 
+							$this->view->htmlTag("img", array("src" => $this->_imagePath."/social.png")).""
+						)."".
+						$this->view->htmlTag("img", array("src" => $this->_imagePath."r2db/divider.png"))."".
+						$this->view->htmlTag("a", array("href" => "#"), 
+							$this->view->htmlTag("img", array("src" => $this->_imagePath."/inventory.png")).""
+						).""
+					).""					
+				)
 			)."";
 			$content .= $this->view->htmlTag("div", array("class" => "inline-flow"), 
 				$this->view->htmlTag("img", array("src" => $this->_imagePath."divider.png")).""
@@ -60,37 +95,53 @@ class EpicDb_View_Helper_NetBar extends Zend_View_Helper_Abstract
 			$this->view->htmltag("a", array("href" => "http://r2-db.com"), 
 				$this->view->htmlTag("img", array("src" => $this->_imagePath."r2db.png")).""
 			)."".
-			$this->view->htmltag("div", array("class" => "drop-down"), 
-				$this->view->htmlTag("form", array("id" => "netbar-search", "action" => "http://beta.r2-db.com/search"),
-					$this->view->htmlTag("input", array("id" => "searchInput", "type" => "text", "name" => "q", "class" => "search-box", 'placeholder' => "Search R2Db", 'autocomplete' => 'off'))."".
-					$this->view->htmlTag("iframe", array("id" => "netbar-search-results", 'width' => "198"), " ")
+			$this->view->htmltag("div", array("id" => "netbar-r2-search", "class" => "drop-down"), 
+				$this->view->htmlTag("form", array("action" => "http://beta.r2-db.com/search"),
+					$this->view->htmlTag("input", array("id" => "searchInput", "type" => "text", "name" => "q", "class" => "search-box", 'placeholder' => "Search R2-Db.com", 'autocomplete' => 'off'))."".
+					$this->view->htmlTag("iframe", array("id" => "netbar-search-results", 'width' => "198", "class" => 'netbar-results'), " ")
 				)."".
 				$this->view->htmlTag("div", array("class" => "buttons"),
-					$this->view->htmlTag("a", array("href" => "http://r2-db.com/skill-tree/calculators"), 
-						$this->view->htmlTag("img", array("src" => $this->_imagePath."r2db/calcs.png")).""
+					$this->view->htmlTag("a", array("href" => "http://r2-db.com/skill-tree/calculator"), 
+						$this->view->htmlTag("img", array("src" => $this->_imagePath."/skill-tree.png")).""
 					)."".
 					$this->view->htmlTag("img", array("src" => $this->_imagePath."r2db/divider.png"))."".
 					$this->view->htmlTag("a", array("href" => "http://r2-db.com/questions"), 
-						$this->view->htmlTag("img", array("src" => $this->_imagePath."r2db/questions.png")).""
+						$this->view->htmlTag("img", array("src" => $this->_imagePath."/questions.png")).""
 					).""
 				).""
 			).""
 		)."";
+	}
+	public function recentAAJNews() {
+		$aaj = EpicDb_Mongo::db('website')->fetchOne(array("id" => 3));
+		$html = "";
+		foreach($aaj->getAuthoredPosts(array(), array("_created" => -1), 5) as $post) {
+			$html .= $this->view->htmlTag("li", array("class" => "search-result-row"), 
+							 	 $this->view->htmlTag("span", array(), $this->view->postLink($post, array("text" => $this->view->htmlFragment($post->title, 28, " →"))))
+							 );
+		}
+		return $html;
 	}
 	public function aajbar() {
 		return $this->view->htmlTag("div", array("class" => "inline-flow menu"), 
 			$this->view->htmltag("a", array("href" => "http://askajedi.com"), 
 				$this->view->htmlTag("img", array("src" => $this->_imagePath."aaj.png")).""
 			)."".
-			$this->view->htmltag("div", array("class" => "drop-down"), 
-				$this->view->htmlTag("input", array("type" => "text", "name" => "q", "class" => "search-box"))."".
+			$this->view->htmltag("div", array("id" => "netbar-aaj-search", "class" => "drop-down"), 
+				$this->view->htmlTag("form", array("action" => "http://reloaded.askajedi.com/search"),
+					$this->view->htmlTag("input", array("id" => "searchInput", "type" => "text", "name" => "q", "class" => "search-box", 'placeholder' => "Search AskAJedi.com", 'autocomplete' => 'off'))."".
+					$this->view->htmlTag("ul", array("class" => "recently search-results-table"), 
+						$this->recentAAJNews()
+					)."".
+					$this->view->htmlTag("iframe", array("id" => "netbar-search-results", 'width' => "198", "class" => 'netbar-results'), " ")
+				)."".
 				$this->view->htmlTag("div", array("class" => "buttons"),
 					$this->view->htmlTag("a", array("href" => "http://r2-db.com/skill-tree/calculators"), 
-						$this->view->htmlTag("img", array("src" => $this->_imagePath."r2db/calcs.png")).""
+						$this->view->htmlTag("img", array("src" => $this->_imagePath."forums.png")).""
 					)."".
 					$this->view->htmlTag("img", array("src" => $this->_imagePath."r2db/divider.png"))."".
 					$this->view->htmlTag("a", array("href" => "http://r2-db.com/questions"), 
-						$this->view->htmlTag("img", array("src" => $this->_imagePath."r2db/questions.png")).""
+						$this->view->htmlTag("img", array("src" => $this->_imagePath."news.png")).""
 					).""
 				).""
 			).""
