@@ -37,6 +37,9 @@ class EpicDb_Mongo_Profile_Group_Website extends EpicDb_Mongo_Profile_Group
 	}
 	
 	public function getAuthoredPosts($query = array(), $sort = array("_created" => -1), $limit = false) {
+		$query['_publish'] = array(
+			'$lt' => time()
+		);
 		$query['$and'][] = array(
 			'tags.ref' => $this->createReference(),
 			'tags.reason' => 'source'
