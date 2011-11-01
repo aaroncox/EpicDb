@@ -281,14 +281,27 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 				$metaArray['tags.'.$key] = $value;
 			}			
 		}
-		$query['$or'][] = array(
-			'tags.ref' => $record->createReference(),
-			'tags.reason' => 'tag'
-		)+$metaArray;
-		$query['$or'][] = array(
-			'tags.ref' => $record->createReference(),
-			'tags.reason' => 'subject'
-		)+$metaArray;
+		if(is_array($record)) {
+			foreach($record as $document) {
+				$query['$or'][] = array(
+					'tags.ref' => $document->createReference(),
+					'tags.reason' => 'tag'
+				)+$metaArray;
+				$query['$or'][] = array(
+					'tags.ref' => $document->createReference(),
+					'tags.reason' => 'subject'
+				)+$metaArray;
+			}
+		} else {
+			$query['$or'][] = array(
+				'tags.ref' => $record->createReference(),
+				'tags.reason' => 'tag'
+			)+$metaArray;
+			$query['$or'][] = array(
+				'tags.ref' => $record->createReference(),
+				'tags.reason' => 'subject'
+			)+$metaArray;			
+		}
 		if(empty($sort)) {
 			$sort = array("_created" => -1);			
 		}

@@ -18,8 +18,9 @@
  * @version $Id: Post.php 663 2011-03-08 22:41:56Z root $
  */
 class EpicDb_Route_Post extends Zend_Controller_Router_Route {
-	static public $types = array('m','q','n','s','a','media','image','post','news','response','poll','system','question','article','comment','message','request','answer','article-rss', 'question-comment');
+	static public $types = array('m','q','n','s','a','guides','guide','media','image','post','news','response','poll','system','question','article','comment','message','request','answer','article-rss', 'question-comment');
 	static public $maps = array(
+		'guides' => 'guide',
 		'm' => 'message',
 		'q' =>'question',
 		'n' => 'news',
@@ -76,7 +77,7 @@ class EpicDb_Route_Post extends Zend_Controller_Router_Route {
 			return null;
 		}
 		if(isset(static::$maps[$params['type']])) {
-			$params['$type'] = static::$maps[$params['type']];
+			$params['type'] = static::$maps[$params['type']];
 		}
 		return EpicDb_Mongo::db($params['type'])->fetchOne(array('id'=>(int)$params['id']));
 	}
