@@ -35,4 +35,15 @@ class EpicDb_Mongo_Profile_Group_Website extends EpicDb_Mongo_Profile_Group
 	public function getParentResource() {
 		return new EpicDb_Auth_Resource_Website();
 	}
+	
+	public function getAuthoredPosts($query = array(), $sort = array("_created" => -1), $limit = false) {
+		$query['_publish'] = array(
+			'$lt' => time()
+		);
+		$query['$and'][] = array(
+			'tags.ref' => $this->createReference(),
+			'tags.reason' => 'source'
+		);
+		return EpicDb_Mongo::db('post')->fetchAll($query, $sort, $limit);
+	}
 }

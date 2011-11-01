@@ -29,17 +29,22 @@ class EpicDb_View_Helper_PostLink extends MW_View_Helper_HtmlTag
 		if(!strlen($text)) {
 			$text = $this->view->htmlFragment($post->body, $textLimit)." ";
 		}
-		$target = null;
-		if(isset($params['target'])) {
-			$target = $params['target'];
-		} 
-		$action = "view";
+		$urlParams = array(
+			"action" => "view"
+		);
+
 		if(isset($params['action'])) {
-			$action = $params['action'];
+			$urlParams["action"] = $params["action"];
 		}
-		$rel = "";
+		$urlParams += $post->getRouteParams();
+
+		$tagAttribs = array();
+
+		if(isset($params['target'])) {
+			$tagAttribs["target"] = $params["target"];
+		} 
 		if(isset($params['rel'])) {
-			$rel = $params['rel'];
+			$tagAttribs["rel"] = $params["rel"];
 		}
 		
 		$route = $post->routeName;
@@ -48,31 +53,9 @@ class EpicDb_View_Helper_PostLink extends MW_View_Helper_HtmlTag
 		}
 		
 		$this->view->tooltip($post)->addToCache();
-		// var_dump($text);
-		if($text == null) {
-			return 
-				$this->htmlTag("a", array(
-				"rel" => $rel,
-				"target" => $target,
-				"href" => $this->view->url(array(
-					'action'=> $action,
-				)+$post->getRouteParams(), $route, true).$hash,
-			), (string) $text)."";
-		}
+		$tagAttribs["href"] = $this->view->url( $urlParams, $route, true ) . $hash;
 
-		// This will let us pass in the post as a # and hit it directly.
-		// if(isset($params['#'])) {
-		// 	if($params['#'] instanceOf EpicDb_Mongo_Post) {
-		// 		$hash = $params['#']->_type."-".$params['#']->id;
-		// 	}
-		// 	$hash = "#".$hash;
-		// }
-		return $this->htmlTag("a", array(
-			"rel" => $rel,
-			"target" => $target,
-			"href" => $this->view->url(array(
-				'action'=> $action,
-			)+$post->getRouteParams(), $route, true).$hash,
-		), (string) $text)."";
+		$this->htmlTag( "a", $tagAttribs, (string) $text );
+		return $this->render();
 	}
 }
