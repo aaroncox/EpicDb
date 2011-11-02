@@ -25,27 +25,31 @@ class EpicDb_Form_Post_Article_Guide extends EpicDb_Form_Post_Article
 			'label' => 'Specific Class',
 			'description' => 'What class is this guide about (if any)? You are allowed to tag a combination of 2x Advanced Classes or Classes.',
 			'limit' => 2,
-			'recordType' => 'class, advanced-class',
+			'recordType' => 'class,advanced-class',
 		));
 		$this->tags->setDescription("Please tag up to 8 relevant records from the database to your guide.")->setLabel('Related Tags');
+		$this->setDefaults( $this->getDefaultValues() );
 		$this->setButtons(array("save" => "Post News"));
 	}
 	public function getDefaultValues()
 	{
 		$values = parent::getDefaultValues();
-		$data = $this->getInitialData();
-		// $values['title'] = $data->title;
+		$post = $this->getPost();
+		$values['class'] = $post->class->getTags('tag');
 		return $values;
 	}
 	public function save() {
 		parent::save();
 		
 		$post = $this->getPost();
-		// var_dump($post); exit;
 		if($classes = $this->class->getTags()) {
 			$post->class->setTags('tag', $classes);			
 		}
-		// $post->title = $this->title->getValue();
+		$post->title = $this->title->getValue();
+		$filter = new MW_Filter_Slug();
+		$post->slug = $filter->filter($post->title);
+		$post->save();
+		// var_dump($post->export()); exit;
 		return $post->save();
 	} 
 } // END class EpicDb_Form_Post_Article_Guide extends EpicDb_Form_Post_Article
