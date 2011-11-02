@@ -136,11 +136,11 @@ class EpicDb_View_Helper_NetBar extends Zend_View_Helper_Abstract
 					$this->view->htmlTag("iframe", array("id" => "netbar-search-results", 'width' => "198", "class" => 'netbar-results'), " ")
 				)."".
 				$this->view->htmlTag("div", array("class" => "buttons"),
-					$this->view->htmlTag("a", array("href" => "http://r2-db.com/skill-tree/calculators"), 
+					$this->view->htmlTag("a", array("href" => "http://askajedi.com/forums"), 
 						$this->view->htmlTag("img", array("src" => $this->_imagePath."forums.png")).""
 					)."".
 					$this->view->htmlTag("img", array("src" => $this->_imagePath."r2db/divider.png"))."".
-					$this->view->htmlTag("a", array("href" => "http://r2-db.com/questions"), 
+					$this->view->htmlTag("a", array("href" => "http://askajedi.com/news"), 
 						$this->view->htmlTag("img", array("src" => $this->_imagePath."news.png")).""
 					).""
 				).""
