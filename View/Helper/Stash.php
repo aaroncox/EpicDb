@@ -8,16 +8,44 @@
 class EpicDb_View_Helper_Stash extends Zend_View_Helper_Abstract
 {
 	public function sampleData() {
-		$html = "";
-		foreach(EpicDb_Mongo::db('advanced-class')->fetchAll() as $record) {
-			$html .= $this->iconify($record);
-		} 
-		foreach(EpicDb_Mongo::db('class')->fetchAll() as $record) {
-			$html .= $this->iconify($record);
-		} 
-		foreach(EpicDb_Mongo::db('race')->fetchAll() as $record) {
-			$html .= $this->iconify($record);
-		} 
+		$frontendOptions = array(
+		   'lifetime' => 3000,
+		   'automatic_serialization' => true
+		);
+		$backendOptions = array(
+			'cache_dir' => '/tmp/'
+		);
+		$cache = Zend_Cache::factory(
+		    'Output', 'Memcached', $frontendOptions, $backendOptions
+		);
+		try {
+			if(!$html = $cache->load('sample_data_stash')) {	
+				$html = "";				
+				foreach(EpicDb_Mongo::db('advanced-class')->fetchAll() as $record) {
+					$html .= $this->iconify($record);
+				} 
+				foreach(EpicDb_Mongo::db('class')->fetchAll() as $record) {
+					$html .= $this->iconify($record);
+				} 
+				foreach(EpicDb_Mongo::db('race')->fetchAll() as $record) {
+					$html .= $this->iconify($record);
+				} 
+				foreach(EpicDb_Mongo::db('profession')->fetchAll() as $record) {
+					$html .= $this->iconify($record);
+				} 
+				foreach(EpicDb_Mongo::db('faction')->fetchAll() as $record) {
+					$html .= $this->iconify($record);
+				} 
+				foreach(EpicDb_Mongo::db('companion')->fetchAll() as $record) {
+					$html .= $this->iconify($record);
+				} 
+				$cache->save($html, 'sample_data_stash');
+			}
+		} catch (Exception $e) {
+
+		}
+
+		
 		return $html;
 	}
 	public function iconify($doc) {
