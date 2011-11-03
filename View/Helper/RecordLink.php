@@ -69,10 +69,12 @@ class EpicDb_View_Helper_RecordLink extends MW_View_Helper_HtmlTag
 			"class" => $class,
 			"href" => $this->view->url($urlParams+$record->getRouteParams(), $record->routeName, true),
 		), $text);
+		$filter = new EpicDb_Filter_TagJSON();
 		return $this->htmlTag("a", array(
 			"rel" => $rel,
 			"class" => $class,
 			"target" => $target,
+			"data-tag-json" => $filter->single($record),
 			"href" => $this->view->url($sectionParams+array(
 				'action'=> $action,
 			)+$record->getRouteParams(), $routeName, true),
