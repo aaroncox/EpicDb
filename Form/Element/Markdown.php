@@ -29,7 +29,7 @@ class EpicDb_Form_Element_Markdown extends MW_Form_Element_Markdown {
 		$replace = '<iframe width="620" height="348" src="http://www.youtube.com/embed/$1" frameborder="0" allowfullscreen></iframe>';
 		$html = preg_replace($match, $replace, $html);
 		// Capture Record links in {} and embed icons w/ tooltip
-		$match = '/\{\s*http:\/\/[\w.]*r2-db\.com\/(advanced-class|user|race|item|skill|npc|quest|mission|place|class|starship|companion|profession|crew-skill|achievement|tag|achievement|faction)\/(\d+)*\}/i';
+		$match = '/\{\s*http:\/\/[\w.]*r2-db\.com\/(advanced-class|user|race|item|skill|npc|quest|mission|place|class|starship|companion|profession|crew-skill|achievement|tag|achievement|faction)\/(\d+).*\}/i';
 		preg_match_all($match, $html, $results);
 		for($i = 0; $i < count($results[1]); $i++) {
 			$record = EpicDb_Mongo::db($results[1][$i])->fetchOne(array("id" => (int) $results[2][$i]));
