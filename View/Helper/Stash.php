@@ -9,7 +9,13 @@ class EpicDb_View_Helper_Stash extends Zend_View_Helper_Abstract
 {
 	public function sampleData() {
 		$html = "";
-		foreach(EpicDb_Mongo::db('place')->fetchAll() as $record) {
+		foreach(EpicDb_Mongo::db('advanced-class')->fetchAll() as $record) {
+			$html .= $this->iconify($record);
+		} 
+		foreach(EpicDb_Mongo::db('class')->fetchAll() as $record) {
+			$html .= $this->iconify($record);
+		} 
+		foreach(EpicDb_Mongo::db('race')->fetchAll() as $record) {
 			$html .= $this->iconify($record);
 		} 
 		return $html;
