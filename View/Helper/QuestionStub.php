@@ -54,7 +54,7 @@ class EpicDb_View_Helper_QuestionStub extends MW_View_Helper_HtmlTag
 					$state = 'ui-state-active';
 				}
 				$tags .= $this->view->card($tag->ref, array(
-					"class" => "post-tag ".$state,
+					"class" => "post-tag ",
 					"iconClass" => "tag-icon", 
 					"content" => false,
 				));
