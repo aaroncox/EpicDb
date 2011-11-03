@@ -199,4 +199,19 @@ abstract class EpicDb_Profile_Controller_Abstract extends MW_Controller_Action
 			$this->view->error = "Error: Caught ".get_class($e)." ".$e->getMessage()." \n";
 		}
 	}
+	public function changeOwnerAction() {
+		$profile = $this->getProfile(); 
+		$user = EpicDb_Auth::getInstance()->getUserProfile();
+   	R2Db_Auth::getInstance()->requirePrivilege(new MW_Auth_Resource_Super());			
+		$this->view->newOwner = $newOwner = EpicDb_Mongo::db('profile')->fetchOne(array("_id" => new MongoId($this->getRequest()->getParam('target'))));
+		if($confirm = $this->getRequest()->getParam('confirm')) {
+			$newUser = $newOwner->user; 
+			if(!$user instanceOf MW_Auth_Mongo_Role) {
+				$newUser = MW_Auth_Mongo_Role::fetchOne(array("_id" => new MongoId($newOwner->user->_id)));
+			}
+			$profile->_owner = $newUser;
+			$profile->save();
+			$this->_redirect(urldecode($this->getRequest()->getParam('referer')));
+		}
+	}
 } // END class EpicDb_Profile_Controller_Abstract
