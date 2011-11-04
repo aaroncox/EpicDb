@@ -48,6 +48,15 @@ class EpicDb_View_Helper_Stash extends Zend_View_Helper_Abstract
 		
 		return $html;
 	}
+	public function loadStash() {
+		$html = "";
+		if($profile = EpicDb_Auth::getInstance()->getUserProfile()) {
+			foreach($profile->stashed->getTags() as $record) {
+				$html .= $this->iconify($record);
+			}
+		}
+		return $html;
+	}
 	public function iconify($doc) {
 		return $this->view->htmlTag("li", array("class" => "stash-item"), 
 			$this->view->iconLink($doc, array("class" => "icon small inline-flow"))."".
@@ -70,13 +79,17 @@ class EpicDb_View_Helper_Stash extends Zend_View_Helper_Abstract
 		);
 	}
 	public function stash() {
-		return $this->view->htmlTag("div", array("id" => "r2-stash", "class" => "r2-tooltip rounded"), 
+		$dataParams = array();
+		if($profile = EpicDb_Auth::getInstance()->getUserProfile()) {
+			$dataParams["data-stash-url"] = $this->view->url(array('profile' => $profile, 'action' => 'stash'), 'profile', true);
+		}
+		return $this->view->htmlTag("div", array("id" => "r2-stash", "class" => "r2-tooltip rounded")+$dataParams, 
 			$this->view->htmlTag("div", array("class" => "stash-header"), 
-				"Title of Stash"."".
+				"Stash"."".
 				$this->controls()
 			)."".
 			$this->view->htmlTag("ul", array("id" => "", "class" => "stash-content layout-grid"), 
-				$this->sampleData()
+				$this->loadStash()
 			).""
 		);
 	}
