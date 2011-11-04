@@ -52,7 +52,8 @@ class EpicDb_Filter_TagJSON implements Zend_Filter_Interface {
 		return json_encode(array(
 			"type" => $tag->_type,
 			"id" => $tag->id,
-			"name" => $tag->name,
+			"name" => $tag->name?:$tag->title,
+			"icon" => $tag->getIcon(),
 		));
 	}
 

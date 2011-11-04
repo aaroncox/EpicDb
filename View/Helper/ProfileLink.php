@@ -59,13 +59,14 @@ class EpicDb_View_Helper_ProfileLink extends MW_View_Helper_HtmlTag
 		}
 		
 		$this->view->tooltip($profile)->addToCache();
-		
+		$filter = new EpicDb_Filter_TagJSON();
 		if(trim($text) == "") $text = "Unknown";
 		return $this->htmlTag("a", array(
 			"rel" => $rel,
 			"class" => $class,
 			"target" => $target,
 			"title" => $profile->name."'s Profile",
+			"data-tag-json" => $filter->single($profile),
 			"href" => $this->view->url(array(
 				'action'=> $action,
 				'profile' => $profile,
