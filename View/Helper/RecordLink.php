@@ -28,9 +28,9 @@ class EpicDb_View_Helper_RecordLink extends MW_View_Helper_HtmlTag
 		if(isset($params['text'])) {
 			$text = $params['text'];
 		}
-		$class = "";
+		$class = "tag-json";
 		if(isset($params['class'])) {
-			$class = $params['class'];
+			$class .= " ".$params['class'];
 		}
 		$rel = "";
 		if(isset($params['rel'])) {
@@ -60,7 +60,7 @@ class EpicDb_View_Helper_RecordLink extends MW_View_Helper_HtmlTag
 		if(isset($params['action'])) {
 			$action = $params['action'];
 		}
-				
+					
 		$this->view->tooltip($record)->addToCache();
 
 		if(!empty($urlParams)) return $this->htmlTag("a", array(

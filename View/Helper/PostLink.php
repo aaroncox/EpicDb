@@ -56,7 +56,11 @@ class EpicDb_View_Helper_PostLink extends MW_View_Helper_HtmlTag
 		$tagAttribs["href"] = $this->view->url( $urlParams, $route, true ) . $hash;
 		$filter = new EpicDb_Filter_TagJSON();
 		$tagAttribs["data-tag-json"] = $filter->single($post);
-
+		if(isset($tagAttribs['class'])) {
+			$tagAttribs['class'] .= " tag-json";
+		} else {
+			$tagAttribs['class'] = "tag-json";
+		}
 		$this->htmlTag( "a", $tagAttribs, (string) $text );
 		return $this->render();
 	}
