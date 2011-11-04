@@ -75,7 +75,7 @@ class EpicDb_View_Helper_Stash extends Zend_View_Helper_Abstract
 			$this->control("grid", "calculator", "Display this stash in a grid format.")."".
 			$this->control("list", "contact", "Display this stash in a search result format.")."".
 			$this->control("trash", "trash", "Drag things here to remove them.")."".
-			$this->control("close", "circle-close", "Hide your stash.")
+			$this->control("export", "clipboard", "Export this stash as Text, BBCode or Markdown.")
 		);
 	}
 	public function stash() {
