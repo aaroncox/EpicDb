@@ -170,7 +170,7 @@ abstract class EpicDb_Vote_Abstract {
 			}
 			$this->_post->votes = EpicDb_Vote::countVotes($this->_post);
 			$this->_post->save();
-			EpicDb_Vote::publish('vote', array('target' => $this->_post, 'voter' => $this->_userProfile, 'value' => $this->_type, 'vote' => $this->_data));
+			EpicDb_Event::event('vote', array('vote' => $this))->publish();
 		}
 
 	}

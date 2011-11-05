@@ -24,6 +24,7 @@ class EpicDb_Mongo_Schema extends MW_Mongo_Schema {
 		'tag' => 'EpicDb_Mongo_Record_Tag',
 		'record' => 'EpicDb_Mongo_Record',
 		'resource' => 'EpicDb_Mongo_Record_Resource',
+		'badge' => 'EpicDb_Mongo_Record_Badge',
 		'searchlog' => 'EpicDb_Mongo_SearchLog',
 		'searchlog-cache' => 'EpicDb_Mongo_Cache_SearchLog',
 		// Post Types

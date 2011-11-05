@@ -104,45 +104,4 @@ class EpicDb_Vote {
 		return EpicDb_Auth::getInstance()->getUserProfile();
 	}
 	
-	/**
-	 * undocumented class variable
-	 *
-	 * @var string
-	 **/
-	protected static $_subscribers = array();
-	
-	/**
-	 * Publish a vote event
-	 *
-	 * @return void
-	 * @author Corey Frang
-	 **/
-	public static function publish($event, $data)
-	{
-		if (isset(self::$_subscribers[$event])) {
-			foreach(self::$_subscribers[$event] as $method) {
-				call_user_func_array($method, array($event, $data));
-			}
-		}
-	}
-	
-	/**
-	 * Call a method when a subscribed event fires
-	 *
-	 * @return void
-	 * @author Corey Frang
-	 **/
-	public static function subscribe($events, $method)
-	{
-		if (is_string($events)) {
-			$events = preg_split("/\s+/", $events);
-		}
-		foreach ($events as $event) {
-			if (!isset(self::$_subscribers[$event])) {
-				self::$_subscribers[$event] = array();
-			}
-			self::$_subscribers[$event][] = $method;
-		}
-	}
-
 }
