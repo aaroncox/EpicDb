@@ -28,6 +28,7 @@ class EpicDb_Mongo_Profile extends EpicDb_Auth_Mongo_Resource_Document implement
 	  $this->_requirements += array(
 			'_lastEditedBy' => array('Document:EpicDb_Mongo_Profile', 'AsReference'),
 			'tags' => array('DocumentSet:EpicDb_Mongo_Tags'),
+			'badges' => array('DocumentSet:EpicDb_Mongo_Tags'),
 			'stashed' => array('DocumentSet:EpicDb_Mongo_Tags'),
 	    );
 	  $return = parent::__construct($data, $config);

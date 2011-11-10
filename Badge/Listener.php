@@ -44,8 +44,9 @@ class EpicDb_Badge_Listener
 	public function init() {
 		$badges = EpicDb_Badge::getBadges();
 		foreach($badges as $badge) {
-			if($badge->event) {
-				$this->addEventListener($badge->event, $badge);
+			$helper = EpicDb_Badge::helper($badge);
+			if($helper->event) {
+				$this->addEventListener($helper->event, $helper);
 			}
 		}
 		EpicDb_Event::subscribe(implode(" ", array_keys($this->_subscribers)), array($this, 'event'));
@@ -60,7 +61,7 @@ class EpicDb_Badge_Listener
 		}
 	}
 	
-	public function addEventListener($events, $badge) {
+	public function addEventListener($events, $helper) {
 		if (is_string($events)) {
 			$events = preg_split("/\s+/", $events);
 		}
@@ -68,7 +69,7 @@ class EpicDb_Badge_Listener
 			if (!isset($this->_subscribers[$event])) {
 				$this->_subscribers[$event] = array();
 			}
-			$this->_subscribers[$event][] = EpicDb_Badge::helper($badge);
+			$this->_subscribers[$event][] = $helper;
 		}
 	}
 } // END class EpicDb_Badge_Listener

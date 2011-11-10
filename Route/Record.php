@@ -1,7 +1,7 @@
 <?php
 class EpicDb_Route_Record extends Zend_Controller_Router_Route {
 
-	static public $types = array('tag');
+	static public $types = array('tag', 'badge');
 
 	public static function getInstance(Zend_Config $config)
 	{
