@@ -22,7 +22,7 @@ class EpicDb_Form_Element_Markdown extends MW_Form_Element_Markdown {
 		$html = str_replace($tempString, "<!-- more -->", $html);
 		// Capture Links to Skill Trees and Convert to iframes
 		$match = '/\{\s*(http:\/\/[\w.]*r2-db\.com\/skill-tree\/calculator\/\d+\/[^#}]*)(#build=\w{32})?\s*\}/i';
-		$replace = '<iframe width="638" height="374" src="$1?format=iframe$2" frameborder="0" allowfullscreen scrolling="no"></iframe>';
+		$replace = '<iframe class="r2-embeded-skilltree" width="638" height="374" src="$1?format=iframe$2" frameborder="0" allowfullscreen scrolling="no"></iframe>';
 		$html = preg_replace($match, $replace, $html);		
 		// Capture YouTube links in {} and embed
 		$match = '/\{http:\/\/[\w.]*youtube\.com\/watch\?v=([^}]+)\}/';
