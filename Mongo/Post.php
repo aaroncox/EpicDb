@@ -110,6 +110,7 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 		foreach(EpicDb_Auth::getInstance()->getUserRoles() as $role) {
 			$roles[] = $role->createReference();
 		}
+		$query['_published'] = array('$ne' => false);
 		$query['_viewers'] = array('$in' => $roles);
 		return parent::fetchAll($query, $sort, $limit, $skip);
 	}
