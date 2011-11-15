@@ -64,10 +64,16 @@ class EpicDb_Search {
 			$nameQuery = array('$or' => array(
 				array("name" => $re),
 			));
-			$postQuery = array('$or' => array(
-				array("title" => $re),
-				array("body" => $re),
-			));
+			$postQuery = array(
+				'_private' => array(
+					'$ne' => true
+				),
+				'_published' => true,
+				'$or' => array(
+					array("title" => $re),
+					array("body" => $re),
+				)
+			);
 			return array(
 				"terms" => array("contains" => array($term)), 
 				"query" => array(
