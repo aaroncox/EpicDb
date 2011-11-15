@@ -42,6 +42,8 @@ class EpicDb_Mongo_Schema extends MW_Mongo_Schema {
 		'vote' => 'EpicDb_Mongo_Vote',
 		'follows-cache' => 'EpicDb_Mongo_Cache_Followers',
 		'metaKeys' => 'EpicDb_Mongo_MetaKeys',
+		// misc
+		'image' => 'EpicDb_Mongo_Image',
 	);
 	
 	/**
