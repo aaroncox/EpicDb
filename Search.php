@@ -68,7 +68,9 @@ class EpicDb_Search {
 				'_private' => array(
 					'$ne' => true
 				),
-				'_published' => true,
+				'_published' => array(
+					'$ne' => false,
+				),
 				'$or' => array(
 					array("title" => $re),
 					array("body" => $re),
