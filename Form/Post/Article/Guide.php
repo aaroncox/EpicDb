@@ -35,7 +35,7 @@ class EpicDb_Form_Post_Article_Guide extends EpicDb_Form_Post_Article
 		));
 		$this->tags->setDescription("Please tag up to 8 relevant records from the database to your guide.")->setLabel('Related Tags');
 		$this->setDefaults( $this->getDefaultValues() );
-		$this->setButtons(array("save" => "Post News"));
+		$this->setButtons(array("save" => "Save Guide"));
 	}
 	public function getDefaultValues()
 	{
