@@ -36,6 +36,12 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 		if(!$doc->url) return '';
 		return $this->view->htmlTag("h4", array(), $this->view->externalTo($this->_doc->url));
 	}
+	public function tooltipButtons() {
+		if($this->_doc instanceOf EpicDb_Mongo_Post) {
+			return '';
+		}
+		return $this->view->followButton($this->_doc);
+	}
 	public function icon() {
 		if(!$icon = $this->_doc->getIcon()) return '';
 		if(isset($this->_params['icon']) && $this->_params['icon'] == false) return '';
@@ -55,6 +61,9 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 				"class" => "tooltip-icon tooltip-rounded",
 				"style" => "background: url('".$this->_doc->getIcon()."') no-repeat top center",
 			), " ")." ".
+			$this->view->htmlTag("div", array(
+				"class" => "tooltip-buttons"
+			), $this->tooltipButtons())."".
 			$this->counter()
 		)."";
 	}
@@ -77,7 +86,7 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 		return $this->view->htmlTag("p", array("style" => "font-size: 10px"), "An ".$doc->_type." in response to...")."".
 						$this->view->htmlTag("h3", array(), 
 							($parentDoc->getName()) ? $this->view->postLink($parentDoc, array(
-								"text" => $this->view->htmlFragment($parentDoc->getName(), 50)
+								"text" => $this->view->htmlFragment($this->view->escape($parentDoc->getName()), 50)
 							)) : ''
 							).'';
 						;		
@@ -91,7 +100,7 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 		return $this->view->htmlTag("p", array("style" => "font-size: 10px"), "A ".$doc->_type." on...")."".
 						$this->view->htmlTag("h3", array(), 
 							($parentDoc->getName()) ? $this->view->recordLink($parentDoc, array(
-								"text" => $this->view->htmlFragment($parentDoc->getName(), 50),
+								"text" => $this->view->htmlFragment($this->view->escape($parentDoc->getName()), 50),
 								"rel" => "no-tooltip",
 							)) : ''
 							).'';
@@ -101,7 +110,7 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 		if(!$this->_doc->getName()) return '';
 		return $this->_doc ? $this->view->htmlTag("h3", array(), 
 			($this->_doc->getName()) ? $this->view->postLink($this->_doc, array(
-				"text" => $this->view->htmlFragment($this->_doc->getName(), 50),
+				"text" => $this->view->htmlFragment($this->view->escape($this->_doc->getName()), 50),
 				"rel" => "no-tooltip",
 			)) : ''
 			).'' : '';

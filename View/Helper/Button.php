@@ -42,7 +42,8 @@ class EpicDb_View_Helper_Button extends MW_View_Helper_HtmlTag
 		if(isset($params['tooltip'])) $options['data-tooltip'] = $params['tooltip'];
 		return $this->htmlTag("a", $options, $this->htmlTag("span", array(
 					'class' => 'ui-icon ui-icon-'.$icon,
-				), " ")."".$text
+				), " ").
+				"<span class='ui-button-label'>".$text."</span>"
 		)."";
 		// return "<a href='".$this->view->url(array(
 		// 	'profile' => $profile,

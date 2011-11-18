@@ -29,18 +29,18 @@ class EpicDb_View_Helper_FollowButton extends MW_View_Helper_HtmlTag
 					 $type => $record,
 					'action' => 'un'.$mode,
 				), $route, true, array(
-					'text' => 'Un'.$mode,
+					'data-tooltip' => 'Un'.$mode,
 					'icon' => 'gear',
-					'class' => 'epicdb-ajaxbutton',
+					'class' => 'has-tooltip epicdb-ajaxbutton ui-state-active',
 				));
 			} else {
 				return $this->view->button(array(
 					 $type => $record,
 					'action' => $mode,
 				), $route, true, array(
-					'text' => $mode,
+					'data-tooltip' => $mode,
 					'icon' => 'gear',
-					'class' => 'epicdb-ajaxbutton',
+					'class' => 'has-tooltip epicdb-ajaxbutton',
 				));
 			}
 		}
