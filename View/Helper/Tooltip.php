@@ -38,7 +38,7 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 	}
 	public function tooltipButtons() {
 		if($this->_doc instanceOf EpicDb_Mongo_Post) {
-			$html = $this->view->followButton($this->_doc, array("mode" => "watch"))."";
+			$html = ""; //$this->view->followButton($this->_doc, array("mode" => "watch"))."";
 		} else {
 			$html = $this->view->followButton($this->_doc)."";
 		}

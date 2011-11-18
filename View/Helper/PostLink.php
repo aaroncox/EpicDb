@@ -32,6 +32,7 @@ class EpicDb_View_Helper_PostLink extends MW_View_Helper_HtmlTag
 		$urlParams = array(
 			"action" => "view"
 		);
+		
 
 		if(isset($params['action'])) {
 			$urlParams["action"] = $params["action"];
@@ -39,6 +40,11 @@ class EpicDb_View_Helper_PostLink extends MW_View_Helper_HtmlTag
 		$urlParams += $post->getRouteParams();
 
 		$tagAttribs = array();
+
+		$tagAttribs['class'] = "tag-json";
+		if(isset($params['class'])) {
+			$tagAttribs['class'] .= " ".$params['class'];
+		}
 
 		if(isset($params['target'])) {
 			$tagAttribs["target"] = $params["target"];
