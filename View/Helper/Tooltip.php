@@ -44,7 +44,7 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 		}
 		$html .= $this->view->recordLink($this->_doc, array(
 			'class' => 'epicdb-button epicdb-button-icon-left has-tooltip add-to-stash',
-			'text' => '<span class="ui-icon ui-icon-suitcase"></span><span class="ui-button-label">'.$this->_doc->getName().'</span>',
+			'text' => '<span class="ui-icon ui-icon-suitcase"></span><span class="ui-button-label">&nbsp;</span>',
 			'data-tooltip' => 'Stash',
 		));
 		return $html;
