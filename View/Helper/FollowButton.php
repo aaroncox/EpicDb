@@ -23,12 +23,17 @@ class EpicDb_View_Helper_FollowButton extends MW_View_Helper_HtmlTag
 		if(isset($opts['route'])) {
 			$route = $opts['route'];
 		}
-		if($profile = EpicDb_Auth::getInstance()->getUserProfile()) {
+		$noText = false;
+		if(isset($opts['no-text']) && $opts['no-text'] == true) {
+			$noText = true;
+		}
+ 		if($profile = EpicDb_Auth::getInstance()->getUserProfile()) {
 			if(in_array($record->createReference(), $profile->$modeField->export())) {
 				return $this->view->button(array(
 					 $type => $record,
 					'action' => 'un'.$mode,
 				), $route, true, array(
+					'text' => ($noText) ? "&nbsp;" : null,
 					'data-tooltip' => 'Un'.$mode,
 					'icon' => 'arrowthickstop-1-w',
 					'class' => 'has-tooltip epicdb-ajaxbutton ui-state-active',
@@ -38,6 +43,7 @@ class EpicDb_View_Helper_FollowButton extends MW_View_Helper_HtmlTag
 					 $type => $record,
 					'action' => $mode,
 				), $route, true, array(
+					'text' => ($noText) ? "&nbsp;" : null,
 					'data-tooltip' => ucwords($mode),
 					'icon' => 'arrowthickstop-1-e',
 					'class' => 'has-tooltip epicdb-ajaxbutton',
