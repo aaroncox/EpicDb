@@ -38,9 +38,16 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 	}
 	public function tooltipButtons() {
 		if($this->_doc instanceOf EpicDb_Mongo_Post) {
-			return '';
+			$html = $this->view->followButton($this->_doc, array("mode" => "watch"))."";
+		} else {
+			$html = $this->view->followButton($this->_doc)."";
 		}
-		return $this->view->followButton($this->_doc);
+		$html .= $this->view->recordLink($this->_doc, array(
+			'class' => 'epicdb-button epicdb-button-icon-left has-tooltip add-to-stash',
+			'text' => '<span class="ui-icon ui-icon-suitcase"></span><span class="ui-button-label">'.$this->_doc->getName().'</span>',
+			'data-tooltip' => 'Stash',
+		));
+		return $html;
 	}
 	public function icon() {
 		if(!$icon = $this->_doc->getIcon()) return '';

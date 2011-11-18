@@ -56,6 +56,11 @@ class EpicDb_View_Helper_RecordLink extends MW_View_Helper_HtmlTag
 			$sectionParams = $params['section'];
 		}
 		
+		$dataTooltip = "";
+		if(isset($params['data-tooltip'])) {
+			$dataTooltip = $params['data-tooltip'];
+		}
+		
 		$action = "view";
 		if(isset($params['action'])) {
 			$action = $params['action'];
@@ -67,6 +72,7 @@ class EpicDb_View_Helper_RecordLink extends MW_View_Helper_HtmlTag
 			"rel" => $rel,
 			"target" => $target, 
 			"class" => $class,
+			"data-tooltip" => $dataTooltip,
 			"href" => $this->view->url($urlParams+$record->getRouteParams(), $record->routeName, true),
 		), $text);
 		$filter = new EpicDb_Filter_TagJSON();
@@ -74,6 +80,7 @@ class EpicDb_View_Helper_RecordLink extends MW_View_Helper_HtmlTag
 			"rel" => $rel,
 			"class" => $class,
 			"target" => $target,
+			"data-tooltip" => $dataTooltip,
 			"data-tag-json" => $filter->single($record),
 			"href" => $this->view->url($sectionParams+array(
 				'action'=> $action,

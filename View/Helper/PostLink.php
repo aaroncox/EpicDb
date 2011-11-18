@@ -47,6 +47,11 @@ class EpicDb_View_Helper_PostLink extends MW_View_Helper_HtmlTag
 			$tagAttribs["rel"] = $params["rel"];
 		}
 		
+		$dataTooltip = "";
+		if(isset($params['data-tooltip'])) {
+			$tagAttribs['data-tooltip'] = $params['data-tooltip'];
+		}
+		
 		$route = $post->routeName;
 		if(isset($params['routeName'])) {
 			$route = $params['routeName'];

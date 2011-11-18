@@ -30,7 +30,7 @@ class EpicDb_View_Helper_FollowButton extends MW_View_Helper_HtmlTag
 					'action' => 'un'.$mode,
 				), $route, true, array(
 					'data-tooltip' => 'Un'.$mode,
-					'icon' => 'gear',
+					'icon' => 'arrowthickstop-1-w',
 					'class' => 'has-tooltip epicdb-ajaxbutton ui-state-active',
 				));
 			} else {
@@ -38,8 +38,8 @@ class EpicDb_View_Helper_FollowButton extends MW_View_Helper_HtmlTag
 					 $type => $record,
 					'action' => $mode,
 				), $route, true, array(
-					'data-tooltip' => $mode,
-					'icon' => 'gear',
+					'data-tooltip' => ucwords($mode),
+					'icon' => 'arrowthickstop-1-e',
 					'class' => 'has-tooltip epicdb-ajaxbutton',
 				));
 			}
