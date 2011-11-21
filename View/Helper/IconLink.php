@@ -32,6 +32,9 @@ class EpicDb_View_Helper_IconLink extends Zend_View_Helper_Abstract
 			// $html .= $this->view->profileLink($record, array("text" => $image));
 		}
 		// var_dump($image, $class); exit;
+		if(!$image) {
+			return '';
+		}
 		return $image;
 	}
 	
