@@ -15,6 +15,7 @@ class EpicDb_View_Helper_IconLink extends Zend_View_Helper_Abstract
 	public function icon() {
 		$record = $this->_record;
 		$class = null;
+		$image = null;
 		if(isset($this->_params['iconClass'])) {
 			$class = $this->_params['iconClass'];
 		}
