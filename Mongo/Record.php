@@ -104,6 +104,23 @@ class EpicDb_Mongo_Record extends EpicDb_Auth_Mongo_Resource_Document implements
 		return new EpicDb_Auth_Resource_Record();
 	}
 	
+	public function getTableColumns($columns = array()) {
+		return array(
+			'icon' => array(
+				'record' => $this,
+				'content' => $this->getIcon(),
+				'class' => 'icon',
+				'helpers' => array('iconLink' => array('div' => false, 'class' => ' record-icon medium ui-helper-clearfix')),
+			),
+			'name' => array(
+				'record' => $this,
+				'content' => $this->getName(),
+				'class' => 'record',
+				'helpers' => array('recordLink' => array()),
+			)
+		)+$columns;
+	}
+	
 	public function getMyFollowers() {
 		return $this->getFollowers($this);
 	}
