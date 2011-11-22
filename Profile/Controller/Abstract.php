@@ -38,6 +38,7 @@ abstract class EpicDb_Profile_Controller_Abstract extends MW_Controller_Action
 			));
 		}
 		$contextSwitch->addActionContext('view', 'tooltip');
+		$contextSwitch->addActionContext('news', 'tooltip');
 		$contextSwitch->addActionContext('feed', 'rss');
 		try {
 			$ajaxContext->initContext();
@@ -51,6 +52,10 @@ abstract class EpicDb_Profile_Controller_Abstract extends MW_Controller_Action
 		}
 
 		parent::init();
+	}
+	
+	public function initTooltipContext() {
+		var_dump($this); exit;
 	}
 
 	public function initRssContext()
