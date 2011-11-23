@@ -26,4 +26,5 @@ class EpicDb_Mongo_Record_Badge extends EpicDb_Mongo_Record implements EpicDb_Ba
 	public function getBadgeQuality() {
 		return $this->quality?:'normal';
 	}
+
 } // END class EpicDb_Mongo_Record_Badge extends EpicDb_Mongo_Record implements EpicDb_Badge_Interface

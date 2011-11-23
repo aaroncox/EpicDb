@@ -167,5 +167,19 @@ class EpicDb_Mongo_Profile extends EpicDb_Auth_Mongo_Resource_Document implement
 		return $this->_layout;
 	}
 	
+	public function fetchBadgesFor(MW_Mongo_Document $post) {
+		$badges = array();
+		if(!isset($this->badges) || empty($this->badges)) {
+			return $badges;
+		}
+		foreach($this->badges as $badge) {
+			if($badge->post->_id == $post->_id) {
+				$badges[] = $badge;
+			}
+		}
+		return $badges;
+	}
+	
+	
 
 } // END class EpicDb_Mongo_Profile
