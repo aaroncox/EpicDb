@@ -49,6 +49,10 @@ class EpicDb_View_Helper_ProfileLink extends MW_View_Helper_HtmlTag
 		if(isset($params['target'])) {
 			$target = $params['target'];
 		} 
+		$dataTooltip = "";
+		if(isset($params['data-tooltip'])) {
+			$dataTooltip = $params['data-tooltip'];
+		}
 		$rel = "";
 		if(isset($params['rel'])) {
 			$rel = $params['rel'];
@@ -65,6 +69,7 @@ class EpicDb_View_Helper_ProfileLink extends MW_View_Helper_HtmlTag
 			"rel" => $rel,
 			"class" => $class,
 			"target" => $target,
+			"data-tooltip" => $dataTooltip,
 			"title" => $profile->name."'s Profile",
 			"data-tag-json" => $filter->single($profile),
 			"href" => $this->view->url(array(
