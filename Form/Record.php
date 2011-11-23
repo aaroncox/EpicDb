@@ -28,6 +28,13 @@ class EpicDb_Form_Record extends EpicDb_Form {
 			'order' => 900,
 		));
 
+		if($record->_tempPlacement) {
+			$this->addElement('text', 'position', array(
+				'label' => 'Tree Position',
+				'value' => $record->_tempPlacement,
+			));			
+		}
+
 		$defaults = array(
 			'name' => $record->name,
 			'descriptionSource' => $record->descriptionSource,
@@ -54,6 +61,10 @@ class EpicDb_Form_Record extends EpicDb_Form {
 	public function save() {
 		$record = $this->getRecord();
 		$record->newRevision();
+		// Used in the data entry from text thign
+		if($this->position) {
+			$record->_tempPlacement = (float) $this->position->getValue();			
+		}
 		$record->name = $this->name->getValue();
 		$record->descriptionSource = $this->descriptionSource->getValue();
 		$record->description = $this->descriptionSource->getRenderedValue();

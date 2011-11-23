@@ -15,6 +15,7 @@ class EpicDb_View_Helper_IconLink extends Zend_View_Helper_Abstract
 	public function icon() {
 		$record = $this->_record;
 		$class = null;
+		$image = null;
 		if(isset($this->_params['iconClass'])) {
 			$class = $this->_params['iconClass'];
 		}
@@ -32,6 +33,9 @@ class EpicDb_View_Helper_IconLink extends Zend_View_Helper_Abstract
 			// $html .= $this->view->profileLink($record, array("text" => $image));
 		}
 		// var_dump($image, $class); exit;
+		if(!$image) {
+			return '';
+		}
 		return $image;
 	}
 	
@@ -57,13 +61,13 @@ class EpicDb_View_Helper_IconLink extends Zend_View_Helper_Abstract
 	public function render() {
 		$record = $this->_record;
 		if (!$record) return '';
-		$html = "<div class='record-icon ".$this->_params['class']."'>";
-		if($record instanceOf EpicDb_Mongo_Profile) {
-			$html .= $this->view->profileLink($record, array("text" => $this->icon()));
-		} elseif($record instanceOf EpicDb_Mongo_Record) {
-			$html .= $this->view->recordLink($record, array("text" => $this->icon()));			
+		if(!isset($this->_params['div']) || $this->_params['div'] != false) {
+			$html = "<div class='record-icon ".$this->_params['class']."'>";
+			$html .= $this->view->recordLink($record, array("text" => $this->icon()));
+			$html .= "</div>";
+		} else {
+			$html = $this->view->recordLink($record, array("text" => $this->icon(), 'class' => $this->_params['class']))."";
 		}
-		$html .= "</div>";
 		return $html;
 	}
 	
