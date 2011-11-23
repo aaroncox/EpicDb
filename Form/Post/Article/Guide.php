@@ -27,9 +27,15 @@ class EpicDb_Form_Post_Article_Guide extends EpicDb_Form_Post_Article
 			'limit' => 2,
 			'recordType' => 'class,advanced-class',
 		));
+		$this->addElement('checkbox', 'published', array(
+			'order' => 11,
+			'label' => 'Publish to the Guide Index',
+			'description' => 'Click this checkbox and save when you are ready to publish this guide to the public.',
+			'value' => $post->_published,
+		));
 		$this->tags->setDescription("Please tag up to 8 relevant records from the database to your guide.")->setLabel('Related Tags');
 		$this->setDefaults( $this->getDefaultValues() );
-		$this->setButtons(array("save" => "Post News"));
+		$this->setButtons(array("save" => "Save Guide"));
 	}
 	public function getDefaultValues()
 	{
@@ -40,11 +46,11 @@ class EpicDb_Form_Post_Article_Guide extends EpicDb_Form_Post_Article
 	}
 	public function save() {
 		parent::save();
-		
 		$post = $this->getPost();
 		if($classes = $this->class->getTags()) {
 			$post->class->setTags('tag', $classes);			
 		}
+		$post->_published = (bool) $this->published->getValue();
 		$post->title = $this->title->getValue();
 		$filter = new MW_Filter_Slug();
 		$post->slug = $filter->filter($post->title);

@@ -7,6 +7,7 @@
  **/
 class EpicDb_Mongo_Post_Article_Guide extends EpicDb_Mongo_Post implements EpicDb_Vote_Interface_Votable
 {
+	public $routeName = "guide";
 	protected static $_documentType = 'guide';
   protected static $_editForm = 'EpicDb_Form_Post_Article_Guide';
  

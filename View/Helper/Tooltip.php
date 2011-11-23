@@ -126,15 +126,23 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 			$this->view->htmlTag("span", array('class' => 'avail'), $avail)
 		);
 		if(isset($descs['current'])) {
-			$html .= $this->view->htmlTag("p", array('class' => 'currentEffect'), 
-				$this->view->htmlTag("span", array('class' => 'rank-label'), "Current Rank:<br/>").$descs['current']
+			$html .= $this->view->htmlTag("div", array('class' => 'currentEffect'), 
+				$this->view->htmlTag("p", array('class' => 'rank-label'), 
+					"Current Rank (".$spent."/".$avail."):".
+					$descs['current']
+				)
 			);
 		}
 		if(isset($descs['next'])) {
-			$html .= $this->view->htmlTag("p", array('class' => 'nextEffect'), 
-				$this->view->htmlTag("span", array('class' => 'rank-label'), "Next Rank:<br/>").$descs['next']
-			);
+			$html .= $this->view->htmlTag("div", array('class' => 'nextEffect'),
+				$this->view->htmlTag("p", array('class' => 'rank-label'), 
+					"Next Rank (".($spent+1)."/".$avail."):".
+					$descs['next']
+				)
+			)."";
 		}
+		// var_dump($descs); exit;
+		// echo htmlspecialchars($html); exit;
 		return $html;
 	}
 	// 		<p class="points">

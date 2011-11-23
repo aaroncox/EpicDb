@@ -32,7 +32,7 @@ class EpicDb_View_Helper_FormTags extends Zend_View_Helper_FormHidden {
 	
 	public function formTags($name, $value = null, array $attribs = null)
 	{
-		MW_Script::load('autocomplete');
+		// MW_Script::load('autocomplete');
 		$info = $this->_getInfo($name, $value, $attribs);
 		extract($info); // name, value, attribs, options, listsep, disable
 

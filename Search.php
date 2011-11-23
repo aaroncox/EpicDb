@@ -61,13 +61,26 @@ class EpicDb_Search {
 	{
 		if ($type == 'string' || $type == "quoted") {
 			$re = new MongoRegex("/\b".preg_quote($term)."/i");
-			$nameQuery = array('$or' => array(
-				array("name" => $re),
-			));
-			$postQuery = array('$or' => array(
-				array("title" => $re),
-				array("body" => $re),
-			));
+			$nameQuery = array(
+				'$or' => array(
+					array("name" => $re),
+				), 
+				'_type' => array(
+					'$ne' => 'skill-temp'
+				),
+			);
+			$postQuery = array(
+				'_private' => array(
+					'$ne' => true
+				),
+				'_published' => array(
+					'$ne' => false,
+				),
+				'$or' => array(
+					array("title" => $re),
+					array("body" => $re),
+				)
+			);
 			return array(
 				"terms" => array("contains" => array($term)), 
 				"query" => array(
