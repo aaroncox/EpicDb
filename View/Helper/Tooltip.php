@@ -36,19 +36,6 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 		if(!$doc->url) return '';
 		return $this->view->htmlTag("h4", array(), $this->view->externalTo($this->_doc->url));
 	}
-	public function tooltipButtons() {
-		if($this->_doc instanceOf EpicDb_Mongo_Post) {
-			$html = ""; //$this->view->followButton($this->_doc, array("mode" => "watch"))."";
-		} else {
-			$html = $this->view->followButton($this->_doc, array("no-text" => true))."";
-		}
-		$html .= $this->view->recordLink($this->_doc, array(
-			'class' => 'epicdb-button epicdb-button-icon-left has-tooltip add-to-stash',
-			'text' => '<span class="ui-icon ui-icon-suitcase"></span><span class="ui-button-label">&nbsp;</span>',
-			'data-tooltip' => 'Stash',
-		));
-		return $html;
-	}
 	public function icon() {
 		if(!$icon = $this->_doc->getIcon()) return '';
 		if(isset($this->_params['icon']) && $this->_params['icon'] == false) return '';
@@ -68,10 +55,7 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 				"class" => "tooltip-icon tooltip-rounded",
 				"style" => "background: url('".$this->_doc->getIcon()."') no-repeat top center",
 			), " ")." ".
-			$this->view->htmlTag("div", array(
-				"class" => "tooltip-buttons"
-			), $this->tooltipButtons())."".
-			$this->counter()
+			(($helper = $this->_doc->_tooltipButtonHelper) ? $this->view->$helper($this->_doc) : '')
 		)."";
 	}
 	public function name() {
@@ -260,7 +244,7 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 	}
 	public function cloud($documentSet, $label = "") {
 		// return ''; // Disabled until we're sticky.
-		return $this->view->htmlTag("div", array("class" => "tooltip-cloud", "style" => "display: inline-block"), 
+		return $this->view->htmlTag("div", array("class" => "tooltip-cloud"), 
 			(empty($label)?"":$this->view->htmlTag("h4", array("class" => "label transparent-bg-blue inline-flow"), $label))."".
 			$this->view->iconCloud($documentSet)
 		);

@@ -13,9 +13,10 @@ class EpicDb_View_Helper_FollowButton extends MW_View_Helper_HtmlTag
 	public function followButton($record, $opts = array()) {
 		$mode = 'follow';
 		$modeField = 'following';
-		if(isset($opts['mode'])) {
-			$mode = $opts['mode'];
-			$modeField = $opts['mode']."ing";
+		if($record instanceOf EpicDb_Mongo_Post) {
+			$mode = 'watch';
+			$modeField = "watching";
+			
 		}
 		if($record instanceOf EpicDb_Mongo_Record) $type = $route = 'record';
 		if($record instanceOf EpicDb_Mongo_Profile) $type = $route = 'profile';
