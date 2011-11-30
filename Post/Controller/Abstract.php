@@ -537,7 +537,7 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 			$source = htmlspecialchars($post->body);
 		}
     $this->getResponse()->setHeader("Content-type", "text/plain");
-    echo "<pre>".$source."</pre>";
+    echo "<pre>".htmlspecialchars($source)."</pre>";
 		exit;
 	}
 	public function revisionsAction() {
