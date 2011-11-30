@@ -8,7 +8,7 @@
  * @param undocumented class
  * @package undocumented class
  **/
-class EpicDb_Mongo_Record extends EpicDb_Auth_Mongo_Resource_Document implements EpicDb_Interface_Revisionable, EpicDb_Interface_Cardable, EpicDb_Interface_Tooltiped, EpicDb_Interface_TagMeta
+class EpicDb_Mongo_Record extends EpicDb_Auth_Mongo_Resource_Document implements EpicDb_Interface_Revisionable, EpicDb_Interface_Cardable, EpicDb_Interface_Tooltiped, EpicDb_Interface_TagMeta, EpicDb_Interface_Searchable
 {
 	public $summaryHelper = 'recordSummary';
 	public $contextHelper = 'recordContext';
@@ -193,5 +193,13 @@ class EpicDb_Mongo_Record extends EpicDb_Auth_Mongo_Resource_Document implements
 	
 	public function getLayout() {
 		return $this->_layout;
+	}
+	
+	public function getSearchCache($data = array()) {
+		return array(
+			'name' => $this->name,
+			'description' => $this->description,
+			'tags' => $this->tags,
+		)+$data;
 	}
 } // END class EpicDb_Mongo_Record

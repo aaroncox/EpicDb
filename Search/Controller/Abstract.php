@@ -29,6 +29,7 @@ class EpicDb_Search_Controller_Abstract extends MW_Controller_Action
 		$search = EpicDb_Search::getInstance();
 		$this->view->layout()->searchQuery = $q = trim($request->getParam('q'));
 
+
 		// if(strlen($q) < 3) return; 
 
 		$queryData = $search->parseQueryString($q);
@@ -36,7 +37,7 @@ class EpicDb_Search_Controller_Abstract extends MW_Controller_Action
 		$query = $queryData['query'];
 
 		if(!empty($query['records'])) {
-			$records = EpicDb_Mongo::db('record')->fetchAll($query['records']);
+			$records = EpicDb_Mongo::db('search')->fetchAll($query['records']);
 		} else { 
 			$records = array();
 		}
@@ -44,24 +45,24 @@ class EpicDb_Search_Controller_Abstract extends MW_Controller_Action
 		$paginator->setCurrentPageNumber($this->getRequest()->getParam('page', 1));
 		$this->view->records = $paginator;			
 
-		if(!empty($query['profiles'])) {
-			$profiles = EpicDb_Mongo::db('profile')->fetchAll($query['profiles']);			
-		} else {
-			$profiles = array();
-		}
-		$paginator = Zend_Paginator::factory($profiles);
-		$paginator->setCurrentPageNumber($this->getRequest()->getParam('page', 1));
-		$this->view->profiles = $paginator;
-
-		if(!empty($query['posts'])) {
-			$sort = array( 'touched' => -1, '_created' => -1 );
-			$posts = EpicDb_Mongo::db('post')->fetchAll($query['posts'], $sort);					
-		} else {
-			$posts = array();
-		}
-		$paginator = Zend_Paginator::factory($posts);
-		$paginator->setCurrentPageNumber($this->getRequest()->getParam('page', 1));
-		$this->view->posts = $paginator;
+		// if(!empty($query['profiles'])) {
+		// 	$profiles = EpicDb_Mongo::db('profile')->fetchAll($query['profiles']);			
+		// } else {
+		// 	$profiles = array();
+		// }
+		// $paginator = Zend_Paginator::factory($profiles);
+		// $paginator->setCurrentPageNumber($this->getRequest()->getParam('page', 1));
+		// $this->view->profiles = $paginator;
+		// 
+		// if(!empty($query['posts'])) {
+		// 	$sort = array( 'touched' => -1, '_created' => -1 );
+		// 	$posts = EpicDb_Mongo::db('post')->fetchAll($query['posts'], $sort);					
+		// } else {
+		// 	$posts = array();
+		// }
+		// $paginator = Zend_Paginator::factory($posts);
+		// $paginator->setCurrentPageNumber($this->getRequest()->getParam('page', 1));
+		// $this->view->posts = $paginator;
 		
 		if(!empty($posts) || !empty($profiles) || !empty($records)) {
 			EpicDb_Mongo::db('searchlog')->log($q);
