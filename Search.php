@@ -62,7 +62,7 @@ class EpicDb_Search {
 		if ($type == 'string' || $type == "quoted") {
 			$re = new MongoRegex("/\b".preg_quote($term)."/i");
 			$nameQuery = array(
-				'$or' => array(
+				'$and' => array(
 					array("name" => $re),
 				), 
 				'_type' => array(
@@ -76,7 +76,7 @@ class EpicDb_Search {
 				'_published' => array(
 					'$ne' => false,
 				),
-				'$or' => array(
+				'$and' => array(
 					array("title" => $re),
 					array("body" => $re),
 				)

@@ -56,35 +56,18 @@ class EpicDb_View_Helper_ProfileContext extends MW_View_Helper_HtmlTag
 				'icon' => 'pencil',
 			));						
 		}
-		if($buttons != "") "<h3>Available Actions</h3>".$placeholder->widget($buttons);
+
+		if($buttons) $placeholder->widget($this->view->partial("./_context/available-actions.phtml", array('buttons' => $buttons)));
 		
-		if($profile->bio) $placeholder->widget($this->htmlTag("h3", array(), "Biography")."".$this->htmlTag("p", array(), $profile->bio));
-		
+		// if($profile->bio) $placeholder->widget($this->htmlTag("h3", array(), "Biography")."".$this->htmlTag("p", array(), $profile->bio));
+
+		if($profile->following && $profile->following->export() != array()) {
+			$placeholder->widget($this->view->partial("./_context/icon-cloud.phtml", array('title' => $profile->name.' is Following', 'icons' => $profile->following)));
+		}
+
 		$followers = $profile->getMyFollowers();
 		if($totalFollowers = $followers->count()) {
-			$placeholder->widget(
-				$this->htmlTag("h3", array(), $profile->name."'s Followers")."".
-				$this->view->iconCloud($followers, 21)."".
-				$this->htmlTag("p", array("class" => 'iconCloud-label'), 				
-					$this->htmlTag("a", array('href' => $this->view->url(array(
-						'profile' => $profile,
-						'action'=>'followers',
-					), 'profile', true)), 'View All '.$totalFollowers)
-				)
-			);			
-		}
-		
-		if($profile->following && $profile->following->export() != array()) {
-			$placeholder->widget(
-				$this->htmlTag("h3", array(), $profile->name." is following")."".
-				$this->view->iconCloud($profile->following, 21)."".
-				$this->htmlTag("p", array("class" => 'iconCloud-label'), 
-					$this->htmlTag("a", array('href' => $this->view->url(array(
-						'profile' => $profile,
-						'action'=>'following',
-					), 'profile', true)), 'View All '.$profile->following->count())
-				)
-			);
-		}
+			$placeholder->widget($this->view->partial("./_context/icon-cloud.phtml", array('title' => $profile->name.'\'s Followers', 'icons' => $followers)));
+		}		
 	}
 } // END class EpicDb_View_Helper_ProfileSummary

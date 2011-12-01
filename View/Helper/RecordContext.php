@@ -24,14 +24,14 @@ class EpicDb_View_Helper_RecordContext extends MW_View_Helper_HtmlTag
 			));
 		}
 		
-		if($buttons) $placeholder->widget('<h3>Available Actions</h3>'.$buttons);
+		if($buttons) $placeholder->widget($this->view->partial("./_context/available-actions.phtml", array('buttons' => $buttons)));
 
 		// $placeholder->widget($this->view->render("./_context/related-images.phtml"));
 		
 		// Get followers for the widget
 		$followers = $record->getMyFollowers();
 		if($followers->count()) {
-			$placeholder->widget($this->htmlTag("h3", array(), "Followers")."".$this->view->iconCloud($followers, 18));
+			$placeholder->widget($this->view->partial("./_context/icon-cloud.phtml", array('title' => 'Followers', 'icons' => $followers)));
 		}
 	}
 } // END class EpicDb_View_Helper_ProfileSummary
