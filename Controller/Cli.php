@@ -135,7 +135,11 @@ abstract class EpicDb_Controller_Cli extends Zend_Controller_Action {
 		foreach($docs as $doc) {
 			$i++;
 			$bar->update($i, 'Saved '.$doc->_type.'/'.$doc->_id);
-			$doc->save();
+			try {
+				$doc->save();				
+			} catch (Exception $e) {
+				
+			}
 		}
 	}
 }

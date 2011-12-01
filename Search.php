@@ -49,6 +49,22 @@ class EpicDb_Search {
 		}
 		return self::$_instance;
 	}
+	
+	public function keywordExplode($source) {
+		$return = array();
+		if(is_array($source)) {
+			foreach($source as $string) {
+				$return += $this->keywordExplode($string);
+			}
+			return $return;
+		}
+		$return = array_unique(preg_split('/[^\w`-]+/', strtolower((string)$source)));
+		return array_filter($return, function($value) {
+			if($value && strlen($value) > 1) {
+				return true;				
+			}
+		});
+	}
 
 
 	/**

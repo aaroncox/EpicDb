@@ -17,9 +17,9 @@ class EpicDb_View_Helper_SeedStub extends EpicDb_View_Helper_PostStub
 				'controller'=>'record',
 				'action'=>'seed',
 				'record'=>$record,
-				'seed'=>$seed->id,
-			), 'record', true, array(
-				'text' => 'Answer',
+				'seed'=>$seed,
+			), 'seed-question', true, array(
+				'text' => 'View the Full Question',
 				'icon' => 'help'
 			));
 		} else {

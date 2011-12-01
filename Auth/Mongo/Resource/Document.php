@@ -31,34 +31,4 @@ class EpicDb_Auth_Mongo_Resource_Document extends MW_Auth_Mongo_Resource_Documen
 		}
 		return $result;
 	}
-	public function save() {
-		if($this instanceOf EpicDb_Interface_Searchable) {
-			$cache = $this->getSearchCache();
-			$query = array(
-				'record' => $this->createReference(),
-				'seed' => array(
-					'$exists' => false,
-				),
-			);
-			$doc = EpicDb_Mongo::db('search')->fetchOne($query);
-			if(!$doc) {
-				$doc = EpicDb_Mongo::newDoc('search');
-				$doc->record = $this;
-			}
-			$references = array();
-			foreach($cache as $key => $value) {
-				if($key == 'tags') {
-					foreach($value as $tag) {
-						$references[] = $tag->ref->name;
-					}
-					$doc->keywordReferences = $references;
-				} else {
-					$doc->$key = $value;					
-				}
-			}
-			// var_dump($references); exit;
-			$doc->save();
-		}
-		return parent::save();
-	}
 } // END class EpicDb_Auth_Mongo_Resource_Document

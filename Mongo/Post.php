@@ -6,7 +6,7 @@
  *
  * @author Aaron Cox <aaronc@fmanet.org>
  **/
-class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements EpicDb_Interface_Revisionable, EpicDb_Interface_Tooltiped, EpicDb_Vote_Interface_Flaggable, EpicDb_Interface_TagMeta, EpicDb_Interface_Searchable
+class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements EpicDb_Interface_Revisionable, EpicDb_Interface_Tooltiped, EpicDb_Vote_Interface_Flaggable, EpicDb_Interface_TagMeta
 {
 	public $contextHelper = 'context';
 	public $routeName = "post";
@@ -357,6 +357,37 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 			'description' => $this->source,
 			'tags' => $this->tags,
 		)+$data;
+	}
+	
+	public function postSave() {
+		// Generate the SearchResult cache
+		$keywords = array($this->title, $this->source); 
+		foreach($this->tags as $tag) {
+			if($tag->name) {
+				$keywords[] = $tag->name;				
+			}
+		}
+		$filter = new MW_Filter_Slug();
+		$url = "/".$this->_type."/".$this->id."/".$filter->filter($this->title);
+		$icon = null;
+		if($poster = $this->tags->getTag('author')?:$this->tags->getTag('source')) {
+			$icon = $poster->icon;			
+		}
+		$score = 0;
+		if($this->votes && isset($this->votes['score'])) {
+			$score = $this->votes['score'];
+		} 
+		EpicDb_Mongo::db('search')->generate(array(
+			'records' => array($this),
+			'keywords' => $keywords,
+			'name' => $this->title,
+			'type' => $this->_type,
+			'tags' => $this->tags,
+			'icon' => $icon,
+			'score' => $score,
+			'url' => $url,
+		));
+		return parent::postSave();
 	}
 	
   

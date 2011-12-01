@@ -8,7 +8,7 @@
  * @param undocumented class
  * @package undocumented class
  **/
-class EpicDb_Mongo_Record extends EpicDb_Auth_Mongo_Resource_Document implements EpicDb_Interface_Revisionable, EpicDb_Interface_Cardable, EpicDb_Interface_Tooltiped, EpicDb_Interface_TagMeta, EpicDb_Interface_Searchable
+class EpicDb_Mongo_Record extends EpicDb_Auth_Mongo_Resource_Document implements EpicDb_Interface_Revisionable, EpicDb_Interface_Cardable, EpicDb_Interface_Tooltiped, EpicDb_Interface_TagMeta
 {
 	public $summaryHelper = 'recordSummary';
 	public $contextHelper = 'recordContext';
@@ -195,11 +195,46 @@ class EpicDb_Mongo_Record extends EpicDb_Auth_Mongo_Resource_Document implements
 		return $this->_layout;
 	}
 	
-	public function getSearchCache($data = array()) {
-		return array(
+	public function postSave() {
+		// Generate the SearchResult cache
+		$keywords = array($this->name, $this->description); 
+		foreach($this->tags as $tag) {
+			if($tag->name) {
+				$keywords[] = $tag->name;				
+			}
+		}
+		// $router = Zend_Controller_Front::getInstance()->getRouter();
+		// $url = $router->assemble($this->getRouteParams(), $this->routeName, true);
+		$filter = new MW_Filter_Slug();
+		$url = "/".$this->_type."/".$this->id."/".$filter->filter($this->name);
+		EpicDb_Mongo::db('search')->generate(array(
+			'records' => array($this),
+			'keywords' => $keywords,
 			'name' => $this->name,
-			'description' => $this->description,
 			'tags' => $this->tags,
-		)+$data;
+			'type' => $this->_type,
+			'icon' => $this->getIcon(),
+			'score' => count($this->getMyFollowers()),
+			'url' => $url,
+		));
+		$query = array(
+			'types' => $this->_type
+		);
+		foreach(EpicDb_Mongo::db('seed')->fetchAll($query) as $seed) {
+			$title = str_replace(array("[[NAME]]", "[[TYPE]]"), array($this->name, $this->_type), strip_tags($seed->title));
+			$keywords = array($title);
+			$url = "/".$this->_type."/".$this->id."/".$filter->filter($this->name)."/seed/".$seed->id."/".$filter->filter($seed->title);
+			EpicDb_Mongo::db('search')->generate(array(
+				'records' => array($this, $seed),
+				'keywords' => $keywords,
+				'name' => $title,
+				'type' => 'question',
+				'tags' => $seed->tags,
+				'icon' => $this->getIcon(),
+				'url' => $url,
+			));
+		}
+		// var_dump($query); exit;
+		return parent::postSave();
 	}
 } // END class EpicDb_Mongo_Record
