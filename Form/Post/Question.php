@@ -70,7 +70,7 @@ class EpicDb_Form_Post_Question extends EpicDb_Form_Post
 	public function save() {
 		$question = $this->getPost();
 		$question->title = $this->title->getValue();
-		if($this->community && $this->community->getValue()) {
+		if($this->community) {
 			$question->disableRep = $this->community->getValue();			
 		}
 		return parent::save();

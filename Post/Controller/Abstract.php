@@ -584,7 +584,14 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 			$answerForm = $this->view->answerForm = $newAnswer->getEditForm();
 			$this->_handleMWForm($answerForm, 'answer');
 		}
-		if($post instanceOf EpicDb_Mongo_Post_Message ) {
+		if($post instanceOf EpicDb_Mongo_Post_Article_Guide) {
+			$newComment = EpicDb_Mongo::newDoc('comment');
+			$newComment->_parent = $post;
+			$newComment->tags->tag($post, 'parent');
+ 			$this->view->form = $commentForm = $newComment->getEditForm();
+			$this->_handleMWForm($commentForm, 'comment');			
+		}
+		if($post instanceOf EpicDb_Mongo_Post_Message) {
 			$paginator = Zend_Paginator::factory($post->findResponses());
 			$paginator->setCurrentPageNumber($this->getRequest()->getParam('page', 1));
 			$this->view->responses = $paginator;
