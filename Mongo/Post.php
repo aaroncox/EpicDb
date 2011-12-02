@@ -371,16 +371,19 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 		$url = "/".$this->_type."/".$this->id."/".$filter->filter($this->title);
 		$icon = null;
 		if($poster = $this->tags->getTag('author')?:$this->tags->getTag('source')) {
-			$icon = $poster->icon;			
+			$icon = $poster->getIcon();			
 		}
 		$score = 0;
 		if($this->votes && isset($this->votes['score'])) {
 			$score = $this->votes['score'];
 		} 
+		if(!$title = $this->title) {
+			$title = substr(strip_tags(trim($this->body)), 0, 60);
+		}
 		EpicDb_Mongo::db('search')->generate(array(
 			'records' => array($this),
 			'keywords' => $keywords,
-			'name' => $this->title,
+			'name' => $title,
 			'type' => $this->_type,
 			'tags' => $this->tags,
 			'icon' => $icon,
