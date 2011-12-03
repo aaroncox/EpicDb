@@ -46,19 +46,17 @@ class EpicDb_View_Helper_QuestionStub extends MW_View_Helper_HtmlTag
 		}
 		
 		// Loop through and generate tag block
-		foreach($question->tags as $tag) {
-			if($tag->reason == 'tag') {
-				$state = 'ui-state-default';
-				$profile = EpicDb_Auth::getInstance()->getUserProfile();
-				if($profile && $profile->isFollowing($tag->ref)) {
-					$state = 'ui-state-active';
-				}
-				$tags .= $this->view->card($tag->ref, array(
-					"class" => "post-tag ",
-					"iconClass" => "tag-icon", 
-					"content" => false,
-				));
+		foreach($question->tags->getTags('tag') as $tag) {
+			$state = 'ui-state-default';
+			$profile = EpicDb_Auth::getInstance()->getUserProfile();
+			if($profile && $profile->isFollowing($tag->ref)) {
+				$state = 'ui-state-active';
 			}
+			$tags .= $this->view->card($tag->ref, array(
+				"class" => "post-tag ",
+				"iconClass" => "tag-icon", 
+				"content" => false,
+			));
 		}
 		// var_dump($question->tags->getTag('author')); 
 		$voteClass = "votes font-sans inline-flow";
