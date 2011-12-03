@@ -441,6 +441,7 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 				default:
 					break;
 			}
+			$query["votes.score"] = array( '$gt' => -3 );
 			Zend_Paginator::setDefaultItemCountPerPage( 10 );
 			$questions = EpicDb_Mongo::db('question')->fetchAll($query, $sort);
 			$paginator = Zend_Paginator::factory($questions);
