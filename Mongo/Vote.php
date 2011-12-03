@@ -104,7 +104,9 @@ class EpicDb_Mongo_Vote extends EpicDb_Mongo_Document
 				"query" => $query,
 				"out" => array("inline" => 1)
 		));
-		$data = array();
+		$data = array(
+			"score" => 0,
+		);
 		foreach ($result['results'] as $entry) {
 			$data[$entry['_id']] = $entry['value'];
 		}

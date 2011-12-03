@@ -228,6 +228,7 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 			$this->touched = $this->_created;
 			$this->touchedBy = $this->tags->getTag('author');
 		}
+		
 		// This could probably be handled elsewhere better? Just pushing things forward
 
 		// This is how this should be handled...
@@ -241,6 +242,11 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 		for(;$i<count($this->_viewers); $i++) {
 			$this->_viewers->setProperty($i, null);
 		}
+
+		if ( !$this->votes ) {
+			$this->votes = array( "score" => 0 );
+		}
+
 		return parent::save();
 	}
 
