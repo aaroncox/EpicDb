@@ -52,6 +52,20 @@ class EpicDb_Mongo_Vote extends EpicDb_Mongo_Document
 		return false;
 	}
 
+	public static function getVotesByProfile( EpicDb_Mongo_Profile_User $voter, $type = null ) {
+		$query = array(
+			"voter" => $voter->createReference()
+		);
+		if ( $type ) {
+			if ( $type == 'score' ) {
+				$query['type'] = array('$in'=>array('up','down'));
+			} else {
+				$query['type'] = $type;
+			}
+		}
+		return static::fetchAll( $query );
+	}
+
 	public static function getVoteByProfile($post, $profile) {
 		if(!$profile instanceOf EpicDb_Mongo_Profile) return null;
 		if(!$post instanceOf EpicDb_Mongo_Post) return null;
