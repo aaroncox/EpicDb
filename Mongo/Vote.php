@@ -19,8 +19,10 @@ class EpicDb_Mongo_Vote extends EpicDb_Mongo_Document
 
 	public function getPropertyClass($property, $data)
 	{
-		if ($property == 'target' || $property=='post' || $property =="voter") {
-			return EpicDb_Mongo::dbClass($data['_type']);
+		if ( $property == 'target' || $property=='post' || $property =="voter") {
+			if ( $data ) {
+				return EpicDb_Mongo::dbClass($data['_type']);
+			}
 		}
 	}
 
