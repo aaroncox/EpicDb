@@ -9,10 +9,18 @@
  * @package undocumented class
  **/
 class EpicDb_Form_Element_Markdown extends MW_Form_Element_Markdown {
-	protected $_purifyOptions = array(array("HTML.Nofollow", 1));
+	protected $_purifyOptions = array(
+		array("HTML.Nofollow", 1)
+	);
+
+	public function purifyConfig( $config, $options ) {
+		$def = $config->getHTMLDefinition( true );
+		$def->addElement( "spoiler", "Inline", "Inline", "Common" );
+	}
 	
 	public function getRenderedValue()
 	{
+		$this->_purifyOptions[ "configCallback" ] = array( $this, "purifyConfig" );
 		// var_dump($this->getValue()); exit;
 		$html = $this->getValue();
 		$tempString = '][M]o[R]e[';
