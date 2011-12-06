@@ -15,7 +15,7 @@ class EpicDb_Form_Element_Markdown extends MW_Form_Element_Markdown {
 
 	public function purifyConfig( $config, $options ) {
 		$def = $config->getHTMLDefinition( true );
-		$def->addElement( "spoiler", "Block", "Flow", "Common" );
+		$def->addElement( "spoiler", "Inlie", "Inline", "Common" );
 	}
 	
 	public function getRenderedValue()
