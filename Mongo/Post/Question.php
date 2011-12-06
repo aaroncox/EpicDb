@@ -24,6 +24,7 @@ class EpicDb_Mongo_Post_Question extends EpicDb_Mongo_Post implements EpicDb_Vot
 		if ($property == "dupeOf" && isset($data['_type'])) {
 			return EpicDb_Mongo::dbClass($data['_type']);
 		}
+		return parent::getPropertyClass( $property, $data );
 	}
 
 	public function findAnswers($query = array(), $sort = array('votes.accept' => -1, 'votes.score' => -1), $limit = false) {

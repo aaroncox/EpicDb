@@ -90,6 +90,7 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 		if (isset($data['_type'])) {
 			return EpicDb_Mongo::dbClass($data['_type']);
 		}
+		return parent::getPropertyClass( $property, $data );
 	}
 
 	public function destroy() {
