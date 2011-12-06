@@ -34,9 +34,6 @@ class EpicDb_View_Helper_Card extends MW_View_Helper_HtmlTag
 			$this->htmlTag("p", array('class' => 'text-small'), $content);
 	}
 	public function getIcon($record) {
-		if($record->email) {
-			return $this->view->gravatar($record->email)->url();
-		}
 		return $record->getIcon();
 	}
 	public function setTagType($type) {

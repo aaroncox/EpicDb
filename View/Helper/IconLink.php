@@ -23,7 +23,7 @@ class EpicDb_View_Helper_IconLink extends Zend_View_Helper_Abstract
 		if($record instanceOf EpicDb_Mongo_Record) {
 			$image = "<img src='".$record->getIcon()."' alt='".$this->view->escape($record->name)."' class=".$class."/>";
 		} elseif($record instanceOf EpicDb_Mongo_Profile) {
-			if($record->logo) {
+			if($record->getIcon()) {
 				$image = $this->view->htmlTag("img", array("alt" => $record->name, "src" => $record->getIcon(), "class" => $class))."";
 			} elseif($record->_parent && $record->_parent->logo) {
 				$image = $this->view->htmlTag("img", array("alt" => $record->name, "src" => $record->_parent->getIcon(), "class" => $class))."";
