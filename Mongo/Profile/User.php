@@ -59,22 +59,22 @@ class EpicDb_Mongo_Profile_User extends EpicDb_Mongo_Profile
 
 	public function watch($record)
   {
-		// var_dump($record); exit;
-    if (!$this->isWatching($record)) {
-      $this->watching->addDocument($record);	
-		}
+		// // var_dump($record); exit;
+		//     if (!$this->isWatching($record)) {
+		//       $this->watching->addDocument($record);	
+		// }
 		// var_dump($record); exit;
 		return $this;
   }
 
   public function unwatch($record)
   {
-    $id = (string)$record->_id;
-    foreach ($this->watching as $key => $target) {
-      if ((string)$target->_id == $id) {
-        $this->watching->setProperty($key, null);
-      }
-    }
+    // $id = (string)$record->_id;
+    // foreach ($this->watching as $key => $target) {
+    //   if ((string)$target->_id == $id) {
+    //     $this->watching->setProperty($key, null);
+    //   }
+    // }
 		return $this;
   }
 	
