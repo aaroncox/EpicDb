@@ -6,11 +6,25 @@
  *
  * @author Aaron Cox <aaronc@fmanet.org>
  **/
-class EpicDb_Mongo_Post_Question extends EpicDb_Mongo_Post implements EpicDb_Vote_Interface_Votable, EpicDb_Interface_Autotweet
+class EpicDb_Mongo_Post_Question extends EpicDb_Mongo_Post implements EpicDb_Vote_Interface_Votable, EpicDb_Interface_Autotweet, EpicDb_Vote_Interface_Closable
 {
 	public $routeName = "questions";
 	protected static $_documentType = 'question';
 	protected static $_editForm = 'EpicDb_Form_Post_Question';
+
+	public function __construct($data = array(), $config = array())
+	{
+		$this->addRequirements(array(
+			'dupeOf' => array( 'Document:EpicDb_Mongo_Post_Question', 'AsReference' ),
+		));
+		return parent::__construct($data, $config);
+	}
+
+	public function getPropertyClass($property, $data) {
+		if ($property == "dupeOf" && isset($data['_type'])) {
+			return EpicDb_Mongo::dbClass($data['_type']);
+		}
+	}
 
 	public function findAnswers($query = array(), $sort = array('votes.accept' => -1, 'votes.score' => -1), $limit = false) {
 		return $this->findResponses(array( "_type" => "answer" ) + $query, $sort, $limit);
@@ -58,6 +72,34 @@ class EpicDb_Mongo_Post_Question extends EpicDb_Mongo_Post implements EpicDb_Vot
 				// Couldn't tweet for some reason.
 			}
 		}
+	}
+
+	public function close($profiles, $reason, $dupe = false)
+	{
+		$this->closed = time();
+		$this->closedReason = $reason;
+		if ( $dupe ) {
+			$this->dupeOf = $dupe;
+		}
+		$this->tags->setTags("closed-by", $profiles);
+		$this->tags->setTags("reopend-by", array());
+		$this->save();
+	}
+
+	public function reopen($profiles)
+	{
+		$this->closed = null;
+		$this->closedReason = null;
+		$this->dupeOf = null;
+		$this->tags->setTags("closed-by", array());
+		$this->tags->setTags("reopend-by", $profiles);
+		$this->save();
+	}
+
+	public function getName() {
+		$title = parent::getName();
+		if($this->closed) $title .= " [closed]";
+		return $title;
 	}
 	
 

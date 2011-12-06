@@ -24,6 +24,11 @@ abstract class EpicDb_Vote_Controller_Abstract extends MW_Controller_Action
 		$value = $this->getRequest()->getParam('vote');
 		$vote = EpicDb_Vote::factory($post, $value, $this->_helper->auth->getUserProfile());
 		$vote->reason = $this->getRequest()->getParam('reason');
+		if ($vote instanceOf EpicDb_Vote_Close) {
+			if ( $id = (int)$this->getRequest()->getParam('dupe') ) {
+				$vote->setDupeOf( EpicDb_Mongo::db("question")->fetchOne(array("id" => $id )) );
+			}
+		}
 
 		$result = array(
 			"postType" => $post->_type,

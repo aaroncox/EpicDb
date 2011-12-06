@@ -26,7 +26,7 @@ class EpicDb_Vote {
 	const DOWN      = "down";
 	const SPAM      = "spam";
 	const CLOSE     = "close";
-	const REOPEN    = "open";
+	const REOPEN    = "reopen";
 	const ACCEPT    = "accept";
 	const OFFENSIVE = "offensive";
 	const FAVORITE  = "favorite";
@@ -44,7 +44,7 @@ class EpicDb_Vote {
 		self::FAVORITE => 'EpicDb_Vote_Favorite',
 		self::MODERATOR => 'EpicDb_Vote_Moderator',
 		self::OFFENSIVE => 'EpicDb_Vote_Offensive',
-		self::REOPEN => 'EpicDb_Vote_Open',
+		self::REOPEN => 'EpicDb_Vote_Reopen',
 		self::SPAM => 'EpicDb_Vote_Spam',
 		self::UP => 'EpicDb_Vote_Up',
 	);

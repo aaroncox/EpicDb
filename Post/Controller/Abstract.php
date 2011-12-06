@@ -303,6 +303,9 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 	
 	public function commentAction() {
 		$parent = $this->view->parent = $this->getPost();
+		if ( $parent->closed || ($parent->_parent && $parent->_parent->closed ) ) {
+			throw new Exception("Post is closed, no new comments allowed");
+		}
 		$commentForm = $this->view->form = $this->getCommentForm($parent);
 		$this->_handleMWForm($commentForm, 'comment');
 	}
@@ -321,6 +324,9 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 			'id' => (int) $this->getRequest()->getParam('id')
 		);
 		$question = $this->view->post = EpicDb_Mongo::db('question')->fetchOne($query);
+		if ( $question->closed ) {
+			throw new Exception("Post is closed, no new answers allowed");
+		}
 		$this->view->hideComments = true;
 		$newAnswer = EpicDb_Mongo::db('answer');
 		$newAnswer->_parent = $question;
