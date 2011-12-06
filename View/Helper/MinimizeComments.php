@@ -29,9 +29,11 @@ class EpicDb_View_Helper_MinimizeComments extends Zend_View_Helper_Abstract
 				$this->view->htmlTag("div", array("class" => "comments-hidden"), $hidden)
 			);			
 		}
+		$closed = $comment->_parent->closed || $comment->_parent->_parent->closed;
 		return $this->view->htmlTag("div", array("class" => "comments-container"), 
 			$hidden."".
 			$shown."".
+			($closed ? "" :
 			$this->view->htmlTag("div", array("class" => "ui-helper-clearfix text-medium padded-10"), 
 				$this->view->button(array(
 						'action'=>'comment',
@@ -43,7 +45,7 @@ class EpicDb_View_Helper_MinimizeComments extends Zend_View_Helper_Abstract
 						'data-tooltip' => 'Post a Reply to the Comments above.',
 					)
 				).""
-			)
+			))
 		);
 	}
 } // END class EpicDb_View_Helper_MinimizeComments extends Zend_View_Helper_Abstract
