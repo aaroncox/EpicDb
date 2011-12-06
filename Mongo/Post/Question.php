@@ -84,6 +84,9 @@ class EpicDb_Mongo_Post_Question extends EpicDb_Mongo_Post implements EpicDb_Vot
 		$this->tags->setTags("closed-by", $profiles);
 		$this->tags->setTags("reopend-by", array());
 		$this->save();
+		foreach($this->findAnswers() as $answer) {
+			$answer->save();
+		}
 	}
 
 	public function reopen($profiles)
@@ -94,6 +97,9 @@ class EpicDb_Mongo_Post_Question extends EpicDb_Mongo_Post implements EpicDb_Vot
 		$this->tags->setTags("closed-by", array());
 		$this->tags->setTags("reopend-by", $profiles);
 		$this->save();
+		foreach($this->findAnswers() as $answer) {
+			$answer->save();
+		}
 	}
 
 	public function getName() {

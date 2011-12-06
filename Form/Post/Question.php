@@ -70,9 +70,18 @@ class EpicDb_Form_Post_Question extends EpicDb_Form_Post
 	public function save() {
 		$question = $this->getPost();
 		$question->title = $this->title->getValue();
-		if($this->community) {
-			$question->disableRep = $this->community->getValue();			
+		$changedCommunity = false;
+		if ($this->community) {
+			$flag = !!$this->community->getValue();
+			if ( $flag != $question->disableRep ) {
+				$changedCommunity = true;
+				$question->disableRep = $flag ? true : null;
+			}
 		}
-		return parent::save();
+		$return = parent::save();
+		if ( $changedCommunity ) {
+			foreach( $question->findAnswers() as $answer ) { $answer->save(); }
+		}
+		return $return;
 	}
 } // END class R2Db_Form_Post_Comment

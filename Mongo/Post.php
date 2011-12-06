@@ -224,7 +224,7 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 	}
 	
 	public function save() {
-		if (!$this->touched && $this->tags->getTag('author')) {
+		if (!$this->touched && ($author = $this->tags->getTag('author')) && $author instanceOf EpicDb_Mongo_Profile) {
 			$this->touched = $this->_created;
 			$this->touchedBy = $this->tags->getTag('author');
 		}
