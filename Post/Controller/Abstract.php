@@ -334,6 +334,27 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 		$answerForm = $this->view->form = $newAnswer->getEditForm();
 		$this->_handleMWForm($answerForm, 'answer');
 	}
+
+	public function mergeAction() {
+		EpicDb_Auth::getInstance()->requirePrivilege(new EpicDb_Auth_Resource_Moderator());
+		$post = $this->getPost();
+		$merge = $post->fetchOne(array("id"=>(int)$this->getRequest()->getParam("with")));
+		if ( !$merge ) {
+			throw new Exception("Couldn't find the merge target");
+		}
+		if ( !$post instanceOf EpicDb_Mongo_Post_Question ) {
+			throw new Exception("Merge only written for questions so far");
+		}
+		if ( !$post->dupeOf || $post->dupeOf->id != $merge->id) {
+			throw new Exception("Post is not marked as a duplicate");
+		}
+		$count = 0;
+		foreach ($post->findAnswers() as $answer) {
+			$answer->_parent = $merge;
+			$answer->save();
+		}
+		return $this->_redirect($this->view->url(array("post"=>$post),'post',true));
+	}
 	
 	protected function _formRedirect($form, $key, $ajax) {
 		if($referrer = $form->getElement('referrer')->getValue()) {
