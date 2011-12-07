@@ -113,6 +113,37 @@ class EpicDb_Record_Controller_Abstract extends MW_Controller_Action
 		$this->_redirect($this->getRequest()->getServer('HTTP_REFERER'));
 	}
 
+	public function mergeAction()
+	{
+		EpicDb_Auth::getInstance()->requirePrivilege(new EpicDb_Auth_Resource_Moderator());
+		$record = $this->view->record;
+		$merge = $this->view->record->fetchOne(array("id"=>(int)$this->getRequest()->getParam("with")));
+		if ( $merge ) {
+			$recordRef = $record->createReference();
+			$count = 0;
+			foreach( EpicDb_Mongo::db("post")->fetchAll(array("tags.ref"=>$recordRef)) as $post ) {
+				foreach ( $post->tags as $tag ) {
+					if ( $tag->ref->createReference() == $recordRef ) {
+						$tag->ref = $merge;
+						$count++;
+					}
+				}
+				$post->save();
+			}
+			echo "Moved ".$count." posts to new tag<br>";
+			$count = 0;
+			foreach( EpicDb_Mongo::db("profile")->fetchAll(array("following"=>$recordRef)) as $profile ) {
+				$profile->follow( $merge );
+				$profile->unfollow( $record );
+				$profile->save();
+			}
+			echo "Moved ".$count." followers to new tag<br>";
+			echo $this->view->recordLink( $merge );
+			$record->delete();
+			exit;
+		}
+		
+	}
 
 	public function followAction() {
 		$record = $this->view->record;

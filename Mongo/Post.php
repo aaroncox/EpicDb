@@ -90,6 +90,7 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 		if (isset($data['_type'])) {
 			return EpicDb_Mongo::dbClass($data['_type']);
 		}
+		return parent::getPropertyClass( $property, $data );
 	}
 
 	public function destroy() {
@@ -224,10 +225,11 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 	}
 	
 	public function save() {
-		if (!$this->touched && $this->tags->getTag('author')) {
+		if (!$this->touched && ($author = $this->tags->getTag('author')) && $author instanceOf EpicDb_Mongo_Profile) {
 			$this->touched = $this->_created;
 			$this->touchedBy = $this->tags->getTag('author');
 		}
+		
 		// This could probably be handled elsewhere better? Just pushing things forward
 
 		// This is how this should be handled...
@@ -241,6 +243,11 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 		for(;$i<count($this->_viewers); $i++) {
 			$this->_viewers->setProperty($i, null);
 		}
+
+		if ( !$this->votes ) {
+			$this->votes = array( "score" => 0 );
+		}
+
 		return parent::save();
 	}
 

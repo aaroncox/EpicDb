@@ -152,15 +152,19 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 				// $post = $parent;
 				break;
 		}
-
+		
 		$wrapClass = '';
 		if(isset($options['wrapClass'])) {
 			$wrapClass = $options['wrapClass'];
 		}
 
-		$headerClass = '';
+		if($post->_deleted) {
+			$headerClass = 'transparent-bg-red ';
+		} else {
+			$headerClass = '';			
+		}
 		if(isset($options['headerClass'])) {
-			$headerClass = $options['headerClass'];
+			$headerClass .= $options['headerClass'];
 		}
 		
 		$voteClass = '';

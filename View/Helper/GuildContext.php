@@ -12,7 +12,7 @@ class EpicDb_View_Helper_GuildContext extends MW_View_Helper_HtmlTag
 {
 	public function guildContext(EpicDb_Mongo_Profile_Group_Guild $profile) {
 		$placeholder = $this->view->context();
-		$placeholder->append($this->htmlTag("div", array("class" => "transparent-bg rounded"), $this->view->profileSlider($profile)."")."");
+		$placeholder->append($this->view->tooltip($profile)."");
 		
 		$buttons = '';
 		if ($profile->user && MW_Auth::getInstance()->hasPrivilege(new MW_Auth_Resource_Super(), 'sudo')) {

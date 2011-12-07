@@ -38,6 +38,7 @@ class EpicDb_View_Helper_Button extends MW_View_Helper_HtmlTag
 			'rel' => 'no-tooltip',
 			'style' => $style,
 		);
+		if(isset($params['data-voteurl'])) $options['data-voteurl'] = $params['data-voteurl'];
 		if($dataTooltip) $options['data-tooltip'] = $dataTooltip;
 		if(isset($params['tooltip'])) $options['data-tooltip'] = $params['tooltip'];
 		return $this->htmlTag("a", $options, $this->htmlTag("span", array(

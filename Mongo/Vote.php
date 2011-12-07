@@ -19,8 +19,10 @@ class EpicDb_Mongo_Vote extends EpicDb_Mongo_Document
 
 	public function getPropertyClass($property, $data)
 	{
-		if ($property == 'target' || $property=='post' || $property =="voter") {
-			return EpicDb_Mongo::dbClass($data['_type']);
+		if ( $property == 'target' || $property=='post' || $property =="voter") {
+			if ( $data ) {
+				return EpicDb_Mongo::dbClass($data['_type']);
+			}
 		}
 	}
 
@@ -50,6 +52,20 @@ class EpicDb_Mongo_Vote extends EpicDb_Mongo_Document
 			return $vote;
 		}
 		return false;
+	}
+
+	public static function getVotesByProfile( EpicDb_Mongo_Profile_User $voter, $type = null ) {
+		$query = array(
+			"voter" => $voter->createReference()
+		);
+		if ( $type ) {
+			if ( $type == 'score' ) {
+				$query['type'] = array('$in'=>array('up','down'));
+			} else {
+				$query['type'] = $type;
+			}
+		}
+		return static::fetchAll( $query );
 	}
 
 	public static function getVoteByProfile($post, $profile) {
@@ -104,7 +120,9 @@ class EpicDb_Mongo_Vote extends EpicDb_Mongo_Document
 				"query" => $query,
 				"out" => array("inline" => 1)
 		));
-		$data = array();
+		$data = array(
+			"score" => 0,
+		);
 		foreach ($result['results'] as $entry) {
 			$data[$entry['_id']] = $entry['value'];
 		}
