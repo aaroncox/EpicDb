@@ -56,14 +56,14 @@ class EpicDb_Search {
 			foreach($source as $string) {
 				$return += $this->keywordExplode($string);
 			}
-			return $return;
+			return array_values($return);
 		}
 		$return = array_unique(preg_split('/[^\w`-]+/', strtolower((string)$source)));
-		return array_filter($return, function($value) {
+		return array_values(array_filter($return, function($value) {
 			if($value && strlen($value) > 1) {
 				return true;				
 			}
-		});
+		}));
 	}
 
 

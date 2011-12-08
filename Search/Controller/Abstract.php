@@ -37,13 +37,24 @@ class EpicDb_Search_Controller_Abstract extends MW_Controller_Action
 			}
 		}
 		// Explode the keywords into the Query
-		foreach(EpicDb_Search::keywordExplode($q) as $keyword) {
-			$query['$and'][] = array(
-				'keywords' => new MongoRegex('/'.$keyword.'/i')
-			);
+		$keywords = EpicDb_Search::keywordExplode($q);
+		$records = array();
+		if(!empty($keywords)) {
+			foreach($keywords as $keyword) {
+				$query['$and'][] = array(
+					'keywords' => new MongoRegex('/'.$keyword.'/i')
+				);
+			}
+			$records = EpicDb_Mongo::db('search')->fetchAll($query, $sort);			
 		}
-		$records = EpicDb_Mongo::db('search')->fetchAll($query, $sort);
-		// var_dump($query, $records->export()); exit;
+		$types = array();
+		foreach($records as $record) {
+			if(!isset($types[$record->type])) {
+				$types[$record->type] = 0;
+			}
+			$types[$record->type]++;
+		}
+		$this->view->types = $types;
 		$paginator = Zend_Paginator::factory($records);
 		$paginator->setCurrentPageNumber($this->getRequest()->getParam('page', 1));
 		$this->view->results = $paginator;			

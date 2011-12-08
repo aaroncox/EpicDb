@@ -378,7 +378,9 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 		$url = "/".$this->_type."/".$this->id."/".$filter->filter($this->title);
 		$icon = null;
 		if($poster = $this->tags->getTag('author')?:$this->tags->getTag('source')) {
-			$icon = $poster->getIcon();			
+			if($poster instanceOf EpicDb_Mongo_Profile) {
+				$icon = $poster->getIcon();							
+			}
 		}
 		$score = 0;
 		if($this->votes && isset($this->votes['score'])) {
