@@ -52,6 +52,10 @@ abstract class EpicDb_Controller_Cli extends Zend_Controller_Action {
 		$this->resave('answer');
 	}
 
+	public function resaveQuestionsAction() {
+		$this->resave('question');
+	}
+
 	public function resavePostsAction() {
 		$this->resave('post');		
 	}

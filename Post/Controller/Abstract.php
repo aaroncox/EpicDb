@@ -450,8 +450,9 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 			$this->view->filterBy = $filterBy = $this->getRequest()->getParam("filter");
 			switch($filterBy) {
 				case "unanswered":
-					$query['$or'][]['_answerCount'] = array('$exists' => false);
-					$query['$or'][]['_answerCount'] = 0;
+					$query['_answeredCount'] = 0;
+					$query['_deleted'] = array( '$exists' => false );
+					$query['_closed'] = array( '$exists' => false );
 					break;
 				case "today":
 					$query['_created'] = array('$gt' => time() - (60*60*24));

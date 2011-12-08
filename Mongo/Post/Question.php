@@ -35,10 +35,10 @@ class EpicDb_Mongo_Post_Question extends EpicDb_Mongo_Post implements EpicDb_Vot
 		return $this->findResponses( array( "_type" => "question-comment" ) + $query, $sort, $limit );
 	}
 
-	public function countAnswers() {
+	public function countAnswers( $query = array() ) {
 		// TODO - XHProf Improvement Here: This count repeatedly fires, could be improved and reduce pageload by approx 1/2 second
 		// Return a max of 9999
-		return $this->findAnswers( array('_deleted' => array('$exists' => false) ) )->count();
+		return $this->findAnswers( $query + array('_deleted' => array('$exists' => false) ) )->count();
 	}
 	
 	public function getRouteParams() {
@@ -48,6 +48,7 @@ class EpicDb_Mongo_Post_Question extends EpicDb_Mongo_Post implements EpicDb_Vot
 		
 	public function save() {
 		$this->_answerCount = $this->countAnswers();
+		$this->_answeredCount = $this->countAnswers(array("votes.score" => array('$gt' => 0)));
 		return parent::save();
 	}
 	
