@@ -144,6 +144,7 @@ class EpicDb_Mongo_Profile_User extends EpicDb_Mongo_Profile
 		}
 		$query = array();
 		if($user instanceOf MW_Auth_Mongo_Role) {
+			if ( $user->groupName == "guest" ) return null;
 			$query['user'] = $user->createReference();
 		} elseif(is_string($user)) {
 			$query = array("name" => new MongoRegex('/'.$user.'/i'));
