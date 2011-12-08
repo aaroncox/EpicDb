@@ -50,12 +50,16 @@ class EpicDb_Filter_TagJSON implements Zend_Filter_Interface {
 	
 	public function single($tag) {
 		$filter = new MW_Filter_Slug();
+		$icon = null;
+		if ( method_exists( $tag, "getIcon" ) ) {
+			$icon = $tag->getIcon();
+		}
 		return json_encode(array(
 			"type" => $tag->_type,
 			"id" => $tag->id,
 			"name" => $tag->name?:$tag->title,
 			"slug" => $tag->slug?:$filter->filter($tag->title?:$tag->name),
-			"icon" => $tag->getIcon(),
+			"icon" => $icon,
 		));
 	}
 
