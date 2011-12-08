@@ -65,7 +65,7 @@ class EpicDb_Mongo_SearchResult extends MW_Mongo_Document
 		}
 		$result->tags->setFromArray($data['tags']);
 		$result->lastUpdated = time();
-		// var_dump($result->type, $result->subtype, $result->name, "-------"); 
+		var_dump($result->type, $result->subtype, $result->name, "-------"); 
 		$result->save();
 	}
 }

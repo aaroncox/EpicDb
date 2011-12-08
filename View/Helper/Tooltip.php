@@ -249,8 +249,29 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 			$this->view->iconCloud($documentSet)
 		);
 	}
+	public function appendQuestions($limit) {
+		$doc = $this->_doc;
+		$params = $this->_params;
+		$query = array(
+			'tags.ref' => $doc->createReference()
+		);
+		$sort = array(
+			'votes.score' => -1
+		);
+		$questions = $this->view->htmlTag("div", array("class" => "question"), 
+			$this->view->htmlTag("h3", array(), "Popular Questions").""
+		)."";
+		foreach(EpicDb_Mongo::db('question')->fetchAll($query, $sort, $limit) as $question) {
+			$questions .= $this->view->htmlTag("div", array("class" => "question"), 
+				// $this->view->htmlTag("span", array("class" => "score"), $question->votes['score']?:0)."".			
+				$this->view->htmlTag("span", array("class" => "name"), $this->view->postLink($question))
+			)."";
+		}
+		return $questions;
+	}
 	public function render() {
 		$doc = $this->_doc;
+		$params = $this->_params;
 		if ($doc === false) {
 			return '';
 		}
@@ -273,6 +294,11 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 				$content .= call_user_func_array(array($this->view, $helper), $args);
 			} 
 		}
+
+		if(isset($params['appendQuestions'])) {
+			$content .= $this->appendQuestions($params['appendQuestions']);
+		}
+		
 		return $this->wrap($content)."";
 	}
 	public function __toString() {

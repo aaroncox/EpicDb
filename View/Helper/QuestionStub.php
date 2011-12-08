@@ -56,6 +56,7 @@ class EpicDb_View_Helper_QuestionStub extends MW_View_Helper_HtmlTag
 				"class" => "post-tag ",
 				"iconClass" => "tag-icon", 
 				"content" => false,
+				"action" => "questions",
 			));
 		}
 		// var_dump($question->tags->getTag('author')); 
