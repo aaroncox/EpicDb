@@ -65,5 +65,9 @@ class EpicDb_Vote_Up extends EpicDb_Vote_Abstract {
 		if($this->_post instanceOf EpicDb_Interface_Autotweet) {
 			$this->_post->autoTweet();
 		}
+		// resave the question after the vote is cast on an answer - this should make it update the "unanswered"
+		if ( $this->_post instanceOf EpicDb_Mongo_Post_Question_Answer && $this->_post->_parent->id ) {
+			$this->_post->_parent->save();
+		}
 	}
 }
