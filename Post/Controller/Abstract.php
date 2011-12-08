@@ -452,7 +452,7 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 				case "unanswered":
 					$query['_answeredCount'] = 0;
 					$query['_deleted'] = array( '$exists' => false );
-					$query['_closed'] = array( '$exists' => false );
+					$query['closed'] = array( '$exists' => false );
 					break;
 				case "today":
 					$query['_created'] = array('$gt' => time() - (60*60*24));
