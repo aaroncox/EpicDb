@@ -114,7 +114,11 @@ class EpicDb_Mongo_Profile extends EpicDb_Auth_Mongo_Resource_Document implement
 		// exit;/
 		$query['_deleted'] = array('$exists' => false);
 		$query['_created'] = array('$ne' => false);		
-		foreach(array($this->following, $this->watching) as $set) {
+		$sets = array(
+			$this->following, 
+			// $this->watching,
+		);
+		foreach($sets as $set) {
 			foreach($set as $record) { 
 				if(!$record) continue;
 				$query['$or'][] = array(
@@ -164,6 +168,28 @@ class EpicDb_Mongo_Profile extends EpicDb_Auth_Mongo_Resource_Document implement
 	
 	public function getLayout() {
 		return $this->_layout;
+	}
+	
+	public function postSave() {
+		// Generate the SearchResult cache
+		$keywords = array($this->description, $this->name); 
+		$filter = new MW_Filter_Slug();
+		$url = "/".$this->_type."/".$this->id."/".$filter->filter($this->name);
+		$score = 0;
+		if($this->votes && isset($this->votes['score'])) {
+			$score = $this->votes['score'];
+		} 
+		EpicDb_Mongo::db('search')->generate(array(
+			'records' => array($this),
+			'keywords' => $keywords,
+			'name' => $this->name,
+			'type' => $this->_type,
+			'tags' => $this->tags,
+			'icon' => $this->getIcon(),
+			'score' => count($this->getMyFollowers()),
+			'url' => $url,
+		));
+		return parent::postSave();
 	}
 	
 

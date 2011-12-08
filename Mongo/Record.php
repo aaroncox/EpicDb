@@ -194,4 +194,66 @@ class EpicDb_Mongo_Record extends EpicDb_Auth_Mongo_Resource_Document implements
 	public function getLayout() {
 		return $this->_layout;
 	}
+	
+	public function postSave() {
+		// Generate the SearchResult cache
+		$keywords = array($this->name, $this->description); 
+		foreach($this->tags as $tag) {
+			if($tag->name) {
+				$keywords[] = $tag->name;				
+			}
+		}
+		// $router = Zend_Controller_Front::getInstance()->getRouter();
+		// $url = $router->assemble($this->getRouteParams(), $this->routeName, true);
+		$filter = new MW_Filter_Slug();
+		$url = "/".$this->_type."/".$this->id."/".$filter->filter($this->name);
+		$followers = count($this->getMyFollowers()) + 1;
+		EpicDb_Mongo::db('search')->generate(array(
+			'records' => array($this),
+			'keywords' => $keywords,
+			'name' => $this->name,
+			'tags' => $this->tags,
+			'type' => $this->_type,
+			'icon' => $this->getIcon(),
+			'score' => $followers,
+			'url' => $url,
+		));
+		$r2 = EpicDb_Mongo::db('website')->fetchOne(array("id" => 1));
+
+		EpicDb_Mongo::db('search')->generate(array(
+			'records' => array($this, $r2),
+			'keywords' => $keywords,
+			'hints' => array('questions', 'question'),
+			'name' => $this->name,
+			'tags' => $this->tags,
+			'type' => $this->_type,
+			'icon' => $r2->getIcon(),
+			'score' => $followers,
+			'url' => $url."/questions",
+			'subtype' => 'questions-'.$this->_type.''.$this->id,
+			'wrap' => "Questions about ###",
+		));
+		$query = array(
+			'types' => $this->_type
+		);
+		foreach(EpicDb_Mongo::db('seed')->fetchAll($query) as $seed) {
+			$title = str_replace(array("[[NAME]]", "[[TYPE]]"), array($this->name, $this->_type), strip_tags($seed->title));
+			$keywords = array($title);
+			$url = "/".$this->_type."/".$this->id."/".$filter->filter($this->name)."/seed/".$seed->id."/".$filter->filter($seed->title);
+			$score = ceil($followers/5);
+			EpicDb_Mongo::db('search')->generate(array(
+				'records' => array($this, $seed),
+				'keywords' => $keywords,
+				'name' => $title,
+				'type' => 'question',
+				'tags' => $seed->tags,
+				'icon' => $this->getIcon(),
+				'url' => $url,
+				'subtype' => 'seed-'.$seed->id,
+				'score' => $score,
+			));
+		}
+		// var_dump($query); exit;
+		return parent::postSave();
+	}
 } // END class EpicDb_Mongo_Record

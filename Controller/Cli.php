@@ -48,6 +48,10 @@ abstract class EpicDb_Controller_Cli extends Zend_Controller_Action {
 		$this->resave('wiki');
 	}
 	
+	public function resaveAnswersAction() {
+		$this->resave('answer');
+	}
+
 	public function resavePostsAction() {
 		$this->resave('post');		
 	}
@@ -66,6 +70,38 @@ abstract class EpicDb_Controller_Cli extends Zend_Controller_Action {
 	
 	public function resaveMediaAction() {
 		$this->resave('media');
+	}
+	
+	public function resaveSeedsAction() {
+		$docs = EpicDb_Mongo::db('seed')->fetchAll(array(), array("id" => 1));
+		echo "Resaving seeds for ".count($docs)." questions ...\n";
+		$i = 0;
+		
+		$adapter = new Zend_ProgressBar_Adapter_Console();
+		$bar = new Zend_ProgressBar($adapter, 0, count($docs));
+		foreach($docs as $doc) {
+			$i++;
+			foreach($doc->types as $type) {
+				foreach(EpicDb_Mongo::db($type)->fetchAll() as $subject) {
+					$name = strip_tags(str_replace("[[NAME]]", $subject->name, $doc->title));
+					$tags = array();
+					$tags['subject'] = $subject;
+					$query = array(
+						'record' => $subject->createReference(),
+						'seed' => $doc->createReference(),
+					); 
+					$search = EpicDb_Mongo::db('search')->fetchOne($query);
+					if(!$search) {
+						$search = EpicDb_Mongo::newDoc('search');
+						$search->record = $subject;
+						$search->seed = $doc;
+					}
+					$search->name = $name;
+					$search->save();
+				}				
+			}
+			$bar->update($i);
+		}
 	}
 	
 	public function resaveWikiAction() {
@@ -103,7 +139,11 @@ abstract class EpicDb_Controller_Cli extends Zend_Controller_Action {
 		foreach($docs as $doc) {
 			$i++;
 			$bar->update($i, 'Saved '.$doc->_type.'/'.$doc->_id);
-			$doc->save();
+			try {
+				$doc->save();				
+			} catch (Exception $e) {
+				
+			}
 		}
 	}
 }

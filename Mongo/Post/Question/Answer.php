@@ -37,4 +37,11 @@ class EpicDb_Mongo_Post_Question_Answer extends EpicDb_Mongo_Post implements Epi
 		$this->_parent->save();
 	}
 
+	public function save()
+	{
+		$this->closed = $this->_parent->closed;
+		$this->disableRep = $this->_parent->disableRep;
+		return parent::save();
+	}
+
 } // END class EpicDb_Mongo_Post_Question_Answer

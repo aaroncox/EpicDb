@@ -11,6 +11,7 @@ class EpicDb_Mongo_Seed extends EpicDb_Auth_Mongo_Resource_Document
 	protected static $_documentType = 'seed';
 	protected static $_documentSetClass = 'EpicDb_Mongo_Posts';
 	protected static $_editForm = 'EpicDb_Form_Seed';
+	public $routeName = 'record';
 	
 	protected $_requirements = array(
 		'types' => array('Array'),
@@ -55,5 +56,13 @@ class EpicDb_Mongo_Seed extends EpicDb_Auth_Mongo_Resource_Document
 			$tags = array();
 		}
 		return $tags;
+	}
+	
+	public function getIcon() {
+		return "http://s3.r2-db.com/unknown.jpg";
+	}
+	
+	public function getRouteParams() {
+		return array('record' => $this);
 	}
 } // END class EpicDb_Mongo_Post_Question_System extends EpicDb_Mongo_Post_Question

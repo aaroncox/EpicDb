@@ -303,6 +303,9 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 	
 	public function commentAction() {
 		$parent = $this->view->parent = $this->getPost();
+		if ( $parent->closed || ($parent->_parent && $parent->_parent->closed ) ) {
+			throw new Exception("Post is closed, no new comments allowed");
+		}
 		$commentForm = $this->view->form = $this->getCommentForm($parent);
 		$this->_handleMWForm($commentForm, 'comment');
 	}
@@ -321,12 +324,36 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 			'id' => (int) $this->getRequest()->getParam('id')
 		);
 		$question = $this->view->post = EpicDb_Mongo::db('question')->fetchOne($query);
+		if ( $question->closed ) {
+			throw new Exception("Post is closed, no new answers allowed");
+		}
 		$this->view->hideComments = true;
 		$newAnswer = EpicDb_Mongo::db('answer');
 		$newAnswer->_parent = $question;
 		$newAnswer->tags->tag($question, 'parent');
 		$answerForm = $this->view->form = $newAnswer->getEditForm();
 		$this->_handleMWForm($answerForm, 'answer');
+	}
+
+	public function mergeAction() {
+		EpicDb_Auth::getInstance()->requirePrivilege(new EpicDb_Auth_Resource_Moderator());
+		$post = $this->getPost();
+		$merge = $post->fetchOne(array("id"=>(int)$this->getRequest()->getParam("with")));
+		if ( !$merge ) {
+			throw new Exception("Couldn't find the merge target");
+		}
+		if ( !$post instanceOf EpicDb_Mongo_Post_Question ) {
+			throw new Exception("Merge only written for questions so far");
+		}
+		if ( !$post->dupeOf || $post->dupeOf->id != $merge->id) {
+			throw new Exception("Post is not marked as a duplicate");
+		}
+		$count = 0;
+		foreach ($post->findAnswers() as $answer) {
+			$answer->_parent = $merge;
+			$answer->save();
+		}
+		return $this->_redirect($this->view->url(array("post"=>$post),'post',true));
 	}
 	
 	protected function _formRedirect($form, $key, $ajax) {
@@ -441,6 +468,7 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 				default:
 					break;
 			}
+			$query["votes.score"] = array( '$gt' => -3 );
 			Zend_Paginator::setDefaultItemCountPerPage( 10 );
 			$questions = EpicDb_Mongo::db('question')->fetchAll($query, $sort);
 			$paginator = Zend_Paginator::factory($questions);
@@ -584,7 +612,14 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 			$answerForm = $this->view->answerForm = $newAnswer->getEditForm();
 			$this->_handleMWForm($answerForm, 'answer');
 		}
-		if($post instanceOf EpicDb_Mongo_Post_Message ) {
+		if($post instanceOf EpicDb_Mongo_Post_Article_Guide) {
+			$newComment = EpicDb_Mongo::newDoc('comment');
+			$newComment->_parent = $post;
+			$newComment->tags->tag($post, 'parent');
+ 			$this->view->form = $commentForm = $newComment->getEditForm();
+			$this->_handleMWForm($commentForm, 'comment');			
+		}
+		if($post instanceOf EpicDb_Mongo_Post_Message) {
 			$paginator = Zend_Paginator::factory($post->findResponses());
 			$paginator->setCurrentPageNumber($this->getRequest()->getParam('page', 1));
 			$this->view->responses = $paginator;

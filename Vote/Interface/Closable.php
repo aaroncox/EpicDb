@@ -20,5 +20,6 @@
  * @version $Id:$
  */
 interface EpicDb_Vote_Interface_Closable {
-  
+	public function close($profiles, $reason, $dupe = false);
+	public function reopen($profiles);
 }

@@ -22,7 +22,7 @@ class EpicDb_View_Helper_PostLink extends MW_View_Helper_HtmlTag
 		if(isset($params['hash'])) {
 			$hash = $params['hash'];
 		}
-		$text = $post->title;
+		$text = $post->getName();
 		if(isset($params['text'])) {
 			$text = $params['text'];
 		}
