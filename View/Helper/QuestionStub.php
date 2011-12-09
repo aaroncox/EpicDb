@@ -70,6 +70,19 @@ class EpicDb_View_Helper_QuestionStub extends MW_View_Helper_HtmlTag
 		} else {
 			$containerColor = "blue";
 		}
+		$statusMessage = '';
+		if($question->closed) {
+			$containerColor = " question-closed";
+			$dupeText = '';
+			if($duplicate = $question->dupeOf) {
+				$dupeText = ' of '.$this->view->postLink($duplicate);
+			}
+			// var_dump($question->export()); exit;
+			$statusMessage = $this->view->htmltag("div", array('class' => 'status-message'),
+				'↳ '.ucwords($question->closedReason).$dupeText
+			)."";
+		}
+		// var_dump($statusMessage); exit;
 		return $this->htmlTag('div', array('class' => 'question-summary ui-helper-clearfix rounded shadowy transparent-bg-'.$containerColor), 
 			$this->htmlTag('div', array('style' => 'float: right'), 
 				$this->view->card($author, array(
@@ -92,7 +105,8 @@ class EpicDb_View_Helper_QuestionStub extends MW_View_Helper_HtmlTag
 				$this->htmlTag("p", array('class' => 'text-medium'), 
 					$this->view->htmlFragment(strip_tags($question->body), 150)
 				)."".
-				$this->htmlTag('div', array('class' => 'tags'), $tags)
+				$this->htmlTag('div', array('class' => 'tags'), $tags)."".
+				$statusMessage
 			)
 		);
 
