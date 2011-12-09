@@ -74,8 +74,8 @@ class EpicDb_View_Helper_QuestionStub extends MW_View_Helper_HtmlTag
 		if($question->closed) {
 			$containerColor = " question-closed";
 			$dupeText = '';
-			if($duplicate = $question->dupeOf) {
-				$dupeText = ' of '.$this->view->postLink($duplicate);
+			if($question->dupeOf->id) {
+				$dupeText = ' of '.$this->view->postLink($question->dupeOf);
 			}
 			// var_dump($question->export()); exit;
 			$statusMessage = $this->view->htmltag("div", array('class' => 'status-message'),
