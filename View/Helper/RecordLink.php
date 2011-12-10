@@ -41,9 +41,9 @@ class EpicDb_View_Helper_RecordLink extends MW_View_Helper_HtmlTag
 		if(isset($params['target'])) {
 			$target = $params['target'];
 		} 
-		
-		if($record->quality) {
-			$class .= " quality-".$record->quality;
+
+		if($record->attribs->quality) {
+			$class .= " quality-".$record->attribs->quality;
 		}
 		
 		$routeName = $record->routeName;

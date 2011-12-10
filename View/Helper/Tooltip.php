@@ -258,14 +258,17 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 		$sort = array(
 			'votes.score' => -1
 		);
-		$questions = $this->view->htmlTag("div", array("class" => "question"), 
-			$this->view->htmlTag("h3", array(), "Popular Questions").""
-		)."";
-		foreach(EpicDb_Mongo::db('question')->fetchAll($query, $sort, $limit) as $question) {
+		$question = "";
+		if($results = EpicDb_Mongo::db('question')->fetchAll($query, $sort, $limit)) {
 			$questions .= $this->view->htmlTag("div", array("class" => "question"), 
-				// $this->view->htmlTag("span", array("class" => "score"), $question->votes['score']?:0)."".			
-				$this->view->htmlTag("span", array("class" => "name"), $this->view->postLink($question))
+				$this->view->htmlTag("h3", array(), "Popular Questions").""
 			)."";
+			foreach($results as $question) {
+				$questions .= $this->view->htmlTag("div", array("class" => "question"), 
+					// $this->view->htmlTag("span", array("class" => "score"), $question->votes['score']?:0)."".			
+					$this->view->htmlTag("span", array("class" => "name"), $this->view->postLink($question))
+				)."";
+			}			
 		}
 		return $questions;
 	}

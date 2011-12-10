@@ -27,13 +27,24 @@ class EpicDb_Mongo_SearchResult extends MW_Mongo_Document
 		} else {
 			$data['subtype'] = $query['subtype'] = 'base';
 		}
+		// This whole wrapping shit sucks, it could be a lot better, but I am le' tired. FIRE ZE MISSLEZ!
 		if(isset($data['wrap'])) {
-			$replace = "<span class='gold-text'>".$data['name']."</span>";
+			if(isset($data['quality'])) {
+				$replace = "<span class='quality-".$data['quality']."'>".$data['name']."</span>";				
+			} else {
+				$replace = "<span class='gold-text'>".$data['name']."</span>";
+			}
 			$data['name'] = str_replace("###", $replace, $data['wrap']);			
+		} else {
+			if(isset($data['quality'])) {
+				$data['name'] = "<span class='quality-".$data['quality']."'>".$data['name']."</span>";				
+			} else {
+				$data['name'] = "<span class='gold-text'>".$data['name']."</span>";								
+			}
 		}
-		
 		// Torhead Branding
 		if(isset($data['torhead'])) {
+			$data['url'] = $data['torhead'];				
 			$data['name'] = "<img src='/images/torhead-arrow.png' class='torhead-link'/>".$data['name'];
 		}
 		foreach($data['records'] as $record) {
@@ -65,7 +76,7 @@ class EpicDb_Mongo_SearchResult extends MW_Mongo_Document
 		}
 		$result->tags->setFromArray($data['tags']);
 		$result->lastUpdated = time();
-		var_dump($result->type, $result->subtype, $result->name, "-------"); 
+		// var_dump($result->type, $result->subtype, $result->name, "-------"); 
 		$result->save();
 	}
 }

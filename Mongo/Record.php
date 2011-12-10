@@ -194,7 +194,7 @@ class EpicDb_Mongo_Record extends EpicDb_Auth_Mongo_Resource_Document implements
 	public function getLayout() {
 		return $this->_layout;
 	}
-	
+		
 	public function postSave() {
 		// Generate the SearchResult cache
 		$keywords = array($this->name, $this->description); 
@@ -214,6 +214,7 @@ class EpicDb_Mongo_Record extends EpicDb_Auth_Mongo_Resource_Document implements
 			'name' => $this->name,
 			'tags' => $this->tags,
 			'type' => $this->_type,
+			'quality' => $this->attribs->quality,
 			'icon' => $this->getIcon(),
 			'score' => $followers,
 			'url' => $url,
@@ -226,9 +227,10 @@ class EpicDb_Mongo_Record extends EpicDb_Auth_Mongo_Resource_Document implements
 			'hints' => array('questions', 'question'),
 			'name' => $this->name,
 			'tags' => $this->tags,
-			'type' => $this->_type,
+			'type' => 'question-helper',
 			'icon' => $r2->getIcon(),
 			'score' => $followers,
+			'quality' => $this->attribs->quality,
 			'url' => $url."/questions",
 			'subtype' => 'questions-'.$this->_type.''.$this->id,
 			'wrap' => "Questions about ###",
@@ -245,10 +247,11 @@ class EpicDb_Mongo_Record extends EpicDb_Auth_Mongo_Resource_Document implements
 				'records' => array($this, $seed),
 				'keywords' => $keywords,
 				'name' => $title,
-				'type' => 'question',
+				'type' => 'question-helper',
 				'tags' => $seed->tags,
 				'icon' => $this->getIcon(),
 				'url' => $url,
+				'quality' => $this->attribs->quality,
 				'subtype' => 'seed-'.$seed->id,
 				'score' => $score,
 			));

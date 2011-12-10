@@ -146,4 +146,226 @@ abstract class EpicDb_Controller_Cli extends Zend_Controller_Action {
 			}
 		}
 	}
+	
+	public $sql = null;
+	public function torheadAction() {
+		$this->sql = new mysqli('localhost', 'root', '', 'torhead_temp');
+		// $this->torheadImportSQL();
+		$this->torheadConvertSkills();
+		// $this->torheadConvertItems();
+	}
+
+	public $itemMap = array(
+		'idstring' => 'fqn',
+		'name' => 'name',
+		'description' => 'descriptionSource',
+	);
+	public $attribsMap = array(
+		'minlevel' => 'requireLevel',
+		'basequality' => 'quality',
+		'maxdurability' => 'durability',
+	);
+	public function torheadConvertItems() {
+		$statData = $this->sql->query("select * from game_stat_data");
+		$statRefs = array();
+		// Build stats
+		while($statRow = $statData->fetch_object()) {
+			if(!$statRow->name) {
+				continue;
+			}
+			$name = preg_replace("/[^a-zA-Z]/","",lcfirst($statRow->name));
+			$query = array();
+			$query['$or'][] = array('name' => $name);
+			$query['$or'][] = array('fqn' => $statRow->idstring);
+			$metaKey = EpicDb_Mongo::db('metaKeys')->fetchOne($query);
+			if(!$metaKey) {
+				$metaKey = EpicDb_Mongo::newDoc('metaKeys');
+				$metaKey->name = $name;
+				$metaKey->fqn = $statRow->idstring;
+				$metaKey->recordType = array('item');
+				$metaKey->title = $statRow->name;
+				$metaKey->save();
+				echo "Add meta key for: ".$statRow->idstring."\n\r";
+			}
+			$statRefs[$statRow->id] = $metaKey->name;
+		}
+		$items = EpicDb_Mongo::db('item');
+		$result = $this->sql->query("select * from game_item");
+		$markdown = new EpicDb_Form_Element_Markdown(array("name" => "temp"));
+		
+		echo "Parsing Torhead Items (".$result->num_rows.") \n\r";
+		$i = 0;
+		
+		$adapter = new Zend_ProgressBar_Adapter_Console();
+		$bar = new Zend_ProgressBar($adapter, 0, $result->num_rows);
+
+		if($result){
+		    while ($row = $result->fetch_object()){
+					// Find R2-Db's Version: 
+					$query = array(
+						'fqn' => $row->idstring,
+					);
+					$r2item = $items->fetchOne($query);
+					if(!$r2item) {
+						$r2item = EpicDb_Mongo::newDoc('item');
+					}
+					$r2item->torhead->icon = $row->icon;
+					$r2item->torhead->id = $row->display_id;
+					$r2item->torhead->url = "http://www.torhead.com/item/".$row->display_id;
+					// Setup base data from Torhead
+					foreach($this->itemMap as $from => $to) {
+						$r2item->$to = utf8_encode(utf8_decode($row->$from)); 	
+					}
+					// Setup Attributes from Torhead
+					$stats = $this->sql->query("select * from game_equip_stat where id = ".$row->id);
+					while($statrow = $stats->fetch_object()) {
+						if(isset($statRefs[$statrow->_key])) {
+							$statName = $statRefs[$statrow->_key];
+							$r2item->attribs->$statName = $statrow->val;							
+						}
+					}
+					// $row->id
+					foreach($this->attribsMap as $from => $to) {
+						$r2item->attribs->$to = $row->$from; 	
+					}
+					if($row->mindmg && $row->maxdmg) {
+						$r2item->attribs->damage->min = $row->mindmg;
+						$r2item->attribs->damage->max = $row->maxdmg;
+					}
+					// Bind Rules Setup
+					if($row->bindrule) {
+						unset($r2item->attribs->isBindOnEquip);
+						unset($r2item->attribs->isBindOnPickup);
+						switch($row->bindrule) {
+							case "2":
+								$r2item->attribs->isBindOnEquip = true;
+								break;
+							case "3":
+								$r2item->attribs->isBindOnPickup = true;
+								break;
+							default:
+							 	echo "Unknown bind type: [".$row->bindrule."] for [".$row->name."]"; exit;
+								break;
+						}
+					}
+					// Parse the Source into HTML w/ Markdown
+					if($r2item->descriptionSource) {
+						$markdown->setValue($r2item->descriptionSource); 
+						$r2item->description = $markdown->getRenderedValue();
+					}
+					$r2item->save();
+					// var_dump($row, $r2item->export()); exit;
+					// $r2item->newRevision();
+					// Update Status Bar
+					$i++; $bar->update($i);
+		    }
+		    // Free result set
+		    $result->close();
+		    $this->sql->next_result();
+		}
+	}
+	
+	public function torheadConvertSkills() {
+		
+		$skills = EpicDb_Mongo::db('skill');
+		$result = $this->sql->query("select * from game_ability");
+		$classes = array();
+		foreach(EpicDb_Mongo::db('class')->fetchAll() as $class) {
+			$classes[$class->name] = $class;
+		}
+		foreach(EpicDb_Mongo::db('advanced-class')->fetchAll() as $class) {
+			$classes[$class->name] = $class;
+		}
+
+		echo "Parsing Torhead Skills (".$result->num_rows.") \n\r";
+		$i = 0;
+		
+		$adapter = new Zend_ProgressBar_Adapter_Console();
+		$bar = new Zend_ProgressBar($adapter, 0, $result->num_rows);
+
+		if($result){
+		    while ($row = $result->fetch_object()){
+					$infos = $this->sql->query("
+						select class.tabname from game_ability_info as info 
+						left join game_class_ability as class
+							on info.packageid = class.package
+						where info.ability = '".$row->idstring."'
+					");
+					$requiredClasses = array();
+					while ($info = $infos->fetch_object()) {
+						if($info->tabname && isset($classes[$info->tabname])) {
+							$requiredClasses[] = $classes[$info->tabname];
+						}
+					}
+					// Find R2-Db's Version: 
+					$query = array(
+						'fqn' => $row->idstring
+					);
+					$r2skill = $skills->fetchOne($query);
+					echo "Searching for: ".$row->ability_name." \ ".$row->idstring."\n";
+					if(!$r2skill) {
+						echo "Not found by FQN, checking name/tags...\n";
+						$query = array(
+							'name' => $row->ability_name,
+							'fqn' => array('$exists' => false ),
+						);
+						if($requiredClasses) {
+							foreach($requiredClasses as $class) {
+								$query['or'][] = array('tags.ref' => $class->createReference());								
+							}
+						}
+						$r2skill = $skills->fetchOne($query);						
+					}
+					if(!$r2skill) {
+						echo "Not found by name/tags, creating...\n";
+						$r2skill = EpicDb_Mongo::newDoc('skill');
+					}
+					$r2skill->name = $row->ability_name;
+					$r2skill->fqn = $row->idstring;
+					$r2skill->tags->setTags('required-class', $requiredClasses);
+					$r2skill->torhead->icon = $row->ability_icon;
+					$r2skill->torhead->id = $row->display_id;
+					$r2skill->torhead->url = "http://www.torhead.com/ability/".$row->display_id;
+					// Update Status Bar
+					$i++; $bar->update($i);
+					$r2skill->save();
+					var_dump($row, $r2skill->export()); exit;
+		    }
+		    // Free result set
+		    $result->close();
+		    $this->sql->next_result();
+		}
+	}
+	
+	public function torheadImportSQL() {
+		$path = "../torhead/";
+		echo "Importing SQL Dumps into MySQL...\n\r";
+		$files = scandir($path);
+		
+		foreach($files as $file) {
+			$info = pathinfo($path.$file);
+			if($info['extension'] != 'sql') {
+				continue;
+			}
+			$query = file_get_contents($path.$file);
+			// $result = mysqli_multi_query($sql,$query);
+			if ($this->sql->multi_query($query)) {
+					echo "Importing '".$file;
+			    do {
+			        /* store first result set */
+			        if ($result = $this->sql->store_result()) {
+			            while ($row = $result->fetch_row()) {
+										echo ".";
+			            }
+			            $result->free();
+			        }
+			        /* print divider */
+			        if ($this->sql->more_results()) {
+								echo ".";
+			        }
+			    } while ($this->sql->next_result());
+			}
+			echo "\n\r";
+		}
+	}
 }
