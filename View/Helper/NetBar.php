@@ -45,7 +45,7 @@ class EpicDb_View_Helper_NetBar extends Zend_View_Helper_Abstract
 							$this->view->htmlTag("img", array("src" => $this->_profile->getIcon()))
 						)."".
 						$this->view->htmlTag("p", array(), "Level")."".
-						$this->view->htmlTag("p", array("class" => "level"), $levelBar->getLevel())
+						$this->view->htmlTag("p", array("class" => "level"), $this->_profile->getLevel())
 					)."".
 					$this->view->htmlTag("div", array("class" => "profile-info inline-flow"), 
 						$this->view->htmlTag("p", array("class" => "profile-name"), 
@@ -80,7 +80,7 @@ class EpicDb_View_Helper_NetBar extends Zend_View_Helper_Abstract
 				$this->view->htmlTag("img", array("src" => $this->_imagePath."divider.png")).""
 			);
 			$content .= $this->view->htmlTag("div", array("class" => "inline-flow"), "Level");
-			$content .= $this->view->htmlTag("div", array("class" => "inline-flow level"), $levelBar->getLevel());
+			$content .= $this->view->htmlTag("div", array("class" => "inline-flow level"), $this->_profile->getLevel());
 			$content .= $this->view->htmlTag("div", array("class" => "inline-flow"), $levelBar."");
 			// $content .= $this->view->htmlTag("div", array("class" => "inline-flow"));
 		} else {
