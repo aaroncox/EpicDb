@@ -144,9 +144,9 @@ class EpicDb_View_Helper_VoteWidget extends MW_View_Helper_HtmlTag
 			);
 			
 		}
-		// if ($post instanceOf EpicDb_Vote_Interface_Flaggable) {
-		// 	$content .= $this->view->htmlTag("p", array(), $this->makeVoteButton("flag")." ");
-		// }
+		if ( isset($this->_opts["flag"]) && $this->_opts["flag"] && $post instanceOf EpicDb_Vote_Interface_Flaggable) {
+			$content .= $this->view->htmlTag("p", array(), $this->makeVoteButton("flag")." ");
+		}
 		return $this->view->htmlTag("div", array("class" => 'vote-widget ' . @$this->_opts['class'] ?: ''), $content)." ";
 	}
 	
