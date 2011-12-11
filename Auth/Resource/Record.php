@@ -10,37 +10,42 @@
  **/
 class EpicDb_Auth_Resource_Record implements MW_Auth_Resource_Interface {
 
- public function getResourceName()
- {
-	 return "record";
- }
+	public function getResourceName()
+	{
+		return "record";
+	}
 
- public function getResourceDescription()
- {
-	 return "EpicDb Records";
- }
+	public function getResourceDescription()
+	{
+		return "EpicDb Records";
+	}
 
- public function getParentResource()
- {
-	 return null;
- }
+	public function getParentResource()
+	{
+		return null;
+	}
 
- public function getDefaultPrivileges()
- {
-	 return array(
+	public function getDefaultPrivileges()
+	{
+		return array(
 			array(
-				 'mode' => true,
-				 'role' => array(MW_Auth_Group_Super::getInstance(), EpicDb_Auth_Group_Moderators::getInstance()),
+				'mode' => false,
+				'role' => array(EpicDb_Auth_Group_Moderators::getInstance()),
+				'privilege' => 'delete',
 			),
 			array(
-					'mode' => true,
-					'role' => array(MW_Auth_Group_Guest::getInstance(), MW_Auth_Group_User::getInstance()),
-					'privilege' => 'view'
-				),
-		 );
- }
+				'mode' => true,
+				'role' => array(MW_Auth_Group_Super::getInstance(), EpicDb_Auth_Group_Moderators::getInstance()),
+			),
+			array(
+				'mode' => true,
+				'role' => array(MW_Auth_Group_Guest::getInstance(), MW_Auth_Group_User::getInstance()),
+				'privilege' => 'view'
+			),
+		);
+	}
 
- public function getRuntimePrivileges() {
+	public function getRuntimePrivileges() {
 
- }
+	}
 } // END class

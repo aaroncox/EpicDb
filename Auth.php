@@ -115,7 +115,7 @@ class EpicDb_Auth extends MW_Auth {
 		return $this->_acl;
 	}
 
-	protected function getUserLevelRoles( $user )
+	public function getUserLevelRoles( $user )
 	{
 		$roles = array();
 		if ( $user instanceOf EpicDb_Mongo_Profile_User ) {
@@ -126,6 +126,9 @@ class EpicDb_Auth extends MW_Auth {
 			if ( $level >= 3 ) {
 				$roles[] = EpicDb_Auth_Group_DownVoters::getInstance();
 				$roles[] = EpicDb_Auth_Group_Flaggers::getInstance();
+			}
+			if ( $level >= 14 ) {
+				$roles[] = EpicDb_Auth_Group_TagCreators::getInstance();
 			}
 		}
 		return $roles;
