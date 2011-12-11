@@ -127,8 +127,14 @@ class EpicDb_Auth extends MW_Auth {
 				$roles[] = EpicDb_Auth_Group_DownVoters::getInstance();
 				$roles[] = EpicDb_Auth_Group_Flaggers::getInstance();
 			}
+			if ( $level >= 8 ) {
+				$roles[] = EpicDb_Auth_Group_CommunityEditors::getInstance();
+			}
 			if ( $level >= 14 ) {
 				$roles[] = EpicDb_Auth_Group_TagCreators::getInstance();
+			}
+			if ( $level >= 16 ) {
+				$roles[] = EpicDb_Auth_Group_QAEditors::getInstance();
 			}
 		}
 		return $roles;
