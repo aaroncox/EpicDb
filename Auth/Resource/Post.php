@@ -37,21 +37,19 @@ class EpicDb_Auth_Resource_Post implements MW_Auth_Resource_Interface {
 			)
 		);
 		if($this->_public) {
-			$privs += array(
-				array(
-					 'mode' => true,
-					 'role' => array(EpicDb_Auth_Group_Moderators::getInstance()),
-				),
-				array(
-					'mode' => true,
-					'role' => array(MW_Auth_Group_Guest::getInstance(), MW_Auth_Group_User::getInstance()),
-					'privilege' => 'view'
-				),
-				array(
-					'mode' => true,
-					'role' => array(MW_Auth_Group_User::getInstance()),
-					'privilege' => array('use', 'create'),
-				)
+			$privs[] = array(
+				'mode' => true,
+				'role' => array(EpicDb_Auth_Group_Moderators::getInstance()),
+			);
+			$privs[] = array(
+				'mode' => true,
+				'role' => array(MW_Auth_Group_Guest::getInstance(), MW_Auth_Group_User::getInstance()),
+				'privilege' => 'view'
+			);
+			$privs[] = array(
+				'mode' => true,
+				'role' => array(MW_Auth_Group_User::getInstance()),
+				'privilege' => array('use', 'create'),
 			);
 		}
 		return $privs;
