@@ -84,7 +84,9 @@ class EpicDb_Auth extends MW_Auth {
 			}
 		}
 		if (!$recursed) {
-			$return += $this->getUserLevelRoles( EpicDb_Mongo::db('user')->getProfile( $role ) );
+			foreach ($this->getUserLevelRoles( EpicDb_Mongo::db('user')->getProfile( $role ) ) as $userRole) {
+				$return[] = MW_Auth_Mongo_Role::getGroup( $userRole );
+			}
 		}
 		return $return;
 	}
@@ -123,6 +125,7 @@ class EpicDb_Auth extends MW_Auth {
 			}
 			if ( $level >= 3 ) {
 				$roles[] = EpicDb_Auth_Group_DownVoters::getInstance();
+				$roles[] = EpicDb_Auth_Group_Flaggers::getInstance();
 			}
 		}
 		return $roles;
