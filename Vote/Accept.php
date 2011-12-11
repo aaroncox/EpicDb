@@ -25,10 +25,10 @@ class EpicDb_Vote_Accept extends EpicDb_Vote_Abstract {
 		// check for an existing accepted answer
 		$answers = EpicDb_Mongo::db('answer')->fetchAll(array(
 			'_parent' => $this->_post->_parent->createReference(),
-			'votes.accept' => '1'
+			'votes.accept' => array( '$gt' => 0 ),
 		));
 		foreach ($answers as $accepted) {
-			$vote = EpicDb_Vote::factory($accept, EpicDb_Vote::ACCEPT);
+			$vote = EpicDb_Vote::factory( $accepted, EpicDb_Vote::ACCEPT, $this->_userProfile );
 			if ($vote->hasCast()) {
 				$vote->uncast();
 			}
@@ -39,7 +39,7 @@ class EpicDb_Vote_Accept extends EpicDb_Vote_Abstract {
 
 	public function isDisabled()
 	{
-		if ((!$this->_post instanceOf EpicDb_Vote_Interface_Acceptable)) return "This object can't be accepted";
+		if ((!$this->_post instanceOf EpicDb_Vote_Interface_Acceptable)) return "This post can't be accepted";
 		$author = $this->_post->_parent->tags->getTag("author");
 		if ( !$author || $author->createReference() != $this->_userProfile->createReference() ) {
 			return "You are not the questions asker.";
