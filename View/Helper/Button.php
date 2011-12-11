@@ -11,8 +11,16 @@
 class EpicDb_View_Helper_Button extends MW_View_Helper_HtmlTag
 {
 	public function button($url, $route = null, $reset = true, $params = array()) {
-		if(!empty($params['requirePriv']) && in_array($route, array('post', 'record', 'profile')) && !EpicDb_Auth::getInstance()->hasPrivilege($url[$route], $params['requirePriv'])) {
-			return '';
+		if(!empty($params['requirePriv'])) {
+			$resource = false;
+			if (isset($params['resource'])) {
+				$resource = $params['resource'];
+			} else if (in_array($route, array('post', 'record', 'profile'))) {
+				$resource = $url[ $route ];
+			} 
+			if ( $resource && !EpicDb_Auth::getInstance()->hasPrivilege($resource, $params['requirePriv'])) {
+				return '';
+			}
 		}
 		$icon = 'gear';
 		if (!empty($params['text'])) {
