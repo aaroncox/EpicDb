@@ -149,9 +149,9 @@ abstract class EpicDb_Controller_Cli extends Zend_Controller_Action {
 	
 	public $sql = null;
 	public function torheadAction() {
-		$this->sql = new mysqli('localhost', 'root', '', 'torhead_temp');
+		$this->sql = new mysqli('linode1', 'torhead', 't0rh34dDat4', 'torhead_temp');
 		$this->torheadImportSQL();
-		$this->torheadConvertSkills();
+		// $this->torheadConvertSkills();
 		// $this->torheadConvertItems();
 	}
 
@@ -303,7 +303,7 @@ abstract class EpicDb_Controller_Cli extends Zend_Controller_Action {
 						where info.ability = '".$row->idstring."'
 					");
 					$requiredClasses = array();
-					while ($info = $infos->fetch_object()) {
+					while ($infos && $info = $infos->fetch_object()) {
 						if($info->tabname && isset($classes[$info->tabname])) {
 							$requiredClasses[] = $classes[$info->tabname];
 						}
@@ -316,11 +316,11 @@ abstract class EpicDb_Controller_Cli extends Zend_Controller_Action {
 					echo "Searching for: ".$row->ability_name." \ ".$row->idstring."\n";
 					if(!$r2skill) {
 						echo "Not found by FQN, checking name/tags...\n";
-						$query = array(
-							'name' => $row->ability_name,
-							// 'fqn' => array('$exists' => false),
-						);
 						if($requiredClasses) {
+							$query = array(
+								'name' => $row->ability_name,
+								// 'fqn' => array('$exists' => false),
+							);
 							foreach($requiredClasses as $class) {
 								$treeQuery = array(
 									'class' => $class->createReference()
@@ -329,13 +329,14 @@ abstract class EpicDb_Controller_Cli extends Zend_Controller_Action {
 									$query['$or'][]['_tree'] = $tree->createReference();																	
 								}
 							}
+							$r2skill = $skills->fetchOne($query);						
 						}
-						$r2skill = $skills->fetchOne($query);						
 					}
 					if(!$r2skill) {
 						echo "Not found by name/tags, creating...\n";
 						$r2skill = EpicDb_Mongo::newDoc('skill');
 					}
+					echo $r2skill->id."\n\r"; 
 					$r2skill->name = $row->ability_name;
 					$r2skill->fqn = $row->idstring;
 					foreach($attribsMap as $from => $to) {
@@ -376,10 +377,12 @@ abstract class EpicDb_Controller_Cli extends Zend_Controller_Action {
 					if($row->ability_description) {
 						$markdown->setValue(str_replace(array("\n","\r"), array("\n\n", "\r\r"), $row->ability_description)); 
 						$r2skill->description = $markdown->getRenderedValue();
+						$r2skill->descriptionSource = $markdown->getValue();
 					}
 					
 					$r2skill->tags->setTags('required-class', $requiredClasses);
-					$r2skill->torhead->icon = $row->ability_icon;
+					$r2skill->torhead->icon = strtolower($row->ability_icon);
+					// var_dump($row->ability_icon);
 					$r2skill->torhead->id = $row->display_id;
 					$r2skill->torhead->url = "http://www.torhead.com/ability/".$row->display_id;
 					// Update Status Bar

@@ -46,7 +46,7 @@ class EpicDb_Search_Controller_Abstract extends MW_Controller_Action
 		if(!empty($keywords)) {
 			foreach($keywords as $keyword) {
 				$query['$and'][] = array(
-					'keywords' => new MongoRegex('/'.$keyword.'/i')
+					'name' => new MongoRegex('/'.$keyword.'/i')
 				);
 			}
 			$records = EpicDb_Mongo::db('search')->fetchAll($query, $sort);			

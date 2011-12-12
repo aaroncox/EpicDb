@@ -208,6 +208,9 @@ class EpicDb_Mongo_Record extends EpicDb_Auth_Mongo_Resource_Document implements
 		$filter = new MW_Filter_Slug();
 		$url = "/".$this->_type."/".$this->id."/".$filter->filter($this->name);
 		$followers = count($this->getMyFollowers()) + 1;
+		if($class = $this->tags->getTag("required-class")) {
+			$followers = $followers + 5;
+		}
 		EpicDb_Mongo::db('search')->generate(array(
 			'records' => array($this),
 			'keywords' => $keywords,
