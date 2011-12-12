@@ -278,7 +278,7 @@ abstract class EpicDb_Controller_Cli extends Zend_Controller_Action {
 			'cooldown' => 'float',
 		);
 		$skills = EpicDb_Mongo::db('skill');
-		$result = $this->sql->query("select * from game_ability limit 1");
+		$result = $this->sql->query("select * from game_ability");
 		$classes = array();
 		foreach(EpicDb_Mongo::db('class')->fetchAll() as $class) {
 			$classes[$class->name] = $class;
@@ -337,7 +337,6 @@ abstract class EpicDb_Controller_Cli extends Zend_Controller_Action {
 						echo "Not found by name/tags, creating...\n";
 						$r2skill = EpicDb_Mongo::newDoc('skill');
 					}
-					echo $r2skill->id."\n\r"; 
 					$r2skill->name = $row->ability_name;
 					$r2skill->fqn = $row->idstring;
 					foreach($attribsMap as $from => $to) {
