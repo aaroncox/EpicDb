@@ -150,6 +150,7 @@ abstract class EpicDb_Controller_Cli extends Zend_Controller_Action {
 	public $sql = null;
 	public function torheadAction() {
 		$this->sql = new mysqli('linode1', 'torhead', 't0rh34dDat4', 'torhead_temp');
+		var_dump(APPLICATION_ENV);
 		$this->torheadImportSQL();
 		// $this->torheadConvertSkills();
 		// $this->torheadConvertItems();
