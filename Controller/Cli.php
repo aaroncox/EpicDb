@@ -151,7 +151,7 @@ abstract class EpicDb_Controller_Cli extends Zend_Controller_Action {
 	public function torheadAction() {
 		$this->sql = new mysqli('linode1', 'torhead', 't0rh34dDat4', 'torhead_temp');
 		var_dump(APPLICATION_ENV);
-		$this->torheadImportSQL();
+		// $this->torheadImportSQL();
 		$this->torheadConvertSkills();
 		// $this->torheadConvertItems();
 	}
@@ -363,6 +363,52 @@ abstract class EpicDb_Controller_Cli extends Zend_Controller_Action {
 						} else {
 							$r2skill->attribs->$to = $row->$from; 								
 						}
+					}
+					
+					if($row->apcost) {
+						$resource = new EpicDb_Mongo_Meta_Cost();
+						foreach($requiredClasses as $class) {
+							if($class->tags->getTag('required-class')) {
+								$class = $class->tags->getTag('required-class');
+							}
+							switch($class->id) {
+								case 5:
+									$resource->_type = EpicDb_Mongo::db('resource')->grab('focus');
+									break;
+								case 2:
+									$resource->_type = EpicDb_Mongo::db('resource')->grab('rage');
+									break;
+								case 7:
+									$resource->_type = EpicDb_Mongo::db('resource')->grab('ammo');
+									break;
+								default:
+									echo "Unknown Class for AP Usage: [".$class->id."]"; exit;
+									break;									
+							}
+						}
+						$resource->value = (int) $row->apcost;
+						$r2skill->attribs->cost = $resource;
+					}
+
+					if($row->energycost) {
+						$resource = new EpicDb_Mongo_Meta_Cost(); 
+						$resource->_type = EpicDb_Mongo::db('resource')->grab('energy');
+						$resource->value = (int) $row->energycost;
+						$r2skill->attribs->cost = $resource;
+					}
+					
+					if($row->forcecost) {
+						$resource = new EpicDb_Mongo_Meta_Cost(); 
+						$resource->_type = EpicDb_Mongo::db('resource')->grab('force');
+						$resource->value = (int) $row->forcecost;
+						$r2skill->attribs->cost = $resource;
+					}
+					
+					if($row->heatcost) {
+						$resource = new EpicDb_Mongo_Meta_Cost(); 
+						$resource->_type = EpicDb_Mongo::db('resource')->grab('heat');
+						$resource->value = (int) $row->heatcost;
+						$r2skill->attribs->cost = $resource;
 					}
 					
 					if(!$row->ability_passive) {
