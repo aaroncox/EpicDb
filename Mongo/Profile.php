@@ -131,6 +131,7 @@ class EpicDb_Mongo_Profile extends EpicDb_Auth_Mongo_Resource_Document implement
 			}			
 		}
 		foreach($this->blocking as $record) {
+			if (!$record) continue;
 			$query['$nor'][] = array(
 				'tags' => array(
 					'$elemMatch' => array(
