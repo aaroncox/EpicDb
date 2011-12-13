@@ -91,7 +91,7 @@ class EpicDb_Mongo_Record extends EpicDb_Auth_Mongo_Resource_Document implements
 	
 	// Returns an array of strings representing view helpers to execute
 	public function getTooltipHelpers() {
-		return array('icon', 'name', 'description');
+		return array('icon', 'name', 'description', 'tooltipButtons');
 	}
 
 	public function cardProperties($view) {
