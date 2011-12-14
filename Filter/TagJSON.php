@@ -50,12 +50,16 @@ class EpicDb_Filter_TagJSON implements Zend_Filter_Interface {
 	
 	public function single($tag) {
 		$filter = new MW_Filter_Slug();
+		$icon = null;
+		if ( method_exists( $tag, "getIcon" ) ) {
+			$icon = $tag->getIcon();
+		}
 		return json_encode(array(
 			"type" => $tag->_type,
 			"id" => $tag->id,
 			"name" => $tag->name?:$tag->title,
 			"slug" => $tag->slug?:$filter->filter($tag->title?:$tag->name),
-			"icon" => $tag->getIcon(),
+			"icon" => $icon,
 		));
 	}
 
@@ -113,9 +117,8 @@ class EpicDb_Filter_TagJSON implements Zend_Filter_Interface {
 		}
 		$added = array();
 		foreach ( $refs as $value ) {
-			if ( isset( $value['new'] ) ) {
+			if ( isset( $value['new'] ) && EpicDb_Auth::getInstance()->hasPrivilege( new EpicDb_Auth_Resource_Tag, "create" ) ) {
 
-				// TODO: Validate the ability to create
 				$ref = EpicDb_Mongo::newDoc( $value['type'] );
 				$ref->name = $value['name'];
 				$ref->tags->setTag('author', EpicDb_Auth::getInstance()->getUserProfile());

@@ -47,7 +47,10 @@ class EpicDb_Mongo_Vote extends EpicDb_Mongo_Document
 			$vote = new static();
 			$vote->post = $post;
 			$vote->voter = $voter;
-			$vote->target = $post->tags->getTag('author');
+			$author = $post->tags->getTag('author');
+			if ( $author instanceOf EpicDb_Mongo_Profile ) {
+				$vote->target = $post->tags->getTag('author');
+			}
 			$vote->vote = $voteType;
 			return $vote;
 		}

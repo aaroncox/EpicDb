@@ -10,8 +10,8 @@
  **/
 class EpicDb_Auth_Mongo_Resource_Document extends MW_Auth_Mongo_Resource_Document
 {
-	public static function fetchOne($query) {
-		if(!isset($query['_deleted'])) {
+	public static function fetchOne($query, $allowDeleted = false) {
+		if( !isset($query['_deleted']) && !$allowDeleted ) {
 			// This should check their rep level eventually, for now, we check if they are moderator.
 			if(!EpicDb_Auth::getInstance()->hasPrivilege(new EpicDb_Auth_Resource_Moderator())) {
 				$query += array('_deleted' => array('$exists' => false));				

@@ -38,6 +38,18 @@ class EpicDb_Vote_Up extends EpicDb_Vote_Abstract {
 	public function isDisabled()
 	{
 		if (!$this->_post instanceOf EpicDb_Vote_Interface_Votable) return "This object can't be upvoted";
+		if ( !$this->_post instanceOf EpicDb_Vote_Interface_UpOnly ) {
+			for( $parent = $this->_post; $parent->_parent->id; $parent = $parent->_parent );
+			$parentAuthor = $parent->tags->getTag('author');
+			if ( $parentAuthor && ($parentAuthor->createReference() == $this->_userProfile->createReference()))
+			{
+				// let someone upvote on their own question's answers
+			} else {
+				if ( !EpicDb_Auth::getInstance()->hasPrivilege( new EpicDb_Auth_Resource_RepVotes(), "up" ) ) {
+					return "You are not high enough level to vote this post up";
+				}
+			}
+		}
 		if ($this->_post->tags->getTag('author') && $this->_post->tags->getTag('author')->createReference() == $this->_userProfile->createReference()) {
 			return "You can not vote on your own post";
 		}
@@ -52,6 +64,10 @@ class EpicDb_Vote_Up extends EpicDb_Vote_Abstract {
 		parent::_postCast();
 		if($this->_post instanceOf EpicDb_Interface_Autotweet) {
 			$this->_post->autoTweet();
+		}
+		// resave the question after the vote is cast on an answer - this should make it update the "unanswered"
+		if ( $this->_post instanceOf EpicDb_Mongo_Post_Question_Answer && $this->_post->_parent->id ) {
+			$this->_post->_parent->save();
 		}
 	}
 }

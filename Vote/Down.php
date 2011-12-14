@@ -39,6 +39,10 @@ class EpicDb_Vote_Down extends EpicDb_Vote_Abstract {
 	{
 		if ((!$this->_post instanceOf EpicDb_Vote_Interface_Votable) ||
 				($this->_post instanceOf EpicDb_Vote_Interface_UpOnly) ) return "This object can't be down-voted";
+
+		if ( !EpicDb_Auth::getInstance()->hasPrivilege( new EpicDb_Auth_Resource_RepVotes(), "down" ) ) {
+			return "You are not high enough level to vote this post down";
+		}
 			
 		$author = $this->_post->tags->getTag('author');
 		if ($author && $author->createReference() == $this->_userProfile->createReference()) {

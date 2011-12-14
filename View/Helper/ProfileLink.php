@@ -30,6 +30,7 @@ class EpicDb_View_Helper_ProfileLink extends MW_View_Helper_HtmlTag
 	}
 	
 	public function profileLink($profile, $params = array()) {
+		if ( !$profile instanceOf EpicDb_Mongo_Profile ) return "";
 		$tooltip = true;
 		if(isset($params['tooltip']) && $params['tooltip'] == false) {
 			$tooltip = false;

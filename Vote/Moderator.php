@@ -22,6 +22,7 @@ class EpicDb_Vote_Moderator extends EpicDb_Vote_Abstract {
 	public function isDisabled()
 	{
 		if (!$this->_post instanceOf EpicDb_Vote_Interface_Flaggable) return "This object can't be voted on";
+		if ( !EpicDb_Auth::getInstance()->hasPrivilege( new EpicDb_Auth_Resource_Vote, "flag" ) ) return "You aren't high enough level to flag";
 	}
 
 	public function cast()

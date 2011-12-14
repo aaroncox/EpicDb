@@ -137,7 +137,8 @@ class EpicDb_Search_Controller_Abstract extends MW_Controller_Action
 				);
 			}
 		}
-		if (!$exactMatch && !$type) {
+		$canCreate = EpicDb_Auth::getInstance()->hasPrivilege( new EpicDb_Auth_Resource_Tag, "create" );
+		if ( !$exactMatch && !$type && $canCreate ) {
 			$blank = EpicDb_Mongo::newDoc('tag');
 			$blank->name = $q;
 			$blank->_type = 'create tag';

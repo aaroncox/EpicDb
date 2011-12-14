@@ -5,7 +5,7 @@
  * @package default
  * @author Aaron Cox
  **/
-class EpicDb_Mongo_Post_Article_Guide extends EpicDb_Mongo_Post implements EpicDb_Vote_Interface_Votable
+class EpicDb_Mongo_Post_Article_Guide extends EpicDb_Mongo_Post implements EpicDb_Vote_Interface_Votable, EpicDb_Vote_Interface_Flaggable
 {
 	public $routeName = "guide";
 	protected static $_documentType = 'guide';
