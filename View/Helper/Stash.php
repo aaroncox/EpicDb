@@ -67,7 +67,7 @@ class EpicDb_View_Helper_Stash extends Zend_View_Helper_Abstract
 		return $this->view->htmlTag("div", array(
 			"class" => "ui-state-default control inline-flow rounded has-tooltip",
 			"id" => "r2-stash-".$id,
-			"data-tooltip" => $tooltip,
+			"data-epic-tooltip" => $tooltip,
 		), $this->view->htmlTag("span", array("class" => "ui-icon ui-icon-".$icon)," "))."";
 	}
 	public function controls() {

@@ -35,7 +35,7 @@ class EpicDb_View_Helper_FollowButton extends MW_View_Helper_HtmlTag
 					'action' => 'un'.$mode,
 				), $route, true, array(
 					'text' => "&nbsp;",
-					'data-tooltip' => 'Un'.$mode,
+					'data-epic-tooltip' => 'Un'.$mode,
 					'icon' => 'arrowthickstop-1-w',
 					'class' => 'has-tooltip epicdb-ajaxbutton ui-state-active',
 				));
@@ -45,7 +45,7 @@ class EpicDb_View_Helper_FollowButton extends MW_View_Helper_HtmlTag
 					'action' => $mode,
 				), $route, true, array(
 					'text' => "&nbsp;",
-					'data-tooltip' => ucwords($mode),
+					'data-epic-tooltip' => ucwords($mode),
 					'icon' => 'arrowthickstop-1-e',
 					'class' => 'has-tooltip epicdb-ajaxbutton',
 				));

@@ -57,8 +57,8 @@ class EpicDb_View_Helper_RecordLink extends MW_View_Helper_HtmlTag
 		}
 		
 		$dataTooltip = "";
-		if(isset($params['data-tooltip'])) {
-			$dataTooltip = $params['data-tooltip'];
+		if(isset($params['data-epic-tooltip'])) {
+			$dataTooltip = $params['data-epic-tooltip'];
 		}
 		
 		$action = "view";
@@ -72,7 +72,7 @@ class EpicDb_View_Helper_RecordLink extends MW_View_Helper_HtmlTag
 			"rel" => $rel,
 			"target" => $target, 
 			"class" => $class,
-			"data-tooltip" => $dataTooltip,
+			"data-epic-tooltip" => $dataTooltip,
 			"href" => $this->view->url($urlParams+$record->getRouteParams(), $record->routeName, true),
 		), $text);
 		$filter = new EpicDb_Filter_TagJSON();
@@ -80,7 +80,7 @@ class EpicDb_View_Helper_RecordLink extends MW_View_Helper_HtmlTag
 			"rel" => $rel,
 			"class" => $class,
 			"target" => $target,
-			"data-tooltip" => $dataTooltip,
+			"data-epic-tooltip" => $dataTooltip,
 			"data-tag-json" => $filter->single($record),
 			"href" => $this->view->url($sectionParams+array(
 				'action'=> $action,

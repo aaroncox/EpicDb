@@ -61,7 +61,7 @@ class EpicDb_View_Helper_GuildContext extends MW_View_Helper_HtmlTag
 					), 'group_application', true, array(
 						'text' => 'Review Application',
 						'icon' => 'key',
-						'data-tooltip' => 'Your application is currently under review by the leaders of this '.$profile->_type.', if you\'d like to delete your application, click here.',
+						'data-epic-tooltip' => 'Your application is currently under review by the leaders of this '.$profile->_type.', if you\'d like to delete your application, click here.',
 					));				
 				}				
 			} elseif(!$profile->isMember()) {

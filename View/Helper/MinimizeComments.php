@@ -42,7 +42,7 @@ class EpicDb_View_Helper_MinimizeComments extends Zend_View_Helper_Abstract
 						'icon' => 'comment',
 						'style' => 'float: right',
 						'text' => 'Reply to these comments...',
-						'data-tooltip' => 'Post a Reply to the Comments above.',
+						'data-epic-tooltip' => 'Post a Reply to the Comments above.',
 					)
 				).""
 			))
@@ -63,7 +63,7 @@ class EpicDb_View_Helper_MinimizeComments extends Zend_View_Helper_Abstract
 			// 	'icon' => 'comment',
 			// 	'style' => 'float: right',
 			// 	'text' => 'Reply to these comments...',
-			// 	'data-tooltip' => 'Post a Reply to the Comments above.',
+			// 	'data-epic-tooltip' => 'Post a Reply to the Comments above.',
 			// ));
 //		</div>
 //	</div>
