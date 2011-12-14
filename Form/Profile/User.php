@@ -52,6 +52,10 @@ class EpicDb_Form_Profile_User extends EpicDb_Form_Profile
 		$profile->email = $this->email->getValue();
 		$profile->bio = $this->bio->getValue();	
 		$profile->faction = EpicDb_Mongo::db('faction')->fetchOne(array("id" => (int)$this->faction->getValue()));	
+
+		$profile->user->name = $profile->name;
+		$profile->user->save();
+
 		return parent::save($data);
 	}
 } // END class EpicDb_Form_Profile
