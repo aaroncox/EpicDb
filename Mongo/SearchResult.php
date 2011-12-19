@@ -44,8 +44,11 @@ class EpicDb_Mongo_SearchResult extends MW_Mongo_Document
 		}
 		// Torhead Branding
 		if(isset($data['torhead'])) {
-			$data['url'] = $data['torhead'];				
+			// $data['url'] = $data['torhead'];				
 			$data['name'] = "<img src='/images/torhead-arrow.png' class='torhead-link'/>".$data['name'];
+			if(isset($data['score'])) {
+				$data['score'] = $data['score'] - 1;
+			}
 		}
 		foreach($data['records'] as $record) {
 			$query['type'] = $data['type'];

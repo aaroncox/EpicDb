@@ -154,10 +154,29 @@ abstract class EpicDb_Controller_Cli extends Zend_Controller_Action {
 	public $sql = null;
 	public function torheadAction() {
 		$this->sql = new mysqli('linode1', 'torhead', 't0rh34dDat4', 'torhead_temp');
-		var_dump(APPLICATION_ENV);
-		// $this->torheadImportSQL();
+		echo "Environment: ".APPLICATION_ENV."\n\r";
+		$this->torheadImportSQL();
+		$this->torheadAppendClassData();
 		$this->torheadConvertSkills();
-		// $this->torheadConvertItems();
+		$this->torheadConvertItems();
+	}
+	
+	public function torheadAppendClassData() {
+		$data = $this->sql->query("select * from game_class WHERE baseclassid is not null");
+		while($row = $data->fetch_object()) {
+			$class = EpicDb_Mongo::db('class')->fetchOne(array('name' => $row->name));
+			if(!$class) {
+				$class = EpicDb_Mongo::db('advanced-class')->fetchOne(array('name' => $row->name));
+			}
+			if(!$class) {
+				throw new Exception("Cannot find class for [".$row->name."]!");
+			} 
+			$class->torhead->id = $row->display_id;
+			$class->fqn = $row->idstring;
+			$class->torhead->classid = $row->classid;
+			$class->torhead->numid = $row->baseclassid;
+			$class->save();
+		}
 	}
 
 	public $itemMap = array(
