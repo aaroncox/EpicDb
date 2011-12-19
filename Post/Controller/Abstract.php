@@ -591,20 +591,10 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 		}
 		
 		// var_dump($post->tags->getTag('author')->export()); exit;
-		if ( $post instanceOf EpicDb_Mongo_Post_Question ) {
-			$slug = new MW_Filter_Slug();
+		if ( $post ) {
 			$this->view->headLink()->append((object)array(
 				'rel' => 'canonical',
-				'href' => $this->view->url(array(
-					'post' => $post,
-					),"questions", true)
-			));
-		} else {
-			$this->view->headLink()->append((object)array(
-				'rel' => 'canonical',
-				'href' => $this->view->url(array(
-						'post' => $post,
-					),"post", true)
+				'href' => $this->view->url( $post->getRouteParams(), $post->routeName, true, false ),
 			));
 		}
 		if($post instanceOf EpicDb_Mongo_Post_Question ) {
