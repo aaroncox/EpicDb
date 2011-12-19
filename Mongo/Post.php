@@ -69,9 +69,7 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 
 	public function getPermaLink( $view )
 	{
-		return $view->url(array(
-			'post' => $this
-		), $this->_routeName, true);
+		return $view->url($this->getRouteParams(), $this->_routeName, true);
 	}
 	
 	public function getParentResource() {

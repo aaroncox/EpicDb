@@ -573,6 +573,11 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 	  $this->getPost();
 		$this->view->breadcrumb = "Revision History";
 	}
+
+	public function getCanonical( EpicDb_Mongo_Post $post, $params = array() )
+	{
+		return $this->view->url( $post->getRouteParams() + $params, $post->routeName, true, false );
+	}
 	
 	/**
 	 * viewAction - undocumented function
@@ -584,29 +589,31 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 		// we should probably just call this "post" in the view too...
 		$this->view->post = $post = $this->getPost();
 		$this->_helper->auth->requirePrivilege($post, 'view');
-		$params = $this->getRequest()->getParams();
+		$request = $this->getRequest();
+
+		// Ensure the URI is what we expect it to be - otherwise 301
+		$uri = $request->getRequestUri();
+		$root = $this->view->url( $post->getRouteParams(), $post->routeName );
+		if ( strpos( $uri, $root ) !== 0 ) {
+
+			// replace everything up to the ? with the route we just built
+			$uri = preg_replace( "/^[?]+/", $uri, $root );
+			return $this->_redirect( $uri, array( "code" => 301 ) );
+		}
+
+		$params = $request->getParams();
 
 		while($post->_parent->id) {
 			$this->view->post = $post = $post->_parent;
 		}
 		
-		// var_dump($post->tags->getTag('author')->export()); exit;
-		if ( $post instanceOf EpicDb_Mongo_Post_Question ) {
-			$slug = new MW_Filter_Slug();
+		if ( $post ) {
 			$this->view->headLink()->append((object)array(
 				'rel' => 'canonical',
-				'href' => $this->view->url(array(
-					'post' => $post,
-					),"questions", true)
-			));
-		} else {
-			$this->view->headLink()->append((object)array(
-				'rel' => 'canonical',
-				'href' => $this->view->url(array(
-						'post' => $post,
-					),"post", true)
+				'href' => $this->getCanonical( $post ),
 			));
 		}
+		// var_dump($post->tags->getTag('author')->export()); exit;
 		if($post instanceOf EpicDb_Mongo_Post_Question ) {
 			$newAnswer = EpicDb_Mongo::db('answer');
 			$newAnswer->_parent = $post;
