@@ -63,6 +63,13 @@ class EpicDb_Form_Profile_Group_Guild extends EpicDb_Form_Profile_Group
 				'label' => 'Faction',
 				'multiOptions' => R2Db_Mongo::db('faction')->getSelectOptions(),
 			));
+		$this->addElement("tags", "server", array(
+			'recordType' => 'server',
+			'label' => 'Server',
+			'description' => 'Search for your server and select it to specify which server you are on.',
+			'limit' => 1,
+			'class' => 'ui-state-default',
+		));
 		$this->addElement("select", "playstyle", array(
 				'label' => 'Guild Type',
 				'multiOptions' => array(
