@@ -573,6 +573,11 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 	  $this->getPost();
 		$this->view->breadcrumb = "Revision History";
 	}
+
+	public function getCanonical( EpicDb_Mongo_Post $post, $params = array() )
+	{
+		return $this->view->url( $post->getRouteParams() + $params, $post->routeName, true, false );
+	}
 	
 	/**
 	 * viewAction - undocumented function
@@ -605,7 +610,7 @@ class EpicDb_Post_Controller_Abstract extends MW_Controller_Action
 		if ( $post ) {
 			$this->view->headLink()->append((object)array(
 				'rel' => 'canonical',
-				'href' => $this->view->url( $post->getRouteParams(), $post->routeName, true, false ),
+				'href' => $this->getCanonical( $post ),
 			));
 		}
 		// var_dump($post->tags->getTag('author')->export()); exit;
