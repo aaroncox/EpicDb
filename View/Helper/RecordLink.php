@@ -13,6 +13,7 @@ class EpicDb_View_Helper_RecordLink extends MW_View_Helper_HtmlTag
 	public function recordLink($record, $params = array(), $urlParams = array()) {
 		if($record instanceOf EpicDb_Mongo_Profile) return $this->view->profileLink($record, $params+$urlParams); 
 		if($record instanceOf EpicDb_Mongo_Post) return $this->view->postLink($record, $params+$urlParams); 
+		if($record instanceOf EpicDb_Mongo_Seed) return $this->view->seedLink($record, $record->target, $params+$urlParams);
 		// Quick fix... need better resolution
 		// $record = EpicDb_Mongo::db('record')->find($record->_id);
 		if(!$record || !$record->id) return null;

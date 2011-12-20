@@ -11,6 +11,7 @@
 class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract 
 {
 	protected $_doc = false;
+	protected $_target = false;
 	protected static $_pageCache = array();
 
 	public function wrap($content) {
@@ -330,7 +331,12 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 	public function tooltip($document = false, $params = array()) {
 		$this->_doc = false;
 		$this->_params = $params;
-		if($document instanceOf EpicDb_Interface_Tooltiped) $this->_doc = $document;
+		if($document instanceOf EpicDb_Interface_Tooltiped) {
+			$this->_doc = $document;
+		}
+		if($document instanceOf EpicDb_Mongo_Seed && isset($params['target'])) {
+			$this->_doc->setTarget($params['target']);
+		}
 		if(isset($params['rank'])) $this->_doc->setRank((int)$params['rank']);
 		return clone $this;
 	}
