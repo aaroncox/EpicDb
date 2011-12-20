@@ -43,6 +43,7 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 		$class = "";
 		$type = $this->_doc->_type;
 		switch($this->_doc->_type) {
+			case "seed":
 			case "item":
 			case "skill":
 			case "profession":
@@ -260,7 +261,8 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 			'votes.score' => -1
 		);
 		$questions = "";
-		if($results = EpicDb_Mongo::db('question')->fetchAll($query, $sort, $limit)) {
+		$results = EpicDb_Mongo::db('question')->fetchAll($query, $sort, $limit);
+		if(count($results)) {
 			$questions .= $this->view->htmlTag("div", array("class" => "question"), 
 				$this->view->htmlTag("h3", array(), "Popular Questions").""
 			)."";
