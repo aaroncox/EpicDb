@@ -158,7 +158,7 @@ abstract class EpicDb_Controller_Cli extends Zend_Controller_Action {
 		$this->torheadImportSQL();
 		$this->torheadAppendClassData();
 		$this->torheadConvertSkills();
-		$this->torheadConvertItems();
+		// $this->torheadConvertItems();
 	}
 	
 	public function torheadAppendClassData() {
@@ -175,6 +175,7 @@ abstract class EpicDb_Controller_Cli extends Zend_Controller_Action {
 			$class->fqn = $row->idstring;
 			$class->torhead->classid = $row->classid;
 			$class->torhead->numid = $row->baseclassid;
+			$class->torhead->longid = $row->id;
 			$class->save();
 		}
 	}
@@ -304,10 +305,10 @@ abstract class EpicDb_Controller_Cli extends Zend_Controller_Action {
 		$result = $this->sql->query("select * from game_ability");
 		$classes = array();
 		foreach(EpicDb_Mongo::db('class')->fetchAll() as $class) {
-			$classes[$class->name] = $class;
+			$classes[$class->torhead->longid] = $class;
 		}
 		foreach(EpicDb_Mongo::db('advanced-class')->fetchAll() as $class) {
-			$classes[$class->name] = $class;
+			$classes[$class->torhead->longid] = $class;
 		}
 
 		echo "Parsing Torhead Skills (".$result->num_rows.") \n\r";
@@ -321,15 +322,15 @@ abstract class EpicDb_Controller_Cli extends Zend_Controller_Action {
 		if($result){
 		    while ($row = $result->fetch_object()){
 					$infos = $this->sql->query("
-						select class.tabname from game_ability_info as info 
+						select class from game_ability_info as info 
 						left join game_class_ability as class
 							on info.packageid = class.package
 						where info.ability = '".$row->idstring."'
 					");
 					$requiredClasses = array();
 					while ($infos && $info = $infos->fetch_object()) {
-						if($info->tabname && isset($classes[$info->tabname])) {
-							$requiredClasses[] = $classes[$info->tabname];
+						if($info->class && isset($classes[$info->class])) {
+							$requiredClasses[] = $classes[$info->class];
 						}
 					}
 					// Find R2-Db's Version: 
