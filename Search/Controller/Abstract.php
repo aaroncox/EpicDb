@@ -26,9 +26,9 @@ class EpicDb_Search_Controller_Abstract extends MW_Controller_Action
 		$this->view->layout()->searchQuery = $q = trim($request->getParam('q'));
 		$query = array();
 		// Show question-helper types if the query has a ? in it
-		if(!strstr($q, '?')) {
-			$query['type'] = array('$ne' => 'question-helper');
-		}
+		// if(!strstr($q, '?')) {
+		// 	$query['type'] = array('$ne' => 'question-helper');
+		// }
 		$sort = array(
 			'score' => -1,
 		);
