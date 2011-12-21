@@ -38,7 +38,7 @@ class EpicDb_Mongo_Post_Comment extends EpicDb_Mongo_Post implements EpicDb_Vote
 	}
 	
 	public function getTooltipHelpers() {
-		return array('icon', 'subjectTitle', 'body');
+		return array('subjectTitle', 'body');
 	}
 
 } // END class EpicDb_Mongo_Post

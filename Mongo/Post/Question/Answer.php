@@ -29,7 +29,7 @@ class EpicDb_Mongo_Post_Question_Answer extends EpicDb_Mongo_Post implements Epi
 	
 	// Returns an array of strings representing view helpers to execute
 	public function getTooltipHelpers() {
-		return array("icon", "parentTitle", "body");
+		return array("parentTitle", "body");
 	}
 	
 	public function delete() {
