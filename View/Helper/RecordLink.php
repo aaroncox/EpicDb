@@ -66,6 +66,12 @@ class EpicDb_View_Helper_RecordLink extends MW_View_Helper_HtmlTag
 		if(isset($params['action'])) {
 			$action = $params['action'];
 		}
+		
+		$itemprop = null;
+		if(isset($params['itemprop'])) {
+			$itemprop = $params['itemprop'];
+			$text = $this->view->htmlTag("span", array("itemprop" => "title"), $text);
+		}
 					
 		$this->view->tooltip($record)->addToCache();
 
@@ -73,6 +79,7 @@ class EpicDb_View_Helper_RecordLink extends MW_View_Helper_HtmlTag
 			"rel" => $rel,
 			"target" => $target, 
 			"class" => $class,
+			"itemprop" => $itemprop,
 			"data-epic-tooltip" => $dataTooltip,
 			"href" => $this->view->url($urlParams+$record->getRouteParams(), $record->routeName, true),
 		), $text);
@@ -81,6 +88,7 @@ class EpicDb_View_Helper_RecordLink extends MW_View_Helper_HtmlTag
 			"rel" => $rel,
 			"class" => $class,
 			"target" => $target,
+			"itemprop" => $itemprop,
 			"data-epic-tooltip" => $dataTooltip,
 			"data-tag-json" => $filter->single($record),
 			"href" => $this->view->url($sectionParams+array(

@@ -63,6 +63,12 @@ class EpicDb_View_Helper_ProfileLink extends MW_View_Helper_HtmlTag
 			$action = $params['action'];
 		}
 		
+		$itemprop = null;
+		if(isset($params['itemprop'])) {
+			$itemprop = $params['itemprop'];
+			$text = $this->view->htmlTag("span", array("itemprop" => "title"), $text);
+		}
+		
 		$this->view->tooltip($profile)->addToCache();
 		$filter = new EpicDb_Filter_TagJSON();
 		if(trim($text) == "") $text = "Unknown";
@@ -71,6 +77,7 @@ class EpicDb_View_Helper_ProfileLink extends MW_View_Helper_HtmlTag
 			"class" => $class,
 			"target" => $target,
 			"data-epic-tooltip" => $dataTooltip,
+			"itemprop" => $itemprop,
 			"title" => $profile->name."'s Profile",
 			"data-tag-json" => $filter->single($profile),
 			"href" => $this->view->url(array(
