@@ -45,7 +45,9 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 	// Returns the string URL of where to load the icon for this
 	public function getIcon() {
 		if($poster = $this->tags->getTag('source')?:$this->tags->getTag('author')) {
-			return $poster->getIcon();
+			if ( method_exists( $poster, 'getIcon' ) ) {
+				return $poster->getIcon();
+			}
 		}
 		return "";
 	}
