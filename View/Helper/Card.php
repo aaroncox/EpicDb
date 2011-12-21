@@ -18,6 +18,7 @@ class EpicDb_View_Helper_Card extends MW_View_Helper_HtmlTag
 			if($record instanceOf EpicDb_Mongo_Profile) {
 				return $this->view->profileLink($record, $params);
 			}
+			unset($params['class']); // hacky fix... 
 			if($record->quality) $params += array('class' => 'quality-'.$record->quality);
 			return $this->view->recordLink($record, $params);
 		} else {
@@ -43,6 +44,7 @@ class EpicDb_View_Helper_Card extends MW_View_Helper_HtmlTag
 	protected $_tagType = "h4";
 	public function cardDetails($record, $params = null) {
 		$details = '';
+		unset($params['class']); // hacky fix... 
 		$details .= $this->htmlTag($this->_tagType, array('class' => 'text-medium'), $this->link($record, $params));
 		if(!isset($params['content']) || $params['content'] === false) return $details;
 		if(isset($params['content']) && !empty($params['content'])) {
@@ -115,7 +117,7 @@ class EpicDb_View_Helper_Card extends MW_View_Helper_HtmlTag
 			$record->email = "anonymous@r2-db.com";
 		}
 		if(!isset($params['extra'])) $params['extra'] = '';
-		if(!isset($params['class'])) $params['class'] = '';
+		if(!isset($params['wrapper-class'])) $params['wrapper-class'] = '';
 		if(!isset($params['iconClass'])) $params['iconClass'] = '';
 		// Reimplement
 		// if($record instanceOf EpicDb_Mongo_Profile_User && $record->characters && $character = $record->characters->getPrimary()) {

@@ -46,8 +46,6 @@ class EpicDb_View_Helper_ProfileContext extends MW_View_Helper_HtmlTag
 		));						
 		$currentUser = EpicDb_Auth::getInstance()->getUserProfile();	
 		if($currentUser && $currentUser->createReference() != $profile->createReference()) {
-			$buttons .= $this->view->followButton($profile);
-			$buttons .= $this->view->followButton($profile, array("mode" => "block"));
 			$buttons .= $this->view->button(array(
 				'action' => 'message',
 				'profile' => $profile
