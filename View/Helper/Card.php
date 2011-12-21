@@ -99,7 +99,7 @@ class EpicDb_View_Helper_Card extends MW_View_Helper_HtmlTag
 	public function cardIconWrapper($record, $params) {
 		return $this->htmlTag("div", array('class' => 'record-icon inline-flow '.$params['iconClass']), 
 			$this->cardScore($record)."".
-			$this->link($record, array("text" => $this->htmlTag("img", array('src' => $this->getIcon($record), 'alt' => $record->name, 'class' => 'icon')))+$params)
+			$this->link($record, array("text" => $this->htmlTag("img", array('src' => $this->getIcon($record), 'alt' => $record->name, 'class' => 'icon',  'itemprop' => "image")))+$params)
 		)."";
 	}
 
