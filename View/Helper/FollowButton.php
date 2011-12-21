@@ -13,9 +13,10 @@ class EpicDb_View_Helper_FollowButton extends MW_View_Helper_HtmlTag
 	public function followButton($record, $opts = array()) {
 		$mode = 'follow';
 		$modeField = 'following';
-		if(isset($opts['mode'])) {
-			$mode = $opts['mode'];
-			$modeField = $opts['mode']."ing";
+		if($record instanceOf EpicDb_Mongo_Post) {
+			$mode = 'watch';
+			$modeField = "watching";
+			
 		}
 		if($record instanceOf EpicDb_Mongo_Record) $type = $route = 'record';
 		if($record instanceOf EpicDb_Mongo_Profile) $type = $route = 'profile';
@@ -23,24 +24,30 @@ class EpicDb_View_Helper_FollowButton extends MW_View_Helper_HtmlTag
 		if(isset($opts['route'])) {
 			$route = $opts['route'];
 		}
-		if($profile = EpicDb_Auth::getInstance()->getUserProfile()) {
+		$noText = false;
+		if(isset($opts['no-text']) && $opts['no-text'] == true) {
+			$noText = true;
+		}
+ 		if($profile = EpicDb_Auth::getInstance()->getUserProfile()) {
 			if(in_array($record->createReference(), $profile->$modeField->export())) {
 				return $this->view->button(array(
 					 $type => $record,
 					'action' => 'un'.$mode,
 				), $route, true, array(
-					'text' => 'Un'.$mode,
-					'icon' => 'gear',
-					'class' => 'epicdb-ajaxbutton',
+					'text' => "&nbsp;",
+					'data-epic-tooltip' => 'Un'.$mode,
+					'icon' => 'arrowthickstop-1-w',
+					'class' => 'has-tooltip epicdb-ajaxbutton ui-state-active',
 				));
 			} else {
 				return $this->view->button(array(
 					 $type => $record,
 					'action' => $mode,
 				), $route, true, array(
-					'text' => $mode,
-					'icon' => 'gear',
-					'class' => 'epicdb-ajaxbutton',
+					'text' => "&nbsp;",
+					'data-epic-tooltip' => ucwords($mode),
+					'icon' => 'arrowthickstop-1-e',
+					'class' => 'has-tooltip epicdb-ajaxbutton',
 				));
 			}
 		}

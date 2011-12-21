@@ -56,6 +56,7 @@ class EpicDb_View_Helper_QuestionStub extends MW_View_Helper_HtmlTag
 				"class" => "post-tag ",
 				"iconClass" => "tag-icon", 
 				"content" => false,
+				"action" => "questions",
 			));
 		}
 		// var_dump($question->tags->getTag('author')); 
@@ -63,7 +64,7 @@ class EpicDb_View_Helper_QuestionStub extends MW_View_Helper_HtmlTag
 		$voteParams = array();
 		if($question->isReputationDisabled()) {
 			$voteClass .= " has-tooltip ui-state-disabled";
-			$voteParams['data-tooltip'] = "This question has been marked as a 'Community Post' disabling all reputation gains/losses. Please read the Q&A FAQ for more information!";
+			$voteParams['data-epic-tooltip'] = "This question has been marked as a 'Community Post' disabling all reputation gains/losses. Please read the Q&A FAQ for more information!";
 		}
 		if($question->_deleted) {
 			$containerColor = "red";			

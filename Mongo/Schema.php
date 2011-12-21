@@ -9,7 +9,7 @@
  * @package undocumented class
  **/
 class EpicDb_Mongo_Schema extends MW_Mongo_Schema {
-	protected $_version = 5;
+	protected $_version = 7;
   protected $_tag = 'epicdb';
 	protected $_classMap = array(
 		// Profile Types
@@ -89,6 +89,10 @@ class EpicDb_Mongo_Schema extends MW_Mongo_Schema {
 				$db->execute("db.posts.ensureIndex({touched:1, _created:1})");
 			case 4:
 				$db->execute("db.createCollection('searchlogs', {capped:true, size:1000000, max:10000});");
+			case 5:
+				$db->execute("db.search.ensureIndex({name:1, description:1})");
+			case 6:
+				$db->execute("db.search.ensureIndex({name:1, keywords:1, score: 1})");
     }
 	}
 }

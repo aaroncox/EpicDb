@@ -11,6 +11,7 @@
 class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract 
 {
 	protected $_doc = false;
+	protected $_target = false;
 	protected static $_pageCache = array();
 
 	public function wrap($content) {
@@ -42,6 +43,7 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 		$class = "";
 		$type = $this->_doc->_type;
 		switch($this->_doc->_type) {
+			case "seed":
 			case "item":
 			case "skill":
 			case "profession":
@@ -55,7 +57,7 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 				"class" => "tooltip-icon tooltip-rounded",
 				"style" => "background: url('".$this->_doc->getIcon()."') no-repeat top center",
 			), " ")." ".
-			$this->counter()
+			(($helper = $this->_doc->_tooltipButtonHelper) ? $this->view->$helper($this->_doc) : '')
 		)."";
 	}
 	public function name() {
@@ -77,7 +79,7 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 		return $this->view->htmlTag("p", array("style" => "font-size: 10px"), "An ".$doc->_type." in response to...")."".
 						$this->view->htmlTag("h3", array(), 
 							($parentDoc->getName()) ? $this->view->postLink($parentDoc, array(
-								"text" => $this->view->htmlFragment($parentDoc->getName(), 50)
+								"text" => $this->view->htmlFragment($this->view->escape($parentDoc->getName()), 50)
 							)) : ''
 							).'';
 						;		
@@ -91,7 +93,7 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 		return $this->view->htmlTag("p", array("style" => "font-size: 10px"), "A ".$doc->_type." on...")."".
 						$this->view->htmlTag("h3", array(), 
 							($parentDoc->getName()) ? $this->view->recordLink($parentDoc, array(
-								"text" => $this->view->htmlFragment($parentDoc->getName(), 50),
+								"text" => $this->view->htmlFragment($this->view->escape($parentDoc->getName()), 50),
 								"rel" => "no-tooltip",
 							)) : ''
 							).'';
@@ -101,7 +103,7 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 		if(!$this->_doc->getName()) return '';
 		return $this->_doc ? $this->view->htmlTag("h3", array(), 
 			($this->_doc->getName()) ? $this->view->postLink($this->_doc, array(
-				"text" => $this->view->htmlFragment($this->_doc->getName(), 50),
+				"text" => $this->view->htmlFragment($this->view->escape($this->_doc->getName()), 50),
 				"rel" => "no-tooltip",
 			)) : ''
 			).'' : '';
@@ -244,13 +246,38 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 	}
 	public function cloud($documentSet, $label = "") {
 		// return ''; // Disabled until we're sticky.
-		return $this->view->htmlTag("div", array("class" => "tooltip-cloud", "style" => "display: inline-block"), 
+		return $this->view->htmlTag("div", array("class" => "tooltip-cloud"), 
 			(empty($label)?"":$this->view->htmlTag("h4", array("class" => "label transparent-bg-blue inline-flow"), $label))."".
 			$this->view->iconCloud($documentSet)
 		);
 	}
+	public function appendQuestions($limit) {
+		$doc = $this->_doc;
+		$params = $this->_params;
+		$query = array(
+			'tags.ref' => $doc->createReference()
+		);
+		$sort = array(
+			'votes.score' => -1
+		);
+		$questions = "";
+		$results = EpicDb_Mongo::db('question')->fetchAll($query, $sort, $limit);
+		if(count($results)) {
+			$questions .= $this->view->htmlTag("div", array("class" => "question"), 
+				$this->view->htmlTag("h3", array(), "Popular Questions").""
+			)."";
+			foreach($results as $question) {
+				$questions .= $this->view->htmlTag("div", array("class" => "question"), 
+					// $this->view->htmlTag("span", array("class" => "score"), $question->votes['score']?:0)."".			
+					$this->view->htmlTag("span", array("class" => "name"), $this->view->postLink($question))
+				)."";
+			}			
+		}
+		return $questions;
+	}
 	public function render() {
 		$doc = $this->_doc;
+		$params = $this->_params;
 		if ($doc === false) {
 			return '';
 		}
@@ -273,6 +300,11 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 				$content .= call_user_func_array(array($this->view, $helper), $args);
 			} 
 		}
+
+		if(isset($params['appendQuestions'])) {
+			$content .= $this->appendQuestions($params['appendQuestions']);
+		}
+		
 		return $this->wrap($content)."";
 	}
 	public function __toString() {
@@ -295,13 +327,18 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 	}
 	public function renderCache() {
 		return $this->view->htmlTag("script", array(), 
-			'r2tip.pageCache = '.json_encode(self::$_pageCache).";"
+			'r2tip&&r2tip.addCache('.json_encode(self::$_pageCache).");"
 		);
 	}
 	public function tooltip($document = false, $params = array()) {
 		$this->_doc = false;
 		$this->_params = $params;
-		if($document instanceOf EpicDb_Interface_Tooltiped) $this->_doc = $document;
+		if($document instanceOf EpicDb_Interface_Tooltiped) {
+			$this->_doc = $document;
+		}
+		if($document instanceOf EpicDb_Mongo_Seed && isset($params['target'])) {
+			$this->_doc->setTarget($params['target']);
+		}
 		if(isset($params['rank'])) $this->_doc->setRank((int)$params['rank']);
 		return clone $this;
 	}

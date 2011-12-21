@@ -32,6 +32,7 @@ class EpicDb_View_Helper_PostLink extends MW_View_Helper_HtmlTag
 		$urlParams = array(
 			"action" => "view"
 		);
+		
 
 		if(isset($params['action'])) {
 			$urlParams["action"] = $params["action"];
@@ -40,11 +41,21 @@ class EpicDb_View_Helper_PostLink extends MW_View_Helper_HtmlTag
 
 		$tagAttribs = array();
 
+		$tagAttribs['class'] = "tag-json";
+		if(isset($params['class'])) {
+			$tagAttribs['class'] .= " ".$params['class'];
+		}
+
 		if(isset($params['target'])) {
 			$tagAttribs["target"] = $params["target"];
 		} 
 		if(isset($params['rel'])) {
 			$tagAttribs["rel"] = $params["rel"];
+		}
+		
+		$dataTooltip = "";
+		if(isset($params['data-epic-tooltip'])) {
+			$tagAttribs['data-epic-tooltip'] = $params['data-epic-tooltip'];
 		}
 		
 		$route = $post->routeName;

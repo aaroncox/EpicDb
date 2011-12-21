@@ -14,9 +14,6 @@ class EpicDb_View_Helper_RecordContext extends MW_View_Helper_HtmlTag
 		$placeholder = $this->view->context();
 		$placeholder->append($this->view->tooltip($record, $params)."");
 		$buttons = "";
-		if(EpicDb_Auth::getInstance()->getUserProfile()) {
-			$buttons .= $this->view->followButton($record);
-		}
 		if (EpicDb_Auth::getInstance()->hasPrivilege(new EpicDb_Auth_Resource_Moderator())) {
 			$buttons .= $this->view->button(array(
 				'action'=>'admin',

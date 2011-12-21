@@ -52,7 +52,7 @@ class EpicDb_Form_Record extends EpicDb_Form {
 	}
 
 	public function process($data) {
-		if($this->isValid($data)) {
+		if($this->isValid($data)) {			
 			return $this->save($data);
 		}
 		return false;
@@ -61,6 +61,7 @@ class EpicDb_Form_Record extends EpicDb_Form {
 	public function save() {
 		$record = $this->getRecord();
 		$record->newRevision();
+		
 		// Used in the data entry from text thign
 		if($this->position) {
 			$record->_tempPlacement = (float) $this->position->getValue();			
@@ -68,6 +69,7 @@ class EpicDb_Form_Record extends EpicDb_Form {
 		$record->name = $this->name->getValue();
 		$record->descriptionSource = $this->descriptionSource->getValue();
 		$record->description = $this->descriptionSource->getRenderedValue();
+		
 		foreach($this->_metaElements as $key => $element) {
 			$element = $this->$key;
 			$value = $element->getValue();

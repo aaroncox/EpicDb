@@ -13,6 +13,7 @@ class EpicDb_View_Helper_RecordLink extends MW_View_Helper_HtmlTag
 	public function recordLink($record, $params = array(), $urlParams = array()) {
 		if($record instanceOf EpicDb_Mongo_Profile) return $this->view->profileLink($record, $params+$urlParams); 
 		if($record instanceOf EpicDb_Mongo_Post) return $this->view->postLink($record, $params+$urlParams); 
+		if($record instanceOf EpicDb_Mongo_Seed) return $this->view->seedLink($record, $record->target, $params+$urlParams);
 		// Quick fix... need better resolution
 		// $record = EpicDb_Mongo::db('record')->find($record->_id);
 		if(!$record || !$record->id) return null;
@@ -41,9 +42,9 @@ class EpicDb_View_Helper_RecordLink extends MW_View_Helper_HtmlTag
 		if(isset($params['target'])) {
 			$target = $params['target'];
 		} 
-		
-		if($record->quality) {
-			$class .= " quality-".$record->quality;
+
+		if($record->attribs->quality) {
+			$class .= " quality-".$record->attribs->quality;
 		}
 		
 		$routeName = $record->routeName;
@@ -54,6 +55,11 @@ class EpicDb_View_Helper_RecordLink extends MW_View_Helper_HtmlTag
 		$sectionParams = array();
 		if(isset($params['section'])) {
 			$sectionParams = $params['section'];
+		}
+		
+		$dataTooltip = "";
+		if(isset($params['data-epic-tooltip'])) {
+			$dataTooltip = $params['data-epic-tooltip'];
 		}
 		
 		$action = "view";
@@ -67,6 +73,7 @@ class EpicDb_View_Helper_RecordLink extends MW_View_Helper_HtmlTag
 			"rel" => $rel,
 			"target" => $target, 
 			"class" => $class,
+			"data-epic-tooltip" => $dataTooltip,
 			"href" => $this->view->url($urlParams+$record->getRouteParams(), $record->routeName, true),
 		), $text);
 		$filter = new EpicDb_Filter_TagJSON();
@@ -74,6 +81,7 @@ class EpicDb_View_Helper_RecordLink extends MW_View_Helper_HtmlTag
 			"rel" => $rel,
 			"class" => $class,
 			"target" => $target,
+			"data-epic-tooltip" => $dataTooltip,
 			"data-tag-json" => $filter->single($record),
 			"href" => $this->view->url($sectionParams+array(
 				'action'=> $action,
