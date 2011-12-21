@@ -22,6 +22,8 @@ class EpicDb_Record_Controller_Abstract extends MW_Controller_Action
 				));
 			}
 			$contextSwitch->addActionContext('view', 'tooltip');
+			$contextSwitch->addActionContext('questions', 'tooltip');
+			$contextSwitch->addActionContext('seed', 'tooltip');
 			try {
 				$contextSwitch->initContext();
 			} catch (Exception $e) {

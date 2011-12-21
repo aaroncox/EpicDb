@@ -45,7 +45,9 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 	// Returns the string URL of where to load the icon for this
 	public function getIcon() {
 		if($poster = $this->tags->getTag('source')?:$this->tags->getTag('author')) {
-			return $poster->getIcon();
+			if ( method_exists( $poster, 'getIcon' ) ) {
+				return $poster->getIcon();
+			}
 		}
 		return "";
 	}
@@ -69,9 +71,7 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 
 	public function getPermaLink( $view )
 	{
-		return $view->url(array(
-			'post' => $this
-		), $this->_routeName, true);
+		return $view->url($this->getRouteParams(), $this->_routeName, true);
 	}
 	
 	public function getParentResource() {
@@ -357,6 +357,51 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 	public function setTagMeta($tag) {
 		return $this;
 	}
+	
+	public function getSearchCache($data = array()) {
+		return array(
+			'name' => $this->title,
+			'description' => $this->source,
+			'tags' => $this->tags,
+		)+$data;
+	}
+	
+	public function postSave() {
+		// Generate the SearchResult cache
+		$keywords = array($this->title, $this->source); 
+		foreach($this->tags as $tag) {
+			if($tag->name) {
+				$keywords[] = $tag->name;				
+			}
+		}
+		$filter = new MW_Filter_Slug();
+		$url = "/".$this->_type."/".$this->id."/".$filter->filter($this->title);
+		$icon = null;
+		if($poster = $this->tags->getTag('author')?:$this->tags->getTag('source')) {
+			if($poster instanceOf EpicDb_Mongo_Profile) {
+				$icon = $poster->getIcon();							
+			}
+		}
+		$score = 0;
+		if($this->votes && isset($this->votes['score'])) {
+			$score = $this->votes['score'];
+		} 
+		if(!$title = $this->title) {
+			$title = substr(strip_tags(trim($this->body)), 0, 60);
+		}
+		EpicDb_Mongo::db('search')->generate(array(
+			'records' => array($this),
+			'keywords' => $keywords,
+			'name' => $title,
+			'type' => $this->_type,
+			'tags' => $this->tags,
+			'icon' => $icon,
+			'score' => $score,
+			'url' => $url,
+		));
+		return parent::postSave();
+	}
+	
   
 	// This is for watching queries as they execute on posts, perhaps we could enable it by a flag? or mode? I just used it for debugging queries.
 	// public static function fetchAll($query = array(), $sort = array(), $limit = false, $skip = false) {

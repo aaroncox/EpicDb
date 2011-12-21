@@ -35,10 +35,19 @@ class EpicDb_Route_Record extends Zend_Controller_Router_Route {
 			$data['id'] = $record->id;
 			$slug = new MW_Filter_Slug();
 			$data['slug'] = $slug->filter($record->name);
-			unset($data['record']);
 		} else {
 			throw new Exception("Expected EpicDb_Mongo_Record, got ".get_class($data['record']));
 		}
+		if(isset($data['seed'])) {
+			$seed = $data['seed'];
+			if($seed instanceOf EpicDb_Mongo_Seed) {
+				$slug = new MW_Filter_Slug();
+				$title = str_replace(array("[[NAME]]", "[[TYPE]]"), array($record->name, $record->_type), strip_tags($seed->title));
+				$data['title'] = $slug->filter($title);			
+				$data['seed'] = $seed->id;				
+			}
+		}
+		unset($data['record']);
 		return parent::assemble($data, $reset, $encode, $partial);
 	}
 

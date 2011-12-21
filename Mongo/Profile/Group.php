@@ -27,10 +27,10 @@ class EpicDb_Mongo_Profile_Group extends EpicDb_Mongo_Profile
 			'_owner' => array('Document:MW_Auth_Mongo_Role', 'AsReference', 'Required'),
 			'_memberRole' => array('Document:MW_Auth_Mongo_Role', 'AsReference'),
 			'_adminRole' => array('Document:MW_Auth_Mongo_Role', 'AsReference'),
-			'admins' => array('DocumentSet'),
+			'admins' => array('DocumentSet:EpicDb_Mongo_Profiles'),
 			'admins.$' => array('Document:EpicDb_Mongo_Profile', 'AsReference'),
 			'admins.$.user' => array('Document:MW_Auth_Mongo_Role', 'AsReference'),
-			'members' => array('DocumentSet'),
+			'members' => array('DocumentSet:EpicDb_Mongo_Profiles'),
 			'members.$' => array('Document:EpicDb_Mongo_Profile', 'AsReference'),
 			'members.$.user' => array('Document:MW_Auth_Mongo_Role', 'AsReference'),
 		));

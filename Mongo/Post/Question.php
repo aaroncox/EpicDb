@@ -109,6 +109,10 @@ class EpicDb_Mongo_Post_Question extends EpicDb_Mongo_Post implements EpicDb_Vot
 		if($this->closed) $title .= " [closed]";
 		return $title;
 	}
-	
+
+	public function getParentResource()
+	{
+		return new EpicDb_Auth_Resource_QAPost( $this->isReputationDisabled() );
+	}
 
 } // END class EpicDb_Mongo_Post

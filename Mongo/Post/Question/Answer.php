@@ -44,4 +44,9 @@ class EpicDb_Mongo_Post_Question_Answer extends EpicDb_Mongo_Post implements Epi
 		return parent::save();
 	}
 
+	public function getParentResource()
+	{
+		return new EpicDb_Auth_Resource_QAPost( $this->isReputationDisabled() );
+	}
+
 } // END class EpicDb_Mongo_Post_Question_Answer

@@ -11,8 +11,16 @@
 class EpicDb_View_Helper_Button extends MW_View_Helper_HtmlTag
 {
 	public function button($url, $route = null, $reset = true, $params = array()) {
-		if(!empty($params['requirePriv']) && in_array($route, array('post', 'record', 'profile')) && !EpicDb_Auth::getInstance()->hasPrivilege($url[$route], $params['requirePriv'])) {
-			return '';
+		if(!empty($params['requirePriv'])) {
+			$resource = false;
+			if (isset($params['resource'])) {
+				$resource = $params['resource'];
+			} else if (in_array($route, array('post', 'record', 'profile'))) {
+				$resource = $url[ $route ];
+			} 
+			if ( $resource && !EpicDb_Auth::getInstance()->hasPrivilege($resource, $params['requirePriv'])) {
+				return '';
+			}
 		}
 		$icon = 'gear';
 		if (!empty($params['text'])) {
@@ -31,7 +39,7 @@ class EpicDb_View_Helper_Button extends MW_View_Helper_HtmlTag
 		if(isset($params['style'])) $style = $params['style'];
 		if(isset($params['class'])) $style .= " ".$params['class'];
 		if(isset($params['url'])) $external = $params['url'];
-		if(isset($params['data-tooltip'])) $dataTooltip = $params['data-tooltip'];
+		if(isset($params['data-epic-tooltip'])) $dataTooltip = $params['data-epic-tooltip'];
 		$options = array(
 			'class' => 'no-tooltip epicdb-button epicdb-button-icon-left ui-state-default ui-corner-all '.$style,
 			'href' => $external?:$this->view->url($url, $route, $reset),
@@ -39,11 +47,12 @@ class EpicDb_View_Helper_Button extends MW_View_Helper_HtmlTag
 			'style' => $style,
 		);
 		if(isset($params['data-voteurl'])) $options['data-voteurl'] = $params['data-voteurl'];
-		if($dataTooltip) $options['data-tooltip'] = $dataTooltip;
-		if(isset($params['tooltip'])) $options['data-tooltip'] = $params['tooltip'];
+		if($dataTooltip) $options['data-epic-tooltip'] = $dataTooltip;
+		if(isset($params['tooltip'])) $options['data-epic-tooltip'] = $params['tooltip'];
 		return $this->htmlTag("a", $options, $this->htmlTag("span", array(
 					'class' => 'ui-icon ui-icon-'.$icon,
-				), " ")."".$text
+				), " ").
+				"<span class='ui-button-label'>".$text."</span>"
 		)."";
 		// return "<a href='".$this->view->url(array(
 		// 	'profile' => $profile,

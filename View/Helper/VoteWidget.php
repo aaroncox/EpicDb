@@ -52,10 +52,16 @@ class EpicDb_View_Helper_VoteWidget extends MW_View_Helper_HtmlTag
 		if ($vote == 'flag') {
 			if ($post instanceOf EpicDb_Vote_Interface_Flaggable) {
 				$tagOpts['class'] .= $iconClass;
-				$content = $this->view->htmlTag( "a", $tagOpts, " " )."<ul class='vote-flag-popout ui-widget ui-state-default rounded' style='display:none'>";
-				foreach(array_keys($this->_flagTypes) as $type) $content .= "<li>".$this->makeVoteButton( $type )."</li>";
-				$content .= "</ul>";
-				return $content;
+				$content = "";
+				if ( !EpicDb_Auth::getInstance()->hasPrivilege( new EpicDb_Auth_Resource_Vote, "flag" ) ) {
+					$tagOpts["class"] .= " ui-state-disabled has-tooltip";
+					$tagOpts["data-epic-tooltip"] = "Level 3 is required to flag content";
+				} else {
+					$content .= "<ul class='vote-flag-popout ui-widget ui-state-default rounded' style='display:none'>";
+					foreach(array_keys($this->_flagTypes) as $type) $content .= "<li>".$this->makeVoteButton( $type )."</li>";
+					$content .= "</ul>";
+				}
+				return $this->view->htmlTag( "a", $tagOpts, " " ) . $content;
 			}
 			return "";
 		} else {
@@ -74,7 +80,7 @@ class EpicDb_View_Helper_VoteWidget extends MW_View_Helper_HtmlTag
 			if (!$dbVote || $message = $dbVote->isDisabled()) {
 				if(!isset($message)) $message = "You must be logged in to perform this action.";
 				$tagOpts["class"] .= " ui-state-disabled has-tooltip";
-				$tagOpts["data-tooltip"] = $message;
+				$tagOpts["data-epic-tooltip"] = $message;
 			} else {
 				$tagOpts["data-voteurl"] = $this->voteUrl($post, $vote);
 				$tagOpts["class"] .= (( $dbVote && $dbVote->hasCast() ) ? " ui-state-active" : " ");
@@ -83,11 +89,11 @@ class EpicDb_View_Helper_VoteWidget extends MW_View_Helper_HtmlTag
 				switch($vote) {
 					case "up":
 						$tagOpts["class"] .= " has-tooltip";
-						$tagOpts["data-tooltip"] = "Cast an Up Vote - This post was on-topic, useful, informative or helpful.";
+						$tagOpts["data-epic-tooltip"] = "Cast an Up Vote - This post was on-topic, useful, informative or helpful.";
 						break;
 					case "down":
 						$tagOpts["class"] .= " has-tooltip";
-						$tagOpts["data-tooltip"] = "Cast a Down Vote - This post was irrelevant, inflammatory, inaccurate or off-topic.";
+						$tagOpts["data-epic-tooltip"] = "Cast a Down Vote - This post was irrelevant, inflammatory, inaccurate or off-topic.";
 						break;
 					default: 
 						break;
@@ -138,9 +144,9 @@ class EpicDb_View_Helper_VoteWidget extends MW_View_Helper_HtmlTag
 			);
 			
 		}
-		// if ($post instanceOf EpicDb_Vote_Interface_Flaggable) {
-		// 	$content .= $this->view->htmlTag("p", array(), $this->makeVoteButton("flag")." ");
-		// }
+		if ( isset($this->_opts["flag"]) && $this->_opts["flag"] && $post instanceOf EpicDb_Vote_Interface_Flaggable) {
+			$content .= $this->view->htmlTag("p", array(), $this->makeVoteButton("flag")." ");
+		}
 		return $this->view->htmlTag("div", array("class" => 'vote-widget ' . @$this->_opts['class'] ?: ''), $content)." ";
 	}
 	

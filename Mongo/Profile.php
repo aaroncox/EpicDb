@@ -131,6 +131,7 @@ class EpicDb_Mongo_Profile extends EpicDb_Auth_Mongo_Resource_Document implement
 			}			
 		}
 		foreach($this->blocking as $record) {
+			if (!$record) continue;
 			$query['$nor'][] = array(
 				'tags' => array(
 					'$elemMatch' => array(
@@ -168,6 +169,28 @@ class EpicDb_Mongo_Profile extends EpicDb_Auth_Mongo_Resource_Document implement
 	
 	public function getLayout() {
 		return $this->_layout;
+	}
+	
+	public function postSave() {
+		// Generate the SearchResult cache
+		$keywords = array($this->description, $this->name); 
+		$filter = new MW_Filter_Slug();
+		$url = "/".$this->_type."/".$this->id."/".$filter->filter($this->name);
+		$score = 0;
+		if($this->votes && isset($this->votes['score'])) {
+			$score = $this->votes['score'];
+		} 
+		EpicDb_Mongo::db('search')->generate(array(
+			'records' => array($this),
+			'keywords' => $keywords,
+			'name' => $this->name,
+			'type' => $this->_type,
+			'tags' => $this->tags,
+			'icon' => $this->getIcon(),
+			'score' => count($this->getMyFollowers()),
+			'url' => $url,
+		));
+		return parent::postSave();
 	}
 	
 
