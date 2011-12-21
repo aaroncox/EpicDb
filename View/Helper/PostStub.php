@@ -125,7 +125,9 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 	public function showIcon($post, $options) {
 		if(isset($options['headerIcon']) && $options['headerIcon'] == true) {
 			$author = $post->tags->getTag('author')?:$post->tags->getTag('source');
-			if($author) return $this->htmlTag('img', array('src' => $author->getIcon(), 'class' => 'feed-icon'));
+			if($author instanceOf EpicDb_Mongo_Profile) {
+				return $this->htmlTag('img', array('src' => $author->getIcon(), 'class' => 'feed-icon'));
+			}
 		} 
 		return " ";
 	}
