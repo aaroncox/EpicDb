@@ -16,10 +16,10 @@ class EpicDb_View_Helper_Card extends MW_View_Helper_HtmlTag
 	public function link($record, $params = array()) {
 		if ($record->id) {
 			if($record instanceOf EpicDb_Mongo_Profile) {
-				return $this->view->profileLink($record, $params);
+				return $this->view->htmlTag("span", array("itemprop" => "keywords"), $this->view->profileLink($record, $params));
 			}
 			if($record->quality) $params += array('class' => 'quality-'.$record->quality);
-			return $this->view->recordLink($record, $params);
+			return $this->view->htmlTag("span", array("itemprop" => "keywords"), $this->view->recordLink($record, $params));
 		} else {
 			return (isset($params['text'])) ? $params['text'] : $this->view->escape($record->name);
 		}
