@@ -339,7 +339,8 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 	}
 	
 	public function getRouteParams() {
-		return array('post' => $this);
+		$filter = new MW_Filter_Slug();
+		return array('post' => $this, 'slug' => $filter->filter($this->title));
 	}
 	
 	public function getCachePrefix() {
