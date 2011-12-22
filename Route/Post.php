@@ -56,8 +56,10 @@ class EpicDb_Route_Post extends Zend_Controller_Router_Route {
 			$post = $this->_values['post'];
 		}
 		if ($post instanceOf EpicDb_Mongo_Post) {
+			$filter = new MW_Filter_Slug();
 			$data['type'] = $post->_type;
 			$data['id'] = $post->id;
+			$data['slug'] = $filter->filter($post->title);
 			unset($data['post']);
 		} else {
 			throw new Exception("Expected EpicDb_Mongo_Post, got ".get_class($data['post']));
