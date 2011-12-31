@@ -43,7 +43,7 @@ class EpicDb_Feed_Generator extends MW_Feed_Generator {
 				
 				$parent = $parent->_parent;
 			}
-			$author = $post->tags->getTag('author');
+			$author = $post->tags->getTag('author')?:$post->tags->getTag('source');
 			$title = $post->tldr ?: ucfirst($post->_type).' by '.$author->name.$on;
 		}
 		$this->addEntry(array(
