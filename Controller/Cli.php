@@ -155,8 +155,8 @@ abstract class EpicDb_Controller_Cli extends Zend_Controller_Action {
 	public function torheadAction() {
 		$this->sql = new mysqli('linode1', 'torhead', 't0rh34dDat4', 'torhead_temp');
 		echo "Environment: ".APPLICATION_ENV."\n\r";
-		$this->torheadImportSQL();
-		$this->torheadAppendClassData();
+		// $this->torheadImportSQL();
+		// $this->torheadAppendClassData();
 		$this->torheadConvertSkills();
 		// $this->torheadConvertItems();
 	}
@@ -302,7 +302,7 @@ abstract class EpicDb_Controller_Cli extends Zend_Controller_Action {
 			'cooldown' => 'float',
 		);
 		$skills = EpicDb_Mongo::db('skill');
-		$result = $this->sql->query("select * from game_ability");
+		$result = $this->sql->query("select * from game_ability where ability_name = 'Shii-Cho Mastery'");
 		$classes = array();
 		foreach(EpicDb_Mongo::db('class')->fetchAll() as $class) {
 			$classes[$class->torhead->longid] = $class;
@@ -333,132 +333,146 @@ abstract class EpicDb_Controller_Cli extends Zend_Controller_Action {
 							$requiredClasses[] = $classes[$info->class];
 						}
 					}
+					if(empty($requiredClasses)) {
+						$requiredClasses = array('noClass');
+					}
 					// Find R2-Db's Version: 
-					$query = array(
-						'fqn' => $row->idstring
-					);
-					$r2skill = $skills->fetchOne($query);
-					echo "Searching for: ".$row->ability_name." \ ".$row->idstring."\n";
-					if(!$r2skill) {
-						echo "Not found by FQN, checking name/tags...\n";
-						if($requiredClasses) {
-							$query = array(
-								'name' => $row->ability_name,
-								// 'fqn' => array('$exists' => false),
+					foreach($requiredClasses as $requiredClass) {
+						$query = array(
+							'fqn' => $row->idstring,
+						);
+						if($requredClass instanceOf MW_Mongo_Document) {
+							$query['tags'] = array(
+								'$elemMatch' => array(
+									'ref' => $requiredClass->createReference(),
+									'reason' => 'required-class',
+								)
 							);
-							foreach($requiredClasses as $class) {
-								$treeQuery = array(
-									'class' => $class->createReference()
+						}
+						$r2skill = $skills->fetchOne($query);
+						echo "Searching for: ".$row->ability_name." \ ".$row->idstring."\n";
+						if(!$r2skill) {
+							echo "Not found by FQN, checking name/tags...\n";
+							if($requiredClasses) {
+								$query = array(
+									'name' => $row->ability_name,
+									// 'fqn' => array('$exists' => false),
 								);
-								foreach(EpicDb_Mongo::db('skill-tree')->fetchAll($treeQuery) as $tree) {
-									$query['$or'][]['_tree'] = $tree->createReference();																	
+								foreach($requiredClasses as $class) {
+									$treeQuery = array(
+										'class' => $class->createReference()
+									);
+									foreach(EpicDb_Mongo::db('skill-tree')->fetchAll($treeQuery) as $tree) {
+										$query['$or'][]['_tree'] = $tree->createReference();																	
+									}
+								}
+								$r2skill = $skills->fetchOne($query);						
+							}
+						}
+						if(!$r2skill) {
+							echo "Not found by name/tags, creating...\n";
+							$r2skill = EpicDb_Mongo::newDoc('skill');
+						}
+						$r2skill->name = $row->ability_name;
+						$r2skill->fqn = $row->idstring;
+						foreach($attribsMap as $from => $to) {
+							if(isset($attribsMapTypes[$from])) {
+								switch($attribsMapTypes[$from]) {
+									case "bool":
+										$r2skill->attribs->$to = (bool) $row->$from; 								
+										break;
+									case "float":
+										$r2skill->attribs->$to = (float) $row->$from; 								
+										break;								
+									case "int":
+										$r2skill->attribs->$to = (int) $row->$from; 								
+										break;								
+									case "range":
+										$range = new EpicDb_Filter_Range();
+										$value = $range->filter($row->$from);
+										$r2skill->attribs->$to = $value; 								
+										break;
+									default:
+										echo "unknown type: ".$attribsMapTypes[$from];
+										break;
+								}
+							} else {
+								$r2skill->attribs->$to = $row->$from; 								
+							}
+						}
+
+						if($row->apcost) {
+							$resource = new EpicDb_Mongo_Meta_Cost();
+							foreach($requiredClasses as $class) {
+								if($class->tags->getTag('required-class')) {
+									$class = $class->tags->getTag('required-class');
+								}
+								switch($class->id) {
+									case 5:
+										$resource->_type = EpicDb_Mongo::db('resource')->grab('focus');
+										break;
+									case 2:
+										$resource->_type = EpicDb_Mongo::db('resource')->grab('rage');
+										break;
+									case 7:
+										$resource->_type = EpicDb_Mongo::db('resource')->grab('ammo');
+										break;
+									default:
+										echo "Unknown Class for AP Usage: [".$class->id."]"; exit;
+										break;									
 								}
 							}
-							$r2skill = $skills->fetchOne($query);						
+							$resource->value = (int) $row->apcost;
+							$r2skill->attribs->cost = $resource;
 						}
-					}
-					if(!$r2skill) {
-						echo "Not found by name/tags, creating...\n";
-						$r2skill = EpicDb_Mongo::newDoc('skill');
-					}
-					$r2skill->name = $row->ability_name;
-					$r2skill->fqn = $row->idstring;
-					foreach($attribsMap as $from => $to) {
-						if(isset($attribsMapTypes[$from])) {
-							switch($attribsMapTypes[$from]) {
-								case "bool":
-									$r2skill->attribs->$to = (bool) $row->$from; 								
-									break;
-								case "float":
-									$r2skill->attribs->$to = (float) $row->$from; 								
-									break;								
-								case "int":
-									$r2skill->attribs->$to = (int) $row->$from; 								
-									break;								
-								case "range":
-									$range = new EpicDb_Filter_Range();
-									$value = $range->filter($row->$from);
-									$r2skill->attribs->$to = $value; 								
-									break;
-								default:
-									echo "unknown type: ".$attribsMapTypes[$from];
-									break;
-							}
-						} else {
-							$r2skill->attribs->$to = $row->$from; 								
-						}
-					}
-					
-					if($row->apcost) {
-						$resource = new EpicDb_Mongo_Meta_Cost();
-						foreach($requiredClasses as $class) {
-							if($class->tags->getTag('required-class')) {
-								$class = $class->tags->getTag('required-class');
-							}
-							switch($class->id) {
-								case 5:
-									$resource->_type = EpicDb_Mongo::db('resource')->grab('focus');
-									break;
-								case 2:
-									$resource->_type = EpicDb_Mongo::db('resource')->grab('rage');
-									break;
-								case 7:
-									$resource->_type = EpicDb_Mongo::db('resource')->grab('ammo');
-									break;
-								default:
-									echo "Unknown Class for AP Usage: [".$class->id."]"; exit;
-									break;									
-							}
-						}
-						$resource->value = (int) $row->apcost;
-						$r2skill->attribs->cost = $resource;
-					}
 
-					if($row->energycost) {
-						$resource = new EpicDb_Mongo_Meta_Cost(); 
-						$resource->_type = EpicDb_Mongo::db('resource')->grab('energy');
-						$resource->value = (int) $row->energycost;
-						$r2skill->attribs->cost = $resource;
-					}
-					
-					if($row->forcecost) {
-						$resource = new EpicDb_Mongo_Meta_Cost(); 
-						$resource->_type = EpicDb_Mongo::db('resource')->grab('force');
-						$resource->value = (int) $row->forcecost;
-						$r2skill->attribs->cost = $resource;
-					}
-					
-					if($row->heatcost) {
-						$resource = new EpicDb_Mongo_Meta_Cost(); 
-						$resource->_type = EpicDb_Mongo::db('resource')->grab('heat');
-						$resource->value = (int) $row->heatcost;
-						$r2skill->attribs->cost = $resource;
-					}
-					
-					if(!$row->ability_passive) {
-						if($row->casttime) {
-							$r2skill->attribs->useTime = (float) $row->casttime;							
-						} else {
-							$r2skill->attribs->useTime = 0;							
+						if($row->energycost) {
+							$resource = new EpicDb_Mongo_Meta_Cost(); 
+							$resource->_type = EpicDb_Mongo::db('resource')->grab('energy');
+							$resource->value = (int) $row->energycost;
+							$r2skill->attribs->cost = $resource;
 						}
-					}
-					
-					// Parse the Source into HTML w/ Markdown
-					if($row->ability_description) {
-						$markdown->setValue(str_replace(array("\n","\r"), array("\n\n", "\r\r"), $row->ability_description)); 
-						$r2skill->description = $markdown->getRenderedValue();
-						$r2skill->descriptionSource = $markdown->getValue();
-					}
-					
-					$r2skill->tags->setTags('required-class', $requiredClasses);
-					$r2skill->torhead->icon = strtolower($row->ability_icon);
-					// var_dump($row->ability_icon);
-					$r2skill->torhead->id = $row->display_id;
-					$r2skill->torhead->url = "http://www.torhead.com/ability/".$row->display_id;
-					// Update Status Bar
-					$i++; $bar->update($i);
-					$r2skill->save();
-					// var_dump($row, $r2skill->export()); exit;
+
+						if($row->forcecost) {
+							$resource = new EpicDb_Mongo_Meta_Cost(); 
+							$resource->_type = EpicDb_Mongo::db('resource')->grab('force');
+							$resource->value = (int) $row->forcecost;
+							$r2skill->attribs->cost = $resource;
+						}
+
+						if($row->heatcost) {
+							$resource = new EpicDb_Mongo_Meta_Cost(); 
+							$resource->_type = EpicDb_Mongo::db('resource')->grab('heat');
+							$resource->value = (int) $row->heatcost;
+							$r2skill->attribs->cost = $resource;
+						}
+
+						if(!$row->ability_passive) {
+							if($row->casttime) {
+								$r2skill->attribs->useTime = (float) $row->casttime;							
+							} else {
+								$r2skill->attribs->useTime = 0;							
+							}
+						}
+
+						// Parse the Source into HTML w/ Markdown
+						if($row->ability_description) {
+							$markdown->setValue(str_replace(array("\n","\r"), array("\n\n", "\r\r"), $row->ability_description)); 
+							$r2skill->description = $markdown->getRenderedValue();
+							$r2skill->descriptionSource = $markdown->getValue();
+						}
+
+						$r2skill->tags->setTags('required-class', array($requiredClass));
+						$r2skill->torhead->icon = strtolower($row->ability_icon);
+						// var_dump($row->ability_icon);
+						$r2skill->torhead->id = $row->display_id;
+						$r2skill->torhead->url = "http://www.torhead.com/ability/".$row->display_id;
+						// Update Status Bar
+						$i++; $bar->update($i);
+						$r2skill->save();
+						var_dump($r2skill->name, $requiredClass->name);
+						// var_dump($row, $r2skill->export()); exit;						
+					} 
 		    }
 		    // Free result set
 		    $result->close();
