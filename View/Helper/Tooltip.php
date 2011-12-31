@@ -326,6 +326,9 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 		return $this;
 	}
 	public function renderCache() {
+		if(empty($_pageCache)) {
+			return '';
+		}
 		return $this->view->htmlTag("script", array(), 
 			'r2tip&&r2tip.addCache('.json_encode(self::$_pageCache).");"
 		);
