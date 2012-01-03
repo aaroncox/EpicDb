@@ -91,8 +91,6 @@ class EpicDb_View_Helper_GroupContext extends MW_View_Helper_HtmlTag
 					'icon' => 'key',
 				));								
 			}
-			$buttons .= $this->view->followButton($profile);
-			$buttons .= $this->view->followButton($profile, array("mode" => "block"));
 		}
 		if($buttons != "") "<h3>Available Actions</h3>".$placeholder->widget($buttons);
 		

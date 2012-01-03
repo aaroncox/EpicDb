@@ -66,7 +66,7 @@ class EpicDb_Mongo_Post extends EpicDb_Auth_Mongo_Resource_Document implements E
 	
 	// Returns an array of strings representing view helpers to execute
 	public function getTooltipHelpers() {
-		return array("icon", "title", "body", array('cloud', $this->tags, 'Tags'));
+		return array("title", "body", array('cloud', $this->tags, 'Tags'));
 	}
 
 	public function getPermaLink( $view )

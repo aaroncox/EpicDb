@@ -36,6 +36,7 @@ class EpicDb_Mongo_Profile_User extends EpicDb_Mongo_Profile
 		}
 		$return[] = "link";
 		$return[] = "limitDescription";
+		$return[] = "tooltipButtons";
 		return $return;
 	}
 

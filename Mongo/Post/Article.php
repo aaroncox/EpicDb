@@ -18,6 +18,6 @@ class EpicDb_Mongo_Post_Article extends EpicDb_Mongo_Post implements EpicDb_Vote
 	}
 	
 	public function getTooltipHelpers() {
-		return array('icon', 'title', 'body');
+		return array('title', 'body');
 	}
 } // END class EpicDb_Mongo_Record_Skill
