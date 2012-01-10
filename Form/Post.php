@@ -219,6 +219,8 @@ class EpicDb_Form_Post extends EpicDb_Form
 		if($this->isValid($data)) {
 			if($post->isNewDocument()) {
 				$post->_created = time();
+				// Save the Poster's IP Address for Spam Protection Reasons
+				$post->_postedFrom = $_SERVER['REMOTE_ADDR'];
 			} else {
 				EpicDb_Mongo_Revision::makeEditFor($post, $this->reason->getValue());
 			}
