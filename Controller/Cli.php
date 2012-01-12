@@ -133,7 +133,7 @@ abstract class EpicDb_Controller_Cli extends Zend_Controller_Action {
 	}
 	
 	
-	public function resave($collection) {
+	public function resave($collection, $callback = false) {
 		$docs = EpicDb_Mongo::db($collection)->fetchAll(array(), array("id" => 1));
 		echo "Resaving ".count($docs)." documents in ".$collection."...\n";
 		$i = 0;
@@ -144,6 +144,9 @@ abstract class EpicDb_Controller_Cli extends Zend_Controller_Action {
 			$i++;
 			$bar->update($i, 'Saved '.$doc->_type.'/'.$doc->_id);
 			try {
+				if ( $callback ) {
+					call_user_func($callback, $doc);
+				}
 				$doc->save();				
 			} catch (Exception $e) {
 				
