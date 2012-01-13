@@ -48,6 +48,11 @@ class EpicDb_Auth_Resource_Post implements MW_Auth_Resource_Interface {
 			);
 			$privs[] = array(
 				'mode' => true,
+				'role' => array( EpicDb_Auth_Group_Trusted::getInstance() ),
+				'privilege' => 'trusted'
+			);
+			$privs[] = array(
+				'mode' => true,
 				'role' => array(MW_Auth_Group_User::getInstance()),
 				'privilege' => array('use', 'create'),
 			);

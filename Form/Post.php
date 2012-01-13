@@ -174,7 +174,9 @@ class EpicDb_Form_Post extends EpicDb_Form
 		}
 
 		$this->setButtons(array("save" => "Post"));
-
+		if ( !EpicDb_Auth::getInstance()->hasPrivilege( new EpicDb_Auth_Resource_Post(), "trusted" ) ) {
+			$this->source->addValidator( new EpicDb_Validate_UntrustedHTML( $this->source ) );
+		} 
 	}
 	
 	public function save() {

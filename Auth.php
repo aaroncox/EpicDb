@@ -121,6 +121,7 @@ class EpicDb_Auth extends MW_Auth {
 		if ( $user instanceOf EpicDb_Mongo_Profile_User ) {
 			$level = $user->getLevel();
 			if ( $level >= 2 ) {
+				$roles[] = EpicDb_Auth_Group_Trusted::getInstance();
 				$roles[] = EpicDb_Auth_Group_UpVoters::getInstance();
 			}
 			if ( $level >= 3 ) {
