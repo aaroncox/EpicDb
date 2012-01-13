@@ -111,14 +111,15 @@ class EpicDb_Form_Post extends EpicDb_Form
 		$profile = $this->getAuthorProfile();
 
 		$this->addElement("markdown", "source", array(
-				'order' => 100,
-				'required' => true,
-				'class' => 'markDownEditor',
-				'label' => $this->_sourceLabel,
-				'description' => '',
-				'cols' => 'auto',
-				'rows' => 15,
-			));
+			'order' => 100,
+			'required' => true,
+			'class' => 'markDownEditor',
+			'label' => $this->_sourceLabel,
+			'description' => '',
+			'cols' => 'auto',
+			'rows' => 15,
+			'validators' => array( new EpicDb_Validate_PostLimits() ),
+		));
 		$this->addElement("tags", "tags", array(
 			'order' => 150,
 			'required' => true,
