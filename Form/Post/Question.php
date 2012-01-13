@@ -34,6 +34,20 @@ class EpicDb_Form_Post_Question extends EpicDb_Form_Post
 				'size' => 80,
 				'description' => '120 character or less description of your question.'
 			));
+		if(EpicDb_Auth::getInstance()->hasPrivilege(new EpicDb_Auth_Resource_Moderator())) {
+			$this->addElement('checkbox', 'featured', array(
+				'order' => 12,
+				'label' => 'Feature on the Homepage?',
+				'description' => 'Click this checkbox to feature this question on the homepage.',
+				'value' => (bool) $post->_featured,
+			));			
+			$this->addElement('text', 'featuredDescription', array(
+				'order' => 13,
+				'label' => 'Question Description for Homepage',
+				'description' => 'A brief description of the question enticing users to view it.',
+				'value' => $post->_description,
+			));			
+		}
 		$this->setButtons(array("save" => "Post"));
 		if(!$this->_isNew) {
 			$this->source->setLabel("The Question")->setDescription("Please be as descriptive as possible when asking your question, include as many details as possible, and don't hit people in the face with a wall of text in one huge paragraph.");
@@ -77,6 +91,13 @@ class EpicDb_Form_Post_Question extends EpicDb_Form_Post
 				$changedCommunity = true;
 				$question->disableRep = $flag ? true : null;
 			}
+		}
+		if(EpicDb_Auth::getInstance()->hasPrivilege(new EpicDb_Auth_Resource_Moderator())) {
+			$question->_featured = (bool) $this->featured->getValue();
+			if(!$question->_featuredDate) {
+				$question->_featuredDate = time();				
+			}
+			$question->_description = $this->featuredDescription->getValue();
 		}
 		$return = parent::save();
 		if ( $changedCommunity ) {

@@ -25,4 +25,13 @@ class EpicDb_View_Helper_Context extends Zend_View_Helper_Placeholder_Container
 		}
 		return $this;
 	}
+	
+	public function insertAd($text) {
+		// if(APPLICATION_ENV == 'production') {
+		$array = $this->getArrayCopy();
+		array_splice($array, 2, 0, $text);
+		$this->exchangeArray($array);
+		// }
+		return $this;
+	}
 } // END class EpicDb_View_Helper_Context
