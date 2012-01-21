@@ -66,25 +66,33 @@ class EpicDb_View_Helper_QuestionStub extends MW_View_Helper_HtmlTag
 			$voteClass .= " has-tooltip ui-state-disabled";
 			$voteParams['data-epic-tooltip'] = "This question has been marked as a 'Community Post' disabling all reputation gains/losses. Please read the Q&A FAQ for more information!";
 		}
-		if($question->_deleted) {
-			$containerColor = "red";			
-		} else {
-			$containerColor = "blue";
-		}
+		$containerColor = "blue";
 		$statusMessage = '';
-		if($question->closed) {
-			$containerColor = " question-closed";
-			$dupeText = '';
-			if($question->dupeOf->id) {
-				$dupeText = ' of '.$this->view->postLink($question->dupeOf);
+		if($question->closed || $question->_deleted) {
+			if($question->closed) {
+				$containerColor = " question-closed";				
+				$dupeText = '';
+				if($question->dupeOf->id) {
+					$dupeText = ' of '.$this->view->postLink($question->dupeOf);
+				}
+				$statusMessage = $this->view->htmltag("div", array('class' => 'status-message summary'),
+					'↳ '.ucwords($question->closedReason).$dupeText
+				)."";
+			}
+			if($question->_deleted) {
+				$containerColor = "red question-closed";								
+				$dupeText = '';
+				if($question->_deletedBy) {
+					$dupeText = ' deleted by '.$this->view->profileLink($question->_deletedBy);
+				}
+				$statusMessage = $this->view->htmltag("div", array('class' => 'status-message summary'),
+					'↳ '.ucwords($question->closedReason).$dupeText
+				)."";
 			}
 			// var_dump($question->export()); exit;
-			$statusMessage = $this->view->htmltag("div", array('class' => 'status-message'),
-				'↳ '.ucwords($question->closedReason).$dupeText
-			)."";
 		}
 		// var_dump($statusMessage); exit;
-		return $this->htmlTag('div', array('class' => 'question-summary ui-helper-clearfix rounded shadowy transparent-bg-'.$containerColor), 
+		return $this->htmlTag('div', array('class' => 'question-summary ui-helper-clearfix rounded transparent-bg-'.$containerColor), 
 			$this->htmlTag('div', array('style' => 'float: right'), 
 				$this->view->card($author, array(
 					"class" => "medium-icon hide-info", 

@@ -13,10 +13,9 @@ class EpicDb_View_Helper_ProfileContext extends MW_View_Helper_HtmlTag
 	public function profileContext(EpicDb_Mongo_Profile $profile) {
 		// $this->card($this->profile, array("class" => "wide"))
 		$placeholder = $this->view->context();
-		$placeholder->append($this->view->tooltip($profile)."");
-		if($profile->reputation) {
-			$placeholder->append($this->view->levelBar($profile)."");
-		}
+		$placeholder->append(
+			$this->view->tooltip($profile)
+		);
 		$buttons = '';
 		if ($profile->user && MW_Auth::getInstance()->hasPrivilege(new MW_Auth_Resource_Super(), 'sudo')) {
 			$buttons .= $this->view->button(array(
