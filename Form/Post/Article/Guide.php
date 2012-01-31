@@ -29,8 +29,8 @@ class EpicDb_Form_Post_Article_Guide extends EpicDb_Form_Post_Article
 		));
 		$this->addElement('checkbox', 'published', array(
 			'order' => 11,
-			'label' => 'Publish to the Guide Index',
-			'description' => 'Click this checkbox and save when you are ready to publish this guide to the public.',
+			'label' => 'Ready to Publish',
+			'description' => 'Click this checkbox and save when the guide is done and you are ready to make it public.',
 			'value' => $post->_published,
 		));
 		if(EpicDb_Auth::getInstance()->hasPrivilege(new EpicDb_Auth_Resource_Moderator())) {

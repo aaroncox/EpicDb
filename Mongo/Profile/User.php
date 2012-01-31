@@ -31,9 +31,6 @@ class EpicDb_Mongo_Profile_User extends EpicDb_Mongo_Profile
 
 	public function getTooltipHelpers() {
 		$return = array("icon", "name");
-		if($this->reputation) {
-			$return[] = 'level';
-		}
 		$return[] = "link";
 		$return[] = "limitDescription";
 		$return[] = "tooltipButtons";
@@ -201,4 +198,37 @@ class EpicDb_Mongo_Profile_User extends EpicDb_Mongo_Profile
 		return $level;
 	}
 
+	public function getReputationByMonth($months = 12) {
+		$query = array(
+			'target' => $this->createReference(), 
+			'date' => array(
+				'$gt' => time() - 60*60*24*365
+			)
+		);
+		$sort = array(
+			'date' => 1
+		);
+		$votes = EpicDb_Mongo::db('vote')->fetchAll($query, $sort);
+		$return = array(
+			'up' => array(),
+			'down' => array(),
+		);
+		foreach($votes as $vote) {
+			$month = date("M", $vote->date);
+			if(!isset($return['up'][$month])) {
+				$return['up'][$month] = 0;
+			}
+			if(!isset($return['down'][$month])) {
+				$return['down'][$month] = 0;
+			}
+			if($vote->vote == "up") {
+				$return['up'][$month] += 10;
+			}
+			if($vote->vote == "down") {
+				$return['down'][$month] += 5;
+			}
+		}
+		// var_dump($return); exit;
+		return $return;
+	}
 } // END class EpicDb_Mongo_Profile_User

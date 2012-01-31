@@ -182,24 +182,20 @@ class EpicDb_View_Helper_PostStub extends MW_View_Helper_HtmlTag
 			// $this->htmlTag("div", array("class" => "inline-flow"), ">")."". // Minimize / Maximize
 			$this->htmlTag("div", array("class" => "stub-score rounded ".$voteClass.$this->color($this->scoring($post))), 
 				$this->htmlTag("span", array("class" => "vote-label"), ucfirst(static::$score))."".
-				$this->htmlTag("p", array("class"=>"vote-count"), $this->scoring($post))."".
-				$this->htmlTag("span", array("class" => "vote-controls vote-widget"),
-					$this->stubVote($post)
-				)
+				$this->htmlTag("p", array("class"=>"vote-count"), $this->scoring($post))
 			)."".
-			$this->htmlTag("div", array("class" => "stub-title rounded text-large center-shadow ".$headerClass), 
+			$this->htmlTag("div", array("class" => "stub-title rounded text-large transparent-bg-blue ".$headerClass), 
 				// $this->htmlTag("div", array("class" => "stub-vote rounded inline-flow", "style" => "float: right"), $this->stubVote($post))."".
 				// $this->view->profileLink($post->tags->getTag('author')?:$post->tags->getTag('source'))." POSTS ".
 				$this->showIcon($post, $options)."".
 				$this->view->postLink($post, array("text" => $this->postHeader($post, $options)))
 			)."".
 			$this->htmlTag("div", array("class" => "stub-meta font-sans"), 
-				$this->htmlTag("span", array(), $this->view->timeAgo($post->_created)." ○ ")."".
+				$this->htmlTag("span", array("style" => "float: right"), $this->view->timeAgo($post->_created))."".
 				$this->htmlTag("span", array(), ($author) ? $this->view->profileLink($author) : 'an anonymous user')."".
 				$this->htmlTag("span", array(), " ".$this->whatsThis($post))."".
 				$this->htmlTag("span", array(), " ".$this->toWhat($post))
-			)."".
-			$this->htmlTag("div", array("class" => "stub-loadin"), ' ')	
+			)
 		);
 		// EpicDb_Cache::save($post, 'postStub', $html);
 		return $html;
