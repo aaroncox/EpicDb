@@ -118,6 +118,7 @@ class EpicDb_View_Helper_Card extends MW_View_Helper_HtmlTag
 			$record->name = "Anonymous";
 			$record->email = "anonymous@r2-db.com";
 		}
+		if(!isset($params['class'])) $params['class'] = '';
 		if(!isset($params['extra'])) $params['extra'] = '';
 		if(!isset($params['wrapper-class'])) $params['wrapper-class'] = '';
 		if(!isset($params['iconClass'])) $params['iconClass'] = '';
