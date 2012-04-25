@@ -86,47 +86,15 @@ class EpicDb_View_Helper_WebsiteContext extends MW_View_Helper_HtmlTag
 		}
 		if($buttons != "") "<h3>Available Actions</h3>".$placeholder->widget($buttons);
 		
-		if($profile->description) $placeholder->widget($this->htmlTag("h3", array(), "Website Description")."".$this->htmlTag("p", array(), $profile->description));
+		if(count($profile->admins)) {
+			$placeholder->widget($this->view->partial("./_context/icon-cloud.phtml", array('title' => $profile->name.'\'s Owners', 'icons' => $profile->admins)));
+		}
 
-		if($totalAdmins = $profile->admins->count()) {
-			$placeholder->widget(
-				$this->htmlTag("h3", array(), $profile->name."'s Admins")."".
-				$this->view->iconCloud($profile->admins)."".
-				$this->htmlTag("p", array("class" => 'iconCloud-label'), ''
-					// $this->htmlTag("a", array('href' => $this->view->url(array(
-					// 	'profile' => $profile,
-					// 	'action'=>'admins',
-					// ), 'profile', true)), 'View All '.$totalAdmins)
-				)
-			);			
-		}
-		
-		if($totalMembers = $profile->members->count()) {
-			$placeholder->widget(
-				$this->htmlTag("h3", array(), $profile->name."'s Members")."".
-				$this->view->iconCloud($profile->members, 21)."".
-				$this->htmlTag("p", array("class" => 'iconCloud-label'), ''
-					// $this->htmlTag("a", array('href' => $this->view->url(array(
-					// 	'profile' => $profile,
-					// 	'action'=>'admins',
-					// ), 'profile', true)), 'View All '.$totalAdmins)
-				)
-			);			
-		}
-		
 		$followers = $profile->getMyFollowers();
 		if($totalFollowers = $followers->count()) {
-			$placeholder->widget(
-				$this->htmlTag("h3", array(), $profile->name."'s Followers")."".
-				$this->view->iconCloud($followers, 21)."".
-				$this->htmlTag("p", array("class" => 'iconCloud-label'), 				
-					$this->htmlTag("a", array('href' => $this->view->url(array(
-						'profile' => $profile,
-						'action'=>'followers',
-					), 'profile', true)), 'View All '.$totalFollowers)
-				)
-			);			
+			$placeholder->widget($this->view->partial("./_context/icon-cloud.phtml", array('title' => $profile->name.'\'s Followers', 'icons' => $followers)));
 		}
+		
 		
 	}
 } // END class EpicDb_View_Helper_ProfileContext

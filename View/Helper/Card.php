@@ -59,12 +59,7 @@ class EpicDb_View_Helper_Card extends MW_View_Helper_HtmlTag
 		if(isset($params['extra'])) $details .= $this->addExtra($params['extra']);
 		return $details;
 	}
-	public function cardScore($record) {
-		if(!$record instanceOf EpicDb_Mongo_Profile_User) return '';
-		return $this->htmlTag("div", array("class" => "record-score"),
-			$record->getLevel()
-		);
-	}
+
 	public function unknownCard($params) {
 		return $this->htmlTag("div", array('class' => 'inline-flow db-card rounded '.$params['class']),
 			$this->htmlTag("div", array('class' => 'record-icon inline-flow'),
@@ -98,6 +93,13 @@ class EpicDb_View_Helper_Card extends MW_View_Helper_HtmlTag
 		return $this->htmlTag("div", array('class' => 'record-info inline-flow'), $this->cardDetails($record, $params))."";
 	}
 	
+	public function cardScore($record) {
+		if(!$record instanceOf EpicDb_Mongo_Profile_User) return '';
+		return $this->htmlTag("div", array("class" => "record-score"),
+			$record->getLevel()
+		);
+	}
+
 	public function cardIconWrapper($record, $params) {
 		return $this->htmlTag("div", array('class' => 'record-icon inline-flow '.$params['iconClass']), 
 			$this->cardScore($record)."".
@@ -116,6 +118,7 @@ class EpicDb_View_Helper_Card extends MW_View_Helper_HtmlTag
 			$record->name = "Anonymous";
 			$record->email = "anonymous@r2-db.com";
 		}
+		if(!isset($params['class'])) $params['class'] = '';
 		if(!isset($params['extra'])) $params['extra'] = '';
 		if(!isset($params['wrapper-class'])) $params['wrapper-class'] = '';
 		if(!isset($params['iconClass'])) $params['iconClass'] = '';

@@ -108,7 +108,7 @@ abstract class EpicDb_Profile_Controller_Abstract extends MW_Controller_Action
 		);
 		$sort = array("_created" => -1);
 		$paginator = Zend_Paginator::factory(EpicDb_Mongo::db('post')->fetchAll($query, $sort));
-		$paginator->setCurrentPageNumber($this->getRequest()->getParam('page', 1))->setItemCountPerPage(10);
+		$paginator->setCurrentPageNumber($this->getRequest()->getParam('page', 1))->setItemCountPerPage(5);
 		$this->view->posts = $posts = $paginator;
 	}
 

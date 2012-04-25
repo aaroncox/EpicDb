@@ -42,6 +42,7 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 		if(isset($this->_params['icon']) && $this->_params['icon'] == false) return '';
 		$class = "";
 		$type = $this->_doc->_type;
+		$extra = "";
 		switch($this->_doc->_type) {
 			case "seed":
 			case "item":
@@ -49,16 +50,32 @@ class EpicDb_View_Helper_Tooltip extends Zend_View_Helper_Abstract
 			case "profession":
 	 			$class = "tooltip-record-icon";
 				break;
+			case "user":
+				if($icon = $this->_doc->tags->getTag('icon')) {
+		 			$class = "tooltip-record-icon";					
+				}
+				$extra = $this->view->levelBar($this->_doc)."";
+				break;
 			default: 
 				break;
 		}
+		$record = $this->_doc;
 		return $this->view->htmlTag("div", array("class" => "tooltip-icon-box ".$class), 
-			$this->view->htmlTag("div", array(
-				"class" => "tooltip-icon tooltip-rounded",
-				"style" => "background: url('".$this->_doc->getIcon()."') no-repeat top center",
-			), " ")." ".
-			(($helper = $this->_doc->_tooltipButtonHelper) ? $this->view->$helper($this->_doc) : '')
+			$this->view->htmlTag("div", array('class' => 'record-icon inline-flow r2-glowbox rounded'), 
+				$this->cardScore($record)."".
+				$this->view->recordLink($record, array("text" => $this->view->htmlTag("img", array('src' => $record->getIcon(), 'alt' => $record->name, 'class' => 'icon r2-glowbox rounded'))))
+			)."".
+			(($helper = $record->_tooltipButtonHelper) ? $this->view->$helper($record) : '')."".
+			$extra
 		)."";
+	}
+	public function cardScore($record) {
+		if(!$record instanceOf EpicDb_Mongo_Profile_User) return '';
+		return $this->view->htmlTag("div", array("class" => "record-score"),
+			$record->getLevel()
+		);
+	}
+	public function cardIconWrapper($record, $params) {
 	}
 	public function name() {
 		$color = array();

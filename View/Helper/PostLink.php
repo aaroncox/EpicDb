@@ -69,7 +69,7 @@ class EpicDb_View_Helper_PostLink extends MW_View_Helper_HtmlTag
 			$text = $this->view->htmlTag("span", array("itemprop" => "title"), $text);
 		}
 		
-		$this->view->tooltip($post)->addToCache();
+		// $this->view->tooltip($post)->addToCache();
 		$tagAttribs["href"] = $this->view->url( $urlParams, $route, true ) . $hash;
 		$filter = new EpicDb_Filter_TagJSON();
 		$tagAttribs["data-tag-json"] = $filter->single($post);

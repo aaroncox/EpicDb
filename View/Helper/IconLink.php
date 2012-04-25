@@ -63,10 +63,10 @@ class EpicDb_View_Helper_IconLink extends Zend_View_Helper_Abstract
 		if (!$record) return '';
 		if(!isset($this->_params['div']) || $this->_params['div'] != false) {
 			$html = "<div class='record-icon ".$this->_params['class']."'>";
-			$html .= $this->view->recordLink($record, array("text" => $this->icon()));
+			$html .= $this->view->recordLink($record, array("text" => $this->icon())+$this->_params);
 			$html .= "</div>";
 		} else {
-			$html = $this->view->recordLink($record, array("text" => $this->icon(), 'class' => $this->_params['class']))."";
+			$html = $this->view->recordLink($record, array("text" => $this->icon(), 'class' => $this->_params['class'])+$this->_params)."";
 		}
 		return $html;
 	}

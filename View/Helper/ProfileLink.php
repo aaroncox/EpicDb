@@ -62,6 +62,10 @@ class EpicDb_View_Helper_ProfileLink extends MW_View_Helper_HtmlTag
 		if(isset($params['action'])) {
 			$action = $params['action'];
 		}
+		$format = null;
+		if(isset($params['format'])) {
+			$format = $params['format'];
+		}
 		
 		$itemprop = null;
 		if(isset($params['itemprop'])) {
@@ -69,7 +73,7 @@ class EpicDb_View_Helper_ProfileLink extends MW_View_Helper_HtmlTag
 			$text = $this->view->htmlTag("span", array("itemprop" => "title"), $text);
 		}
 		
-		$this->view->tooltip($profile)->addToCache();
+		// $this->view->tooltip($profile)->addToCache();
 		$filter = new EpicDb_Filter_TagJSON();
 		if(trim($text) == "") $text = "Unknown";
 		return $this->htmlTag("a", array(
@@ -83,6 +87,7 @@ class EpicDb_View_Helper_ProfileLink extends MW_View_Helper_HtmlTag
 			"href" => $this->view->url(array(
 				'action'=> $action,
 				'profile' => $profile,
+				"format" => $format,
 			), 'profile', true),
 		), (string) $text);
 	}

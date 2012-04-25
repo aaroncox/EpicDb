@@ -12,7 +12,9 @@ class EpicDb_View_Helper_RecordContext extends MW_View_Helper_HtmlTag
 {
 	public function recordContext(EpicDb_Mongo_Record $record, $params = array()) {
 		$placeholder = $this->view->context();
-		$placeholder->append($this->view->tooltip($record, $params)."");
+		$placeholder->append(
+			$this->view->tooltip($record)
+		);
 		$buttons = "";
 		if (EpicDb_Auth::getInstance()->hasPrivilege(new EpicDb_Auth_Resource_Moderator())) {
 			$buttons .= $this->view->button(array(

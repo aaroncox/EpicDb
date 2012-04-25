@@ -29,10 +29,24 @@ class EpicDb_Form_Post_Article_Guide extends EpicDb_Form_Post_Article
 		));
 		$this->addElement('checkbox', 'published', array(
 			'order' => 11,
-			'label' => 'Publish to the Guide Index',
-			'description' => 'Click this checkbox and save when you are ready to publish this guide to the public.',
+			'label' => 'Ready to Publish',
+			'description' => 'Click this checkbox and save when the guide is done and you are ready to make it public.',
 			'value' => $post->_published,
 		));
+		if(EpicDb_Auth::getInstance()->hasPrivilege(new EpicDb_Auth_Resource_Moderator())) {
+			$this->addElement('checkbox', 'featured', array(
+				'order' => 12,
+				'label' => 'Feature on the Homepage?',
+				'description' => 'Click this checkbox and save to feature this guide on the homepage.',
+				'value' => (bool) $post->_featured,
+			));			
+			$this->addElement('text', 'featuredDescription', array(
+				'order' => 13,
+				'label' => 'Guide Description for Homepage',
+				'description' => 'A brief description of the guide enticing users to view it.',
+				'value' => $post->_description,
+			));			
+		}
 		$this->tags->setDescription("Please tag up to 8 relevant records from the database to your guide.")->setLabel('Related Tags');
 		$this->setDefaults( $this->getDefaultValues() );
 		$this->setButtons(array("save" => "Save Guide"));
@@ -49,6 +63,13 @@ class EpicDb_Form_Post_Article_Guide extends EpicDb_Form_Post_Article
 		$post = $this->getPost();
 		if($classes = $this->class->getTags()) {
 			$post->class->setTags('tag', $classes);			
+		}
+		if(EpicDb_Auth::getInstance()->hasPrivilege(new EpicDb_Auth_Resource_Moderator())) {
+			$post->_featured = (bool) $this->featured->getValue();
+			if(!$post->_featuredDate) {
+				$post->_featuredDate = time();				
+			}
+			$post->_description = $this->featuredDescription->getValue();
 		}
 		$post->_published = (bool) $this->published->getValue();
 		$post->title = $this->title->getValue();
