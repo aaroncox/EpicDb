@@ -73,7 +73,7 @@ class EpicDb_View_Helper_RecordLink extends MW_View_Helper_HtmlTag
 			$text = $this->view->htmlTag("span", array("itemprop" => "title"), $text);
 		}
 					
-		$this->view->tooltip($record)->addToCache();
+		// $this->view->tooltip($record)->addToCache();
 
 		if(!empty($urlParams)) return $this->htmlTag("a", array(
 			"rel" => $rel,
