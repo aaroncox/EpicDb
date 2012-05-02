@@ -29,7 +29,7 @@ class EpicDb_View_Helper_Context extends Zend_View_Helper_Placeholder_Container
 	public function insertAd($text) {
 		// if(APPLICATION_ENV == 'production') {
 		$array = $this->getArrayCopy();
-		array_splice($array, 2, 0, $text);
+		array_splice($array, 1, 0, $text);
 		$this->exchangeArray($array);
 		// }
 		return $this;
